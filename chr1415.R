@@ -1,107 +1,234 @@
 
-show_paired <- function( cards ) {
-    pair <- 0
-    for( ii in seq( 1, length( cards ), 2 ) ) {
-        if( pair %in% c( 4, 8, 12, 16, 20, 24 ) ) {
-            cat( "\n" )
-        }
-        if ( pair > 8 ) {
-            cat( paste0( pair + 1, ") ", cards[ ii ], " ", cards[ ii + 1 ], "   " ) )
-        } else {
-            cat( paste0( " ", pair + 1, ") ", cards[ ii ], " ", cards[ ii + 1 ], "   " ) )
-        }
-        pair <- pair + 1
+#####                                                                      #####
+# BLOCK: STRCUTURAL FUNCTIONS                                                  #
+#                                                                              #
+#  . txt.wrap                                                                  #
+#  . txt.center                                                                #
+#  . txt.line                                                                  #
+#  . screen.cls                                                                #
+#####                                                                      #####
+
+##
+# title: txt.wrap
+# author: chernandez
+# date: 18/09/2014
+# description: Function used to wrap a text into the console, creating a block
+# with right and left indentations.
+################################################################################
+txt.wrap <- function( text, width = getOption( "width" ), right.indent = 0, left.indent = 0, chr = " " ) {
+    txt    <- paste0( text, collapse = chr )
+    txt    <- strsplit( txt, " " )
+    rwidth <- width - right.indent - left.indent
+    pos    <- 1
+    if( right.indent == 0 ) {
+        lines <- list( "" )   
+    } else {
+        lines  <- list( paste0( rep( chr, right.indent ), collapse = "" ) )
     }
-    cat( "\n" )
+    for( word in txt[[ 1 ]] ) {
+        if( nchar( lines[[ pos ]] ) + left.indent + nchar( word ) >= width ) {
+            pos <- pos + 1
+            lines[[ pos ]] <- paste0( rep( chr, right.indent ), collapse = "" )
+        }
+        lines[[ pos ]] <- paste( lines[[ pos ]], word, collapse = chr )
+    }
+    return( lines )
 }
 
-ask <- function( text = "", N = 1, type = double() ) {
-    if( text != "" ) {
-        cat( paste0( text, "\n" ) )
-    }
-    return( scan( n = N, what = type ) )
+##
+# tiele: txt.center
+# author: chernandez
+# date: 18/09/2014
+# description: Function used to center a text into the console.
+################################################################################
+txt.center <- function( text, width = getOption( "width" ), chr = " " ) {
+    indent       <- width - nchar( text )
+    right.indent <- round( indent / 2 )
+    left.indent  <- indent - right.indent
+    return( paste0( c( 
+        rep( chr, right.indent ),
+        text,
+        rep( chr, left.indent )
+    ), collapse = "", sep = "" ) )
+    
 }
 
-cls <- function( chr = "\n", times = "100" ) {
+##
+# title: txt.line
+# author: chernandez
+# date: 18/09/2014
+# description: Function used to create a 'newline' event on the console.
+################################################################################
+txt.line <- function( n = 1 ) {
+    if( n == 1 ) {
+        return( "" )
+    } else {
+        for( a in 1:n ) {
+            return( "\n" )
+        }
+    }
+}
+
+##
+# title: screen.cls
+# author: chernandez
+# date: 18/09/2014
+# description: Function used to emulate the efect of a 'cls' (Windows) or a 
+# 'clear' (linux) on a terminal with an R session.
+################################################################################
+screen.cls <- function( chr = "\n", times = "100" ) {
     cat( rep( chr, times ) )
 }
 
-say <- function( txt ) {
-    for( line in strwrap( txt ) ) {
-         cat( paste0( line, "\n" ) )
+
+#####                                                                      #####
+# BLOCK: INTERACTIVE FUNCTIONS                                                 #
+#                                                                              #
+#  . show                                                                      #
+#  . title                                                                     #
+#  . ask                                                                       #
+#####                                                                      #####
+
+##
+# title: show
+# author: chernandez
+# date: 18/09/2014
+# description: given a list of text it shows each on on the console.
+################################################################################
+show <- function( list ) {
+    for( line in list ) {
+        if( typeof( line ) == "list" ) {
+            show( line )
+        } else {
+            cat( line, "\n" )
+        }
     }
 }
 
-show_grid <- function( cards ) {
-    mm <- matrix( c(
-        c(  1,  3,  5, 10 ),
-        c( 20, 12, 15, 13 ),
-        c(  7,  4, 17, 14 ),
-        c(  8,  9,  6, 19 ),
-        c( 11, 10,  2, 18 )
-    ), nrow = 5, byrow = TRUE )
-    nr <- 0
-    tt <- vector()
-    for( ii in 1:nrow( mm ) ) {
-        rr <- sample( mm[ ii, ], ncol( mm ) )
-        cat( paste0( nr + 1, " -> " ) )
-        for( jj in 0:sqrt( length( cards ) ) ) {
-            cat( paste0( cards[ rr[ jj ] ], "  " ) )
-            cat( paste0( rr[ jj ], "  " ) )
-        }
-        cat( "\n" )
-        nr <- nr + 1
-        tt <- c( tt, rr )
+##
+# title: title
+# author: chernandez
+# date: 18/09/2014
+# description: Given a text is centers it and it draws a line under it.
+################################################################################
+title <- function( txt, chr = "-", plus = 0 ) {
+    txt <- toupper( txt )
+    nc <- nchar( txt )
+    txt    <- txt.center( txt )
+    unline <- txt.center( paste0( rep( chr,  nc + plus ), collapse = "" ) )
+    
+    return( list( txt, unline ) )
+}
+
+##
+# title: ask
+# author: chernandez
+# date: 18/09/2014
+# description: Given a text is shows it into the console and wait for an input
+# understanded as a key of te keyboards.
+################################################################################
+ask <- function( text = "", N = 1, type = character() ) {
+    if( text != "" ) {
+        cat( paste0( " > ", text, "\n" ) )
     }
-    return( matrix( tt, nrow = 5, byrow = TRUE ) )
+    return( tolower( suppressMessages( scan( n = N, what = type ) ) ) )
 }
 
 
+#####                                                                      #####
+# BLOCK: GAMEPLAY FUNCTIONS                                                    #
+#                                                                              #
+#  . early_biebie                                                              #
+#  . introduction                                                              #
+#  . main
+#####                                                                      #####
 
-ctypes <- c( "♥", "♣", "♠", "♦" )
-cnums  <- c( c( "A", "J", "Q", "K", as.character( 1:9 ) ) )
+##
+# title: early_biebie
+# author: chernandez
+# date: 18/09/2014
+# description: used to say bie-bie to the user whenit says they don't want to 
+# play the game after the introduction.
+################################################################################
+early_biebie <- function() {
+    screen.cls()
+    show(
+        list( 
+            txt.wrap( c( "This 'minigame' was developed as a christmas card",
+                         "for all the people working at CREAL and related." ),
+                      right.indent = 5, left.indent = 5 ),
+            txt.line(),
+            txt.wrap( c( "I hope I did not bother you and I use this change to",
+                         "wish you a marry christmas and a happy new year." ),
+                      right.indent = 5, left.indent = 5 ),
+            txt.line( 2 ),
+            txt.wrap( c( "Carles Hernandez-Ferrer" ), right.indent = 10 )
+        )
+    )
+}
 
-cards <- apply( expand.grid( ctypes, cnums )[ sample( 52, 24 ), ], 1, function( x ) paste0( x[ 2 ], x[ 1 ] ) )
-names( cards ) <- 1:24
+##
+# title: introduction
+# author: chernandez
+# date: 18/09/2014
+# description: Used to introduce the game
+################################################################################
+introduction <- function() {
+    show(
+        list( title( "an epidemiologic christmas tale", chr = "=", plus = 8 ),
+              txt.line(),
+              txt.wrap( c( "John Snow (15 March 1813 - 16 June 1858) was an English",
+                           "physician and a leader in the adoption of anaesthesia and",
+                           "medical hygiene. He is considered one of the fathers of",
+                           "modern epidemiology, in part because of his work in",
+                           "tracing the source of a cholera outbreak in Soho, London,",
+                           "in 1854. His findings inspired fundamental changes in the",
+                           "water and waste systems of London, which led to similar",
+                           "changes in other cities, and a significant improvement",
+                           "in general public health around the world." ),
+                        right.indent = 5, left.indent = 5 ),
+              txt.wrap( "wikipedia (2014)", right.indent = 10 ),
+              txt.line( 2 ),
+              title( "Introduction", plus = 8 ),
+              txt.line(),
+              txt.wrap( c( "In this game you took the role of Patrick Snow, a decendant",
+                           "of John Snow, and, as him, an important Epidemiologist." ),
+                        right.indent = 5, left.indent = 5 ),
+              txt.line(),
+              txt.wrap( c( "Patrick Snow gets at Barcelona (Spain) the early ",
+                           "morning of December 15th, 2014. While waiting for",
+                           "his luggage, a custom officer comes up to to him. The",
+                           "officer telld to him that the Department of Health",
+                           "of the Generalitat de Catalunya want to deal an urgent",
+                           "issue with him." ),
+                        right.indent = 5, left.indent = 5 ),
+              txt.line()
+              
+        )
+    )
+    return( ask( "Do you want to play [Y/*]?" ) )
+}
 
-
-# Step 1
-cls()
-say( "Hello! As this year, as achristmas card I sent you a triky card game. Hope you enjoy as I enjoyed typing it." )
-say( "" )
-say( "Let's start with it!" )
-say( "" )
-say( "" )
-say( "Now I will show you 8 paired cards. Just memorize a single pair and let's see if I'm able to got them :-)" )
-say( "" )
-show_paired( cards )
-say( "" )
-ask( "Press return to continue", type = character() )
-
-# Step 2
-cls()
-say( "No I will try to guess the paired cars." )
-say( "" )
-say( "Please give me some help..." )
-say( "" )
-mm <- show_grid( cards )
-say( "" )
-r.1 <- ask( "Give me the row where one (or both) of your cards is placed" )
-
-if( length( r.1 ) == 0 ) {
-    ask( "Thanks for playing!" )
-    cls()
-} else {
-    r.2 <- ask( "Give me the row where the other of your cads is placed (if both are in the same row, press return)" )
-    nn <- c( mm[ r.1, ], mm[ r.2, ] )
-    nn <- nn[ order( nn ) ]
-    it <- -1
-    for( ii in 1:length( nn ) ) {
-        if( nn[ ii ] == ( nn[ ii+1 ] - 1 ) ) {
-            it <- ii
-            break
-        }
+##
+# title: main
+# author: chernandez
+# date: 18/09/2014
+# description: Game's structure (story)
+################################################################################
+main <- function() {
+    options( width = 80 )
+    
+    screen.cls()
+    quit <- introduction()
+    if( quit == "y" ) {
+        
+    } else {
+        early_biebie()
     }
-    say( paste0( "your cards where ", cards[ it ], " and ", cards[ it + 1 ] ) )
-}     
+}
 
+#####                                                                      #####
+# BLOCK: ENTRY POINT                                                           #
+#####                                                                      #####
+
+main()
