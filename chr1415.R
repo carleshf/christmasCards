@@ -1,234 +1,89 @@
-
-#####                                                                      #####
-# BLOCK: STRCUTURAL FUNCTIONS                                                  #
-#                                                                              #
-#  . txt.wrap                                                                  #
-#  . txt.center                                                                #
-#  . txt.line                                                                  #
-#  . screen.cls                                                                #
-#####                                                                      #####
-
-##
-# title: txt.wrap
-# author: chernandez
-# date: 18/09/2014
-# description: Function used to wrap a text into the console, creating a block
-# with right and left indentations.
-################################################################################
-txt.wrap <- function( text, width = getOption( "width" ), right.indent = 0, left.indent = 0, chr = " " ) {
-    txt    <- paste0( text, collapse = chr )
-    txt    <- strsplit( txt, " " )
-    rwidth <- width - right.indent - left.indent
-    pos    <- 1
-    if( right.indent == 0 ) {
-        lines <- list( "" )   
-    } else {
-        lines  <- list( paste0( rep( chr, right.indent ), collapse = "" ) )
+KochSnowflake <- function(colFill = "#E0FFFF", colBorder = "#B0E0E6", colBackground="#FFFFFF"){
+  iterate <- function(T,i){
+    A = T[ ,1]; B=T[ ,2]; C = T[,3];
+    if (i == 0){
+      d = A
+      e = B
+      f = C
     }
-    for( word in txt[[ 1 ]] ) {
-        if( nchar( lines[[ pos ]] ) + left.indent + nchar( word ) >= width ) {
-            pos <- pos + 1
-            lines[[ pos ]] <- paste0( rep( chr, right.indent ), collapse = "" )
-        }
-        lines[[ pos ]] <- paste( lines[[ pos ]], word, collapse = chr )
-    }
-    return( lines )
-}
-
-##
-# tiele: txt.center
-# author: chernandez
-# date: 18/09/2014
-# description: Function used to center a text into the console.
-################################################################################
-txt.center <- function( text, width = getOption( "width" ), chr = " " ) {
-    indent       <- width - nchar( text )
-    right.indent <- round( indent / 2 )
-    left.indent  <- indent - right.indent
-    return( paste0( c( 
-        rep( chr, right.indent ),
-        text,
-        rep( chr, left.indent )
-    ), collapse = "", sep = "" ) )
     
-}
-
-##
-# title: txt.line
-# author: chernandez
-# date: 18/09/2014
-# description: Function used to create a 'newline' event on the console.
-################################################################################
-txt.line <- function( n = 1 ) {
-    if( n == 1 ) {
-        return( "" )
-    } else {
-        for( a in 1:n ) {
-            return( "\n" )
-        }
+    if (i == 1){
+      d = (A + B)/2
+      h = (C-d)
+      d = d-(1/3)*h
+      e = (2/3)*B + (1/3)*A
+      f = (1/3)*B + (2/3)*A
     }
-}
-
-##
-# title: screen.cls
-# author: chernandez
-# date: 18/09/2014
-# description: Function used to emulate the efect of a 'cls' (Windows) or a 
-# 'clear' (linux) on a terminal with an R session.
-################################################################################
-screen.cls <- function( chr = "\n", times = "100" ) {
-    cat( rep( chr, times ) )
-}
-
-
-#####                                                                      #####
-# BLOCK: INTERACTIVE FUNCTIONS                                                 #
-#                                                                              #
-#  . show                                                                      #
-#  . title                                                                     #
-#  . ask                                                                       #
-#####                                                                      #####
-
-##
-# title: show
-# author: chernandez
-# date: 18/09/2014
-# description: given a list of text it shows each on on the console.
-################################################################################
-show <- function( list ) {
-    for( line in list ) {
-        if( typeof( line ) == "list" ) {
-            show( line )
-        } else {
-            cat( line, "\n" )
-        }
-    }
-}
-
-##
-# title: title
-# author: chernandez
-# date: 18/09/2014
-# description: Given a text is centers it and it draws a line under it.
-################################################################################
-title <- function( txt, chr = "-", plus = 0 ) {
-    txt <- toupper( txt )
-    nc <- nchar( txt )
-    txt    <- txt.center( txt )
-    unline <- txt.center( paste0( rep( chr,  nc + plus ), collapse = "" ) )
     
-    return( list( txt, unline ) )
-}
-
-##
-# title: ask
-# author: chernandez
-# date: 18/09/2014
-# description: Given a text is shows it into the console and wait for an input
-# understanded as a key of te keyboards.
-################################################################################
-ask <- function( text = "", N = 1, type = character() ) {
-    if( text != "" ) {
-        cat( paste0( " > ", text, "\n" ) )
+    if (i == 2){
+      d = B
+      e = (2/3)*B + (1/3)*C
+      f = (2/3)*B + (1/3)*A
     }
-    return( tolower( suppressMessages( scan( n = N, what = type ) ) ) )
-}
-
-
-#####                                                                      #####
-# BLOCK: GAMEPLAY FUNCTIONS                                                    #
-#                                                                              #
-#  . early_biebie                                                              #
-#  . introduction                                                              #
-#  . main
-#####                                                                      #####
-
-##
-# title: early_biebie
-# author: chernandez
-# date: 18/09/2014
-# description: used to say bie-bie to the user whenit says they don't want to 
-# play the game after the introduction.
-################################################################################
-early_biebie <- function() {
-    screen.cls()
-    show(
-        list( 
-            txt.wrap( c( "This 'minigame' was developed as a christmas card",
-                         "for all the people working at CREAL and related." ),
-                      right.indent = 5, left.indent = 5 ),
-            txt.line(),
-            txt.wrap( c( "I hope I did not bother you and I use this change to",
-                         "wish you a marry christmas and a happy new year." ),
-                      right.indent = 5, left.indent = 5 ),
-            txt.line( 2 ),
-            txt.wrap( c( "Carles Hernandez-Ferrer" ), right.indent = 10 )
-        )
-    )
-}
-
-##
-# title: introduction
-# author: chernandez
-# date: 18/09/2014
-# description: Used to introduce the game
-################################################################################
-introduction <- function() {
-    show(
-        list( title( "an epidemiologic christmas tale", chr = "=", plus = 8 ),
-              txt.line(),
-              txt.wrap( c( "John Snow (15 March 1813 - 16 June 1858) was an English",
-                           "physician and a leader in the adoption of anaesthesia and",
-                           "medical hygiene. He is considered one of the fathers of",
-                           "modern epidemiology, in part because of his work in",
-                           "tracing the source of a cholera outbreak in Soho, London,",
-                           "in 1854. His findings inspired fundamental changes in the",
-                           "water and waste systems of London, which led to similar",
-                           "changes in other cities, and a significant improvement",
-                           "in general public health around the world." ),
-                        right.indent = 5, left.indent = 5 ),
-              txt.wrap( "wikipedia (2014)", right.indent = 10 ),
-              txt.line( 2 ),
-              title( "Introduction", plus = 8 ),
-              txt.line(),
-              txt.wrap( c( "In this game you took the role of Patrick Snow, a decendant",
-                           "of John Snow, and, as him, an important Epidemiologist." ),
-                        right.indent = 5, left.indent = 5 ),
-              txt.line(),
-              txt.wrap( c( "Patrick Snow gets at Barcelona (Spain) the early ",
-                           "morning of December 15th, 2014. While waiting for",
-                           "his luggage, a custom officer comes up to to him. The",
-                           "officer telld to him that the Department of Health",
-                           "of the Generalitat de Catalunya want to deal an urgent",
-                           "issue with him." ),
-                        right.indent = 5, left.indent = 5 ),
-              txt.line()
-              
-        )
-    )
-    return( ask( "Do you want to play [Y/*]?" ) )
-}
-
-##
-# title: main
-# author: chernandez
-# date: 18/09/2014
-# description: Game's structure (story)
-################################################################################
-main <- function() {
-    options( width = 80 )
     
-    screen.cls()
-    quit <- introduction()
-    if( quit == "y" ) {
-        
-    } else {
-        early_biebie()
+    if (i == 3){
+      d = (B + C)/2
+      h = (A-d)
+      d = d-(1/3)*h
+      e = (2/3)*C + (1/3)*B
+      f = (1/3)*C + (2/3)*B
     }
+    
+    if (i == 4){
+      d = C
+      e = (2/3)*C + (1/3)*A
+      f = (2/3)*C + (1/3)*B
+    }
+    
+    if (i == 5){
+      d = (A + C)/2
+      h = (B-d)
+      d = d-(1/3)*h
+      e = (2/3)*A + (1/3)*C
+      f = (1/3)*A + (2/3)*C
+    }
+    
+    if (i == 6){
+      d = A
+      e = (2/3)*A + (1/3)*C
+      f = (2/3)*A + (1/3)*B
+    }
+    
+    Tnew = cbind(d,e,f)
+    return(Tnew)
+  }
+  
+  draw <- function(T, colour, border){
+    polygon(T[1,],T[2,],col=colour,border=border)
+  }
+  
+  Iterate <- function(T, v, col=colFill, border=colBorder){
+    for (i in v) {
+      T = iterate(T,i)
+    }
+    draw(T,col=col,border=border)
+  }
+  
+  A = matrix(c(1, 0), 2, 1)
+  B = matrix(c(cos(2 * pi / 3), sin(2 * pi / 3)), 2, 1)
+  C = matrix(c(cos(2 * pi / 3), -sin(2 * pi / 3)), 2, 1)
+  T0 = cbind(A, B, C);
+  
+  plot(numeric(0),xlim=c(-1.1,1.1),ylim=c(-1.1,1.1),axes=FALSE,frame=FALSE,ann=FALSE)
+  par(mar=c(1.5, 2, 2.5, 2), bg = colBackground)
+  par(usr=c(-1.1, 1.1, -1.1, 1.1))
+  mtext("Merry Christmas and a Happy New Year 2015", side = 3)
+  mtext("~Carles", side = 1)
+  
+  for (i in 0:6) {
+    for (j in 0:6) {
+      for (k in 0:6) {
+        for (l in 0:6) { 
+          Iterate(T0,c(i,j,k,l))
+        }
+      }
+    }
+  }
 }
 
-#####                                                                      #####
-# BLOCK: ENTRY POINT                                                           #
-#####                                                                      #####
-
-main()
+KochSnowflake()
