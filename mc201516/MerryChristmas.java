@@ -96,7 +96,7 @@ public class MerryChristmas {
 
         clc(all);
         Random randomGenerator = new Random();
-        int sel =  randomGenerator.nextInt(8);
+        int sel =  randomGenerator.nextInt(4);
 
         if(args.length != 0) {
             prt = Integer.parseInt(args[0]);
