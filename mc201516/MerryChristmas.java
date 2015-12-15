@@ -2,17 +2,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 import java.lang.Thread;
+import java.io.IOException;
 
 public class MerryChristmas {
     public static void clc (int n) {
-        for(int ii = 0; ii < n; ii++) { System.out.println(); }
+        for(int ii = 0; ii < n; ii++) { System.out.println(""); }
     }
     public static void wait(int s) {
-        try { 
-            Thread.sleep(s * 1000);
-        } catch(InterruptedException e){ 
-            //Perform your exception handling
-        }
+        try { Thread.sleep(s * 1000); } catch(InterruptedException e){ }
     }
 
     public static void main(String[] args) { 
@@ -37,6 +34,24 @@ public class MerryChristmas {
             "    `-,-"
         });
         figures.add(new String[] {
+            "     _",
+            "   _[_]_",
+            "    (\")",
+            "`--( : )--'",
+            "  (  :  )",
+            "\"\"`-...-'\"\""
+        });
+        figures.add(new String[] {
+            "_/\\_     __/\\__",
+            ")   (_  _) .' (",
+            "`) '.( ) .'  (`",
+            " `-._\\()/__(~`",
+            "     ()()",
+            "    / |`\\",
+            "    ) : (",
+            "    `)_/`"
+        });
+        figures.add(new String[] {
             "   -=-",
             "(\\  _  /)",
             "( \\( )/ ) MERRY CHRISTMAS &",
@@ -55,15 +70,41 @@ public class MerryChristmas {
             "   {     }",
             "    `-,-"
         });
+        figures.add(new String[] {
+            "     _",
+            "   _[_]_  I WISH YOU A",
+            "    (\") MERRY CHRISTMAS",
+            "`--( : )--'   by C.",
+            "  (  :  )",
+            "\"\"`-...-'\"\""
+        });
+        figures.add(new String[] {
+            "_/\\_     __/\\__",
+            ")   (_  _) .' (",
+            "`) '.( ) .'  (`",
+            " `-._\\()/__(~` MERRY CHRISTMAS",
+            "     ()()   & HAPPY NEW YEAR",
+            "    / |`\\        by C.",
+            "    ) : (",
+            "    `)_/`"
+        });
 
-        int all = 75;
-        int prt = 50;
-        int inc = 2;
+        int all = 200;
+        int prt = 25;
+        int inc = 4;
         String pad = "          ";
 
         clc(all);
         Random randomGenerator = new Random();
-        int sel = randomGenerator.nextInt(2);
+        int sel =  randomGenerator.nextInt(2);
+
+        if(args.length != 0) {
+            prt = Integer.parseInt(args[0]);
+        }
+        if(prt < figures.get(sel).length) {
+            prt = figures.get(sel).length + 1;
+        }
+        
         for(int ii = 0; ii < figures.get(sel).length + 1; ii++) {
             clc(all);
             for(int jj = 0; jj < ii; jj++) {
@@ -76,6 +117,10 @@ public class MerryChristmas {
         for(String line : figures.get(sel + inc)) {
             System.out.println(pad + line);
         }
-        clc(prt - figures.get(sel + inc).length);
+        clc(prt - figures.get(sel + inc).length - 1);
+
+        System.out.println("Please, press any key to end the program ...");
+        
+        try{ System.in.read(); } catch (IOException e) { }
     }
 }
