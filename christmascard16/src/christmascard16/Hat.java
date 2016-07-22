@@ -15,6 +15,7 @@ public class Hat extends GameElement {
     public Hat(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
+        this.width = 3;
         this.level = 3;
         this.show = true;
     }
@@ -22,23 +23,20 @@ public class Hat extends GameElement {
     public Hat(int posX, int posY, int level) {
         this.posX = posX;
         this.posY = posY;
+        this.width = 3;
         this.level = level;
         this.show = true;
     }
     
-    public void set_no_visible() {
+    public void setInvisible() {
         this.show = false;
     }
     
     @Override
     public void draw(Terminal term) {
         if(this.show) {
-            term.setCursor(this.posX - 1, this.posY);
-            term.put("_");
             term.setCursor(this.posX, this.posY);
-            term.put("|");
-            term.setCursor(this.posX + 1, this.posY);
-            term.put("_");
+            term.put("_|_");
         }
     }
 }

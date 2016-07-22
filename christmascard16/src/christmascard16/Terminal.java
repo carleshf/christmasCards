@@ -16,9 +16,9 @@ import java.io.PrintStream;
  */
 public class Terminal {
 
-	public static final String KEY_UP    = new String("\u001B[A");  // ESC + [A
-	public static final String KEY_DOWN  = new String("\u001B[B");  // ESC + [B
-	public static final String KEY_LEFT  = new String("\u001B[D");  // ESC + [D
+	public static final String KEY_UP = new String("\u001B[A");  // ESC + [A
+	public static final String KEY_DOWN = new String("\u001B[B");  // ESC + [B
+	public static final String KEY_LEFT = new String("\u001B[D");  // ESC + [D
 	public static final String KEY_RIGHT = new String("\u001B[C");  // ESC + [C
 	
 	private final InputStreamReader in;

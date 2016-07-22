@@ -15,6 +15,7 @@ public class Door extends GameElement {
     public Door(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
+        this.width = 2;
         this.level = 3;
         this.show = false;
     }
@@ -22,11 +23,12 @@ public class Door extends GameElement {
     public Door(int posX, int posY, int level) {
         this.posX = posX;
         this.posY = posY;
+        this.width = 2;
         this.level = level;
         this.show = false;
     }
     
-    public void set_visible() {
+    public void setVisible() {
         this.show = true;
     }
     
@@ -37,9 +39,9 @@ public class Door extends GameElement {
             term.put("|");
             term.setCursor(this.posX + 1, this.posY);
             term.put("|");
-            term.setCursor(this.posX, this.posY + 1);
+            term.setCursor(this.posX, this.posY - 1);
             term.put("/");
-            term.setCursor(this.posX + 1, this.posY + 1);
+            term.setCursor(this.posX + 1, this.posY - 1);
             term.put("\\");
         }
     }

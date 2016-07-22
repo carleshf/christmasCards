@@ -13,7 +13,7 @@ public class GameElement {
     protected int posX;
     protected int posY;
     protected int level;
-    
+    protected int width;
     
     public int get_posX() {
         return(this.posX);
@@ -23,7 +23,15 @@ public class GameElement {
         return(this.posY);
     }
     
-    public void draw(Terminal term) {
-        
+    public int[] getPositions() {
+        int[] pos = new int[this.width];
+        for(int ii = 0; ii < this.width; ii++) {
+            pos[ii] = ii + this.width;
+        }
+        return(pos);
+    }
+    
+    public void draw(Terminal term) throws Exception {
+        throw new Exception("Unimplemented method.");
     }
 }

@@ -29,23 +29,27 @@ public class MapManager {
     public final Map buildLevelOne() {
         Map map = new Map(18, 5);
         map.addElement( // Add floor
-                new Floor(0, 0, 18)
+            new Floor(0, 4, 18)
         );
         
         map.addElement( // Add post toRight
-                new Post(0, 1, 'r')
+            new Post(0, 3, 'r')
         );
         
         map.addElement( // Add post toLeft
-                new Post(17, 1, 'l')
+                new Post(17, 3, 'l')
         );
         
-        map.addElement( // Add door
-                new Door(3, 1)
+        map.addDoor( // Add door
+            new Door(3, 3)
         );
         
-        map.addElement( // Add hat
-                new Hat(13, 1)
+        map.addHat( // Add hat
+            new Hat(13, 3)
+        );
+        
+        map.addSnowman( // Add snowman
+            new Snowman(7, 3)
         );
         
         return(map);

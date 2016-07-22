@@ -32,36 +32,36 @@ public class MapView {
 //		this.board = board;
 //	}
 
-	/**
-	 * Draws the surrounding border in the following style:
-	 * 
-	 *   /----\
-	 *   |    |
-	 *   |    |
-	 *   \----/
-	 */
-	public void drawBoarder() {
-            this.term.setCursor(0, 0);
-            this.term.put("/");
-            for (int i = 0; i < this.width; i++) { 
-                this.term.put("-"); 
-            }
-            this.term.put("\\");
-
-            for (int i = 0; i < height; i++) {
-                this.term.setCursor(        0, i + 1);
-                this.term.put("|");
-                this.term.setCursor(width + 1, i + 1);
-                this.term.put("|");
-            }
-            this.term.put("\n");
-
-            this.term.put("\\");
-            for (int i = 0; i < width; i++) { 
-                this.term.put("-"); 
-            }
-            this.term.put("/");
-	}
+//	/**
+//	 * Draws the surrounding border in the following style:
+//	 * 
+//	 *   /----\
+//	 *   |    |
+//	 *   |    |
+//	 *   \----/
+//	 */
+//	public void drawBoarder() {
+//            this.term.setCursor(0, 0);
+//            this.term.put("/");
+//            for (int i = 0; i < this.width; i++) { 
+//                this.term.put("-"); 
+//            }
+//            this.term.put("\\");
+//
+//            for (int i = 0; i < height; i++) {
+//                this.term.setCursor(        0, i + 1);
+//                this.term.put("|");
+//                this.term.setCursor(width + 1, i + 1);
+//                this.term.put("|");
+//            }
+//            this.term.put("\n");
+//
+//            this.term.put("\\");
+//            for (int i = 0; i < width; i++) { 
+//                this.term.put("-"); 
+//            }
+//            this.term.put("/");
+//	}
 
 //	public void add(Apple apple) {
 //		term.setCursor(apple.getX() + 1, apple.getY() + 1);
@@ -91,9 +91,11 @@ public class MapView {
 //		}
 //	}
         
-        public void drawContent(List<GameElement> elms) {
+        public void drawContent(List<GameElement> elms, char direction) throws Exception {
             for(GameElement elm : elms) {
                 elm.draw(this.term);
             }
+            term.setCursor(0, 7);
+            term.put("Direction: " + direction);
         }
 }
