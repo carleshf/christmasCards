@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 import curses as cr
+import textwrap as tw
 
 # Size of the screen ----------------------------------------------------------
 w_w, w_h = 80, 20
@@ -95,11 +96,24 @@ class Door(GameElement):
 
 
 class Snowman(GameElement):
-    def __init__(self, x, y, d='s', s=1):
+    def __init__(self, x, y, d='s', s=1, j=1):
         GameElement.__init__(self, x=x, y=y, w=3, h=2, l=1)
         self.has_hat = False
         self.direction = d
+        self.jump = (False, 's', 0)
         self.speed = s
+        self.strength = j
+
+    def __jump__(self):
+        if self.jump[0] and self.jump[1] == 's':
+            self.jump[1:2] = ['u', 1]
+        
+        if self.jump[1] == 'u':
+            self.py = self.y
+            self.y += self.strength
+            self.jump[2] += 1
+            if self.jump[2] > 3:
+                self.jump[1] = 'd'
 
     def draw(self, win):
         win.addstr(w_h - self.py - 1, self.px + 1, "   ")
@@ -115,11 +129,17 @@ class Snowman(GameElement):
     def give_hat(self):
         self.has_hat = True
 
-    def set_direction(self, d):
-        self.direction = d
+    def set_direction(self, d, user=True):
+        if self.direction == 's' and user:
+            self.direction = d
+        if not user:
+            self.direction = d
 
     def get_direction(self):
         return (self.direction)
+
+    def set_jump(self):
+        self.jump[0] = True
 
     def update(self, floors, posts):
         def check_posts(posts):
@@ -129,7 +149,7 @@ class Snowman(GameElement):
                     d = pst.direction
             return (d)
 
-        self.direction = check_posts(posts)
+        self.set_direction(check_posts(posts), False)
         if self.direction == 'r':
             self.px = self.x
             self.x += self.speed
@@ -138,11 +158,22 @@ class Snowman(GameElement):
             self.x -= self.speed
 
 
+class Text(GameElement):
+    def __init__(self, x, y, w, txt):
+        self.lines = tw.wrap(txt, width=w)
+        GameElement.__init__(self, x, y, w, h=len(self.lines), l = 1)
+    def draw(self, win):
+        nl = len(self.lines)
+        for ii in range(0, nl):
+            win.addstr(self.py + ii, self.px + 1, self.lines[ii])
+
+
 class Map:
     def __init__(self, w, h):
         self.w, self.h = w, h
         self.floors = []
         self.posts = []
+        self.text = []
         self.hat, self.snowman, self.door = None, None, None
 
     def add_floor(self, elm):
@@ -160,8 +191,13 @@ class Map:
     def add_door(self, elm):
         self.door = elm
 
+    def add_text(self, elm):
+        self.text.append(elm)
+
     def draw_map(self, win):
         for elm in self.floors + self.posts + [self.hat, self.door, self.snowman]:
+            elm.draw(win)
+        for elm in self.text:
             elm.draw(win)
 
     def get_direction(self):
@@ -178,16 +214,17 @@ class Map:
                     sm.x + sm.w > dr.x and
                     sm.y == dr.y and dr.get_visible())
 
-        if self.get_direction() in ('s', 'u'):
-            if key in left_key:
-                self.snowman.set_direction('l')
-            elif key in right_key:
-                self.snowman.set_direction('r')
-        if self.get_direction() in ('l', 'r'):
-            if key in up_key:
-                self.snowman.set_direction('u')
-            elif key in down_key:
-                self.snowman.set_direction('s')
+        #if self.get_direction() in ('s', 'u'):
+        if key in left_key:
+            self.snowman.set_direction('l')
+        elif key in right_key:
+            self.snowman.set_direction('r')
+
+        # if self.get_direction() in ('l', 'r'):
+        #     if key in up_key:
+        #         self.snowman.set_direction('u')
+        #     elif key in down_key:
+        #         self.snowman.set_direction('s')
         if give_hat(self.snowman, self.hat):
             self.snowman.give_hat()
             self.hat.set_invisible()
@@ -204,12 +241,13 @@ class Map:
 def create_level_one():
     map_g = Map(w_w - 1, w_h - 1)
     map_g.add_floor(Floor(1, 1, 77))
-    map_g.add_floor(Floor(30, 3, 20))
+    #map_g.add_floor(Floor(30, 3, 20))
     map_g.add_post(Post(1, 2, 'r'))
     map_g.add_post(Post(77, 2, 'l'))
     map_g.add_door(Door(22, 2))
     map_g.add_hat(Hat(43, 2))
     map_g.add_snowman(Snowman(10, 2))
+    map_g.add_text(Text(3, 2, 30, "Use arrow keys to set the direction of the snowman. Help him to find the hat he lost."))
     return (map_g)
 
 
@@ -229,22 +267,23 @@ def create_win(w, h, x=0, y=0):
 
 
 def update(win, map_g, key):
-    map_g.update(key)
+    status = map_g.update(key)
     map_g.draw_map(win)
-    if map_g.get_direction() == 's':
-        st = 'Snowman is waiting (' + str(key) + ')'
-    elif map_g.get_direction() == 'r':
-        st = 'Snowman is moving right (' + str(key) + ')'
-    elif map_g.get_direction() == 'l':
-        st = 'Snowman is moving left (' + str(key) + ')'
-    elif map_g.get_direction() == 'u':
-        st = 'Snowman is jumping (' + str(key) + ')'
-    else:
-        st = "Bad: " + str(map_g.get_direction())
-    win.addstr(1, 1, st)
-    win.addstr(2, 1,
-               "x: %d y: %d px: %d py: %d" % (map_g.snowman.x, map_g.snowman.y, map_g.snowman.px, map_g.snowman.py))
+    # if map_g.get_direction() == 's':
+    #     st = 'Snowman is waiting (' + str(key) + ')'
+    # elif map_g.get_direction() == 'r':
+    #     st = 'Snowman is moving right (' + str(key) + ')'
+    # elif map_g.get_direction() == 'l':
+    #     st = 'Snowman is moving left (' + str(key) + ')'
+    # elif map_g.get_direction() == 'u':
+    #     st = 'Snowman is jumping (' + str(key) + ')'
+    # else:
+    #     st = "Bad: " + str(map_g.get_direction())
+    # win.addstr(1, 1, st)
+    # win.addstr(2, 1,
+    #            "x: %d y: %d px: %d py: %d" % (map_g.snowman.x, map_g.snowman.y, map_g.snowman.px, map_g.snowman.py))
     win.timeout(100)
+    return status
 
 
 def game_loop(win, w, h):
@@ -252,7 +291,9 @@ def game_loop(win, w, h):
     map_g = create_level_one()
 
     while key not in exit_key and not end:
-        update(win, map_g, key)
+        status = update(win, map_g, key)
+        if status:
+        	break
 
         prev_key = key
         key = win.getch()
