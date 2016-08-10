@@ -100,7 +100,7 @@ class Snowman(GameElement):
         GameElement.__init__(self, x=x, y=y, w=3, h=2, l=1)
         self.has_hat = False
         self.direction = d
-        self.jump = (False, 's', 0)
+        self.jump = [False, 's', 0]
         self.speed = s
         self.strength = j
 
@@ -115,8 +115,23 @@ class Snowman(GameElement):
             if self.jump[2] > 3:
                 self.jump[1] = 'd'
 
+    def __fall__(self, floors):
+        if self.jump[1] != 'u':
+            in_floor = False
+            for flr in floors:
+                if self.x >= flr.x and self.x <= flr.x + flr.w: # in x range
+                    if self.y - self.strength == flr.y: # in floor level
+                        in_floor = True
+                        break
+            if not in_floor:
+                self.y -= self.strength
+            else:
+                if self.jump[1] == 'd':
+                    self.jump = [False, 's', 0]
+
     def draw(self, win):
-        win.addstr(w_h - self.py - 1, self.px + 1, "   ")
+        for ii in range(1, 3):
+            win.addstr(w_h - self.py - ii, self.px + 1, "   ")
         if self.has_hat:
             win.addstr(w_h - self.py - 3, self.px + 1, "   ")
             win.addstr(w_h - self.y - 3, self.x + 1, "_A_")
@@ -156,6 +171,9 @@ class Snowman(GameElement):
         elif self.direction == 'l':
             self.px = self.x
             self.x -= self.speed
+
+        self.__jump__()
+        self.__fall__(floors)
 
 
 class Text(GameElement):
@@ -214,12 +232,13 @@ class Map:
                     sm.x + sm.w > dr.x and
                     sm.y == dr.y and dr.get_visible())
 
-        #if self.get_direction() in ('s', 'u'):
         if key in left_key:
             self.snowman.set_direction('l')
         elif key in right_key:
             self.snowman.set_direction('r')
 
+        if key in up_key:
+            self.snowman.set_jump()
         # if self.get_direction() in ('l', 'r'):
         #     if key in up_key:
         #         self.snowman.set_direction('u')
@@ -241,13 +260,13 @@ class Map:
 def create_level_one():
     map_g = Map(w_w - 1, w_h - 1)
     map_g.add_floor(Floor(1, 1, 77))
-    #map_g.add_floor(Floor(30, 3, 20))
+    map_g.add_floor(Floor(30, 3, 20))
     map_g.add_post(Post(1, 2, 'r'))
     map_g.add_post(Post(77, 2, 'l'))
     map_g.add_door(Door(22, 2))
     map_g.add_hat(Hat(43, 2))
     map_g.add_snowman(Snowman(10, 2))
-    map_g.add_text(Text(3, 2, 30, "Use arrow keys to set the direction of the snowman. Help him to find the hat he lost."))
+    map_g.add_text(Text(3, 2, 40, "Use arrow keys to set the direction of the snowman. Help him to find the hat he lost."))
     return (map_g)
 
 
@@ -280,8 +299,10 @@ def update(win, map_g, key):
     # else:
     #     st = "Bad: " + str(map_g.get_direction())
     # win.addstr(1, 1, st)
-    # win.addstr(2, 1,
-    #            "x: %d y: %d px: %d py: %d" % (map_g.snowman.x, map_g.snowman.y, map_g.snowman.px, map_g.snowman.py))
+    win.addstr(2, 1,
+        "x: %d y: %d px: %d py: %d :: d: %s - j1 : %r, j2: %s, j3: %d" % (map_g.snowman.x, map_g.snowman.y, 
+            map_g.snowman.px, map_g.snowman.py, map_g.snowman.direction, map_g.snowman.jump[0],
+            map_g.snowman.jump[1], map_g.snowman.jump[2]))
     win.timeout(100)
     return status
 
@@ -291,15 +312,15 @@ def game_loop(win, w, h):
     map_g = create_level_one()
 
     while key not in exit_key and not end:
-        status = update(win, map_g, key)
-        if status:
-        	break
+        end = update(win, map_g, key)
+        #if status:
+        #	break
 
-        prev_key = key
+        #prev_key = key
         key = win.getch()
 
-        if key not in accepted_keys:
-            key = prev_key
+        #if key not in accepted_keys:
+        #    key = prev_key
 
 
 if __name__ == '__main__':
