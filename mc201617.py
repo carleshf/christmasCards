@@ -104,16 +104,23 @@ class Snowman(GameElement):
         self.speed = s
         self.strength = j
 
+    def __jump_inc__(self):
+        self.jump[2] += 1
+        if self.jump[2] <= 3:
+            return self.strength
+        if self.jump[2] == 4:
+            return 0
+        if self.jump[2] > 4:
+            self.jump[1] = 'd'
+        return 0
+
     def __jump__(self):
         if self.jump[0] and self.jump[1] == 's':
             self.jump[1:2] = ['u', 1]
         
         if self.jump[1] == 'u':
             self.py = self.y
-            self.y += self.strength
-            self.jump[2] += 1
-            if self.jump[2] > 3:
-                self.jump[1] = 'd'
+            self.y += self.__jump_inc__()
 
     def __fall__(self, floors):
         if self.jump[1] != 'u':
@@ -260,7 +267,8 @@ class Map:
 def create_level_one():
     map_g = Map(w_w - 1, w_h - 1)
     map_g.add_floor(Floor(1, 1, 77))
-    map_g.add_floor(Floor(30, 3, 20))
+    map_g.add_floor(Floor(30, 3, 15))
+    map_g.add_floor(Floor(35, 6, 15))
     map_g.add_post(Post(1, 2, 'r'))
     map_g.add_post(Post(77, 2, 'l'))
     map_g.add_door(Door(22, 2))
