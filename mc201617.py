@@ -30,6 +30,9 @@ class GameElement():
     def update(self, floors, posts):
         pass
 
+    def clean(self, win):
+        pass
+
 
 class Floor(GameElement):
     def __init__(self, x, y, w, l=1):
@@ -37,6 +40,9 @@ class Floor(GameElement):
 
     def draw(self, win):
         win.addstr(w_h - self.y - 1, self.x + 1, '#' * self.w)
+    
+    def clean(self, win):
+        win.addstr(w_h - self.y - 1, self.x + 1, ' ' * self.w)
 
 
 class Post(GameElement):
@@ -54,6 +60,10 @@ class Post(GameElement):
         else:
             win.addch(w_h - self.y - 3, self.x + 1, '#')
 
+    def clean(self, win):
+        for ii in range(1, 3):
+            win.addch(w_h - self.y - ii, self.x + 1, ' ')
+
 
 class Hat(GameElement):
     def __init__(self, x, y, v=True, l=1):
@@ -65,6 +75,9 @@ class Hat(GameElement):
             win.addstr(w_h - self.y - 1, self.x + 1, "_A_")
         else:
             win.addstr(w_h - self.y - 1, self.x + 1, "   ")
+
+    def clean(self, win):
+        win.addstr(w_h - self.y - 1, self.x + 1, "   ")
 
     def is_visible(self):
         return self.visible
@@ -93,6 +106,10 @@ class Door(GameElement):
             win.addstr(w_h - self.y - 3, self.x + 1, "    ")
             win.addstr(w_h - self.y - 2, self.x + 1, "    ")
             win.addstr(w_h - self.y - 1, self.x + 1, "    ")
+
+    def clean(self, win):
+        for ii in range(1, 3):
+            win.addstr(w_h - self.y - ii, self.x + 1, "   ")
 
 
 class Snowman(GameElement):
@@ -141,6 +158,10 @@ class Snowman(GameElement):
         win.addstr(w_h - self.y - 2, self.x + 2, "o")
         win.addstr(w_h - self.y - 1, self.x + 1, "(O)")
 
+    def clean(self, win):
+        for ii in range(1, 3):
+            win.addstr(w_h - self.y - ii, self.x + 1, "   ")
+
     def has_hat(self):
         return (self.has_hat)
 
@@ -183,10 +204,16 @@ class Text(GameElement):
     def __init__(self, x, y, w, txt):
         self.lines = tw.wrap(txt, width=w)
         GameElement.__init__(self, x, y, w, h=len(self.lines), l = 1)
+
     def draw(self, win):
         nl = len(self.lines)
         for ii in range(0, nl):
             win.addstr(self.py + ii, self.px + 1, self.lines[ii])
+
+    def clean(self, win):
+        nl = len(self.lines)
+        for ii in range(0, nl):
+            win.addstr(self.py + ii, self.px + 1, " " * len(self.lines[ii]))
 
 
 class Map:
@@ -221,6 +248,10 @@ class Map:
         for elm in self.text:
             elm.draw(win)
 
+    def clean_map(self, win):
+        for elm in [self.door, self.snowman, self.hat] + self.floors + self.posts + self.text:
+            elm.clean(win)
+
     def get_direction(self):
         return (self.snowman.get_direction())
 
@@ -242,11 +273,7 @@ class Map:
 
         if key in up_key:
             self.snowman.set_jump()
-        # if self.get_direction() in ('l', 'r'):
-        #     if key in up_key:
-        #         self.snowman.set_direction('u')
-        #     elif key in down_key:
-        #         self.snowman.set_direction('s')
+
         if give_hat(self.snowman, self.hat):
             self.snowman.give_hat()
             self.hat.set_invisible()
@@ -260,11 +287,15 @@ class Map:
 
 # Game Functions --------------------------------------------------------------
 
-def create_level_one():
+def base_map():
     map_g = Map(w_w - 1, w_h - 1)
-    map_g.add_floor(Floor(1, 1, 77))
+    map_g.add_floor(Floor(1, 1, 76))
     map_g.add_post(Post(1, 2, 'r'))
-    map_g.add_post(Post(77, 2, 'l'))
+    map_g.add_post(Post(76, 2, 'l'))
+    return (map_g)
+
+def create_level_one():
+    map_g = base_map()
     map_g.add_door(Door(22, 2))
     map_g.add_hat(Hat(43, 2))
     map_g.add_snowman(Snowman(10, 2))
@@ -272,17 +303,69 @@ def create_level_one():
     return (map_g)
 
 def create_level_two():
-    map_g = Map(w_w - 1, w_h - 1)
-    map_g.add_floor(Floor(1, 1, 77))
+    map_g = base_map()
     map_g.add_floor(Floor(30, 3, 15))
     map_g.add_floor(Floor(40, 5, 9))
-    map_g.add_post(Post(1, 2, 'r'))
-    map_g.add_post(Post(77, 2, 'l'))
     map_g.add_door(Door(10, 2))
     map_g.add_hat(Hat(43, 6))
     map_g.add_snowman(Snowman(10, 2))
     map_g.add_text(Text(3, 2, 40, "The up-arrow key makes the Snowman jumps!"))
     return (map_g)
+
+def create_level_three():
+    map_g = base_map()
+    map_g.add_floor(Floor(22, 3, 5))
+    map_g.add_floor(Floor(27, 4, 5))
+    map_g.add_floor(Floor(32, 5, 2))
+    map_g.add_post(Post(32, 2, 'l'))
+    map_g.add_post(Post(33, 2, 'r'))
+    map_g.add_floor(Floor(34, 4, 5))
+    map_g.add_floor(Floor(40, 3, 5))
+    map_g.add_door(Door(50, 2))
+    map_g.add_hat(Hat(60, 2))
+    map_g.add_snowman(Snowman(10, 2))
+    map_g.add_text(Text(3, 2, 40, "Take care of the direction-post, you can get trapped between theme!"))
+    return (map_g)
+
+def create_level_four():
+    map_g = base_map()
+    map_g.add_floor(Floor(44, 3, 10))
+    map_g.add_floor(Floor(54, 4, 6))
+    map_g.add_floor(Floor(60, 3, 10))
+    map_g.add_door(Door(55, 5))
+    map_g.add_hat(Hat(10, 2))
+    map_g.add_snowman(Snowman(35, 2))
+    map_g.add_text(Text(3, 2, 40, "You are at your own now..."))
+    return(map_g)
+
+def create_level_five():
+    map_g = base_map()
+    map_g.add_floor(Floor(33, 3, 6))
+
+    map_g.add_floor(Floor(29, 4, 4))
+    map_g.add_floor(Floor(39, 4, 4))
+
+    map_g.add_floor(Floor(23, 5, 6))
+    map_g.add_post(Post(23, 6, 'r'))
+    map_g.add_floor(Floor(43, 5, 6))
+    map_g.add_post(Post(48, 6, 'l'))
+
+    map_g.add_floor(Floor(29, 6, 4))
+    map_g.add_floor(Floor(39, 6, 4))
+    
+    map_g.add_floor(Floor(33, 7, 6))
+    
+    map_g.add_floor(Floor(29, 8, 4))
+    map_g.add_floor(Floor(22, 9, 7))
+
+    map_g.add_floor(Floor(39, 8, 4))
+    map_g.add_floor(Floor(43, 9, 7))
+
+    map_g.add_door(Door(45, 10))
+    map_g.add_hat(Hat(25, 10))
+    map_g.add_snowman(Snowman(20, 2))
+    map_g.add_text(Text(3, 2, 40, "You are at your own now..."))
+    return(map_g)
 
 
 def init_curses():
@@ -314,28 +397,35 @@ def update(win, map_g, key):
     # else:
     #     st = "Bad: " + str(map_g.get_direction())
     # win.addstr(1, 1, st)
-    win.addstr(1, 1,
-        "x: %d y: %d px: %d py: %d :: d: %s :: j1 : %r, j2: %s, j3: %d" % (map_g.snowman.x, map_g.snowman.y, 
-            map_g.snowman.px, map_g.snowman.py, map_g.snowman.direction, map_g.snowman.jump[0],
-            map_g.snowman.jump[1], map_g.snowman.jump[2]))
+    # win.addstr(1, 1,
+    #     "x: %d y: %d px: %d py: %d :: d: %s :: j1 : %r, j2: %s, j3: %d" % (map_g.snowman.x, map_g.snowman.y, 
+    #         map_g.snowman.px, map_g.snowman.py, map_g.snowman.direction, map_g.snowman.jump[0],
+    #         map_g.snowman.jump[1], map_g.snowman.jump[2]))
     win.timeout(100)
     return status
 
 
 def game_loop(win, w, h):
     key, end = cr.KEY_DOWN, False
-    map_g = create_level_two() #create_level_one()
+    story = [create_level_one, create_level_two, create_level_three, create_level_four,create_level_five]
+    lvl = 0
 
-    while key not in exit_key and not end:
-        end = update(win, map_g, key)
-        #if status:
-        #	break
+    while not end and lvl < 5:
+        map_g = story[lvl]()
+        status = False
+        while not status and not end:
+            win.addstr(1, 68, "Level: %d/5" % (lvl + 1))
+            
+            if key in exit_key:
+                end = True
 
-        #prev_key = key
-        key = win.getch()
-
-        if key not in accepted_keys:
-            key = cr.KEY_DOWN
+            status = update(win, map_g, key)
+            
+            key = win.getch()
+            if key not in accepted_keys:
+                key = cr.KEY_DOWN
+        map_g.clean_map(win)
+        lvl += 1
 
 
 if __name__ == '__main__':
