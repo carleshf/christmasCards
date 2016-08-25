@@ -107,11 +107,9 @@ class Snowman(GameElement):
     def __jump_inc__(self):
         self.jump[2] += 1
         if self.jump[2] <= 3:
-            return self.strength
-        if self.jump[2] == 4:
-            return 0
-        if self.jump[2] > 4:
-            self.jump[1] = 'd'
+           return self.strength
+        else:
+           self.jump[1] = 'd'
         return 0
 
     def __jump__(self):
@@ -119,8 +117,8 @@ class Snowman(GameElement):
             self.jump[1:2] = ['u', 1]
         
         if self.jump[1] == 'u':
-            self.py = self.y
             self.y += self.__jump_inc__()
+        pass
 
     def __fall__(self, floors):
         if self.jump[1] != 'u':
@@ -129,20 +127,18 @@ class Snowman(GameElement):
                 if self.x >= flr.x and self.x <= flr.x + flr.w: # in x range
                     if self.y - self.strength == flr.y: # in floor level
                         in_floor = True
-                        break
+                        self.jump = [False, 's', 0]
+
             if not in_floor:
                 self.y -= self.strength
-            else:
-                if self.jump[1] == 'd':
-                    self.jump = [False, 's', 0]
 
     def draw(self, win):
-        for ii in range(1, 3):
-            win.addstr(w_h - self.py - ii, self.px + 1, "   ")
+        win.addstr(w_h - self.py - 2, self.px + 2, " ")
+        win.addstr(w_h - self.py - 1, self.px + 1, "   ")
         if self.has_hat:
             win.addstr(w_h - self.py - 3, self.px + 1, "   ")
             win.addstr(w_h - self.y - 3, self.x + 1, "_A_")
-        win.addstr(w_h - self.y - 2, self.x + 1, " o ")
+        win.addstr(w_h - self.y - 2, self.x + 2, "o")
         win.addstr(w_h - self.y - 1, self.x + 1, "(O)")
 
     def has_hat(self):
@@ -172,11 +168,11 @@ class Snowman(GameElement):
             return (d)
 
         self.set_direction(check_posts(posts), False)
+        self.px = self.x
+        self.py = self.y
         if self.direction == 'r':
-            self.px = self.x
             self.x += self.speed
         elif self.direction == 'l':
-            self.px = self.x
             self.x -= self.speed
 
         self.__jump__()
@@ -267,14 +263,25 @@ class Map:
 def create_level_one():
     map_g = Map(w_w - 1, w_h - 1)
     map_g.add_floor(Floor(1, 1, 77))
-    map_g.add_floor(Floor(30, 3, 15))
-    map_g.add_floor(Floor(35, 6, 15))
     map_g.add_post(Post(1, 2, 'r'))
     map_g.add_post(Post(77, 2, 'l'))
     map_g.add_door(Door(22, 2))
     map_g.add_hat(Hat(43, 2))
     map_g.add_snowman(Snowman(10, 2))
     map_g.add_text(Text(3, 2, 40, "Use arrow keys to set the direction of the snowman. Help him to find the hat he lost."))
+    return (map_g)
+
+def create_level_two():
+    map_g = Map(w_w - 1, w_h - 1)
+    map_g.add_floor(Floor(1, 1, 77))
+    map_g.add_floor(Floor(30, 3, 15))
+    map_g.add_floor(Floor(40, 5, 9))
+    map_g.add_post(Post(1, 2, 'r'))
+    map_g.add_post(Post(77, 2, 'l'))
+    map_g.add_door(Door(10, 2))
+    map_g.add_hat(Hat(43, 6))
+    map_g.add_snowman(Snowman(10, 2))
+    map_g.add_text(Text(3, 2, 40, "The up-arrow key makes the Snowman jumps!"))
     return (map_g)
 
 
@@ -307,8 +314,8 @@ def update(win, map_g, key):
     # else:
     #     st = "Bad: " + str(map_g.get_direction())
     # win.addstr(1, 1, st)
-    win.addstr(2, 1,
-        "x: %d y: %d px: %d py: %d :: d: %s - j1 : %r, j2: %s, j3: %d" % (map_g.snowman.x, map_g.snowman.y, 
+    win.addstr(1, 1,
+        "x: %d y: %d px: %d py: %d :: d: %s :: j1 : %r, j2: %s, j3: %d" % (map_g.snowman.x, map_g.snowman.y, 
             map_g.snowman.px, map_g.snowman.py, map_g.snowman.direction, map_g.snowman.jump[0],
             map_g.snowman.jump[1], map_g.snowman.jump[2]))
     win.timeout(100)
@@ -317,7 +324,7 @@ def update(win, map_g, key):
 
 def game_loop(win, w, h):
     key, end = cr.KEY_DOWN, False
-    map_g = create_level_one()
+    map_g = create_level_two() #create_level_one()
 
     while key not in exit_key and not end:
         end = update(win, map_g, key)
@@ -327,8 +334,8 @@ def game_loop(win, w, h):
         #prev_key = key
         key = win.getch()
 
-        #if key not in accepted_keys:
-        #    key = prev_key
+        if key not in accepted_keys:
+            key = cr.KEY_DOWN
 
 
 if __name__ == '__main__':
