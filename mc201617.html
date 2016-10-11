@@ -42,9 +42,7 @@
 				ctx.closePath();
 			}
 
-			collide(sm) {
-
-			}
+			collide(sm) { }
 		}
 
 		class Exit {
@@ -293,10 +291,25 @@
 			map.texts.push(new Text(10, 60, "normal", "where to find the hat."));
 			return map;
 		}
+
+		function Level2() {
+			var map = new GameSet();
+			map.snowman = new Snowman(300, 315);
+			map.exit = new Exit(375, 315, visible=true);
+			map.hat = new Hat(160, 300, visible=true);
+			map.floors.push(new Floor(10, 320, width - 20));
+			map.floors.push(new Floor(100, 280, 100));
+			map.floors.push(new Floor(150, 300, 100));
+			map.corners.push(new RCorner(10, 315));
+			map.corners.push(new LCorner(470, 315));
+			map.texts.push(new Text(10, 30, "normal", "By pressing the key 'space' you can"));
+			map.texts.push(new Text(10, 30, "normal", "make Mr. Snowman to jump!"));
+			return map;
+		}
 		/* -------------------------------------------------------------- */
 
 		/* -------------------------------------------------------------- */
-		map = Level1();
+		map = Level2();
 
 		function draw() {
 			ctx.clearRect(0, 0, width, height);
