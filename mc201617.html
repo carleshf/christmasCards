@@ -13,41 +13,139 @@
 	<script>
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
+		
+		/* -------------------------------------------------------------- */
+		var width = 480;
+		var height = 320;
+		var floorHeight = 10;
 
 		/* -------------------------------------------------------------- */
-		var floorHeight = 10;
-		/* -------------------------------------------------------------- */
-		
-		class GameComponent {
-			constructor(x, y) {
-				this.x = x; this.y = y; 
+		class Floor {
+			constructor(x, y, w, name="floor", color="#C0C0C0") {
+				this.x = x; this.y = y; this.w = w; this.h = floorHeight;
+				this.name = name; this.color = color;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ') width (w: ' + this.w + ', h:' + this.h + ').');
+			}
+
+			draw() {
+				ctx.beginPath();
+				ctx.rect(this.x, this.y - this.h, this.w, this.h);
+				ctx.fillStyle = this.color;
+				ctx.fill();
+				ctx.closePath();
 			}
 		}
 
-		class Floor extends GameComponent {
-			setW(w) {
-				this.w = w;
-				this.h = floorHeight;
+		class Exit {
+			constructor(x, y, visible=false, name="exit", color="#6B8E23") {
+				this.x = x; this.y = y; this.h = 30;
+				this.name = name; this.color = color; this.visible = visible;
+				this.direction = "stop"; this.speed = 0;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
 			}
 
-			draw(ctx) {
-				console.log('floor at (x:' + this.x + ', y:' + this.y + ') width (w: ' + this.w + ', h:' + this.h + ').');
+			draw() {
+				if(this.visible) {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y - this.h, 10, Math.PI, 0);
+					ctx.rect(this.x - 10, this.y - this.h, 20, 25);
+					ctx.fillStyle = this.color;
+					ctx.fill();
+					ctx.closePath();
+				}
+			}
+		}
+
+		class Hat {
+			constructor(x, y, visible=true, name="hat", color="#FF6347") {
+				this.x = x; this.y = y; this.h = 6;
+				this.name = name; this.color = color; this.visible = visible;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
+			}
+
+			draw() {
+				if(this.visible) {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y - this.h, 4, Math.PI, 0);
+					ctx.rect(this.x - 8, this.y - this.h, 16, 2);
+					ctx.fillStyle = this.color;
+					ctx.fill();
+					ctx.closePath();
+				}
+			}
+		}
+
+		class Snowman {
+			constructor(x, y, name="snowman", color="#0095DD") {
+				this.x = x; this.y = y; this.h = 20;
+				this.name = name; this.color = color;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
+			}
+
+			draw() {
 				ctx.beginPath();
-				ctx.rect(this.x, this.y, this.w, this.h);
-				ctx.fillStyle = "#0095DD";
+				ctx.arc(this.x, this.y - this.h, 4, 0, Math.PI*2);
+				ctx.arc(this.x, this.y - this.h + 8, 7, 0, Math.PI*2);
+				ctx.fillStyle = this.color;
+				ctx.fill();
+				ctx.closePath();
+			}
+		}
+
+		class RCorner {
+			constructor(x, y, name="rcorner", color="#FFA500") {
+				this.x = x; this.y = y; this.h = 8; this.w = 4;
+				this.name = name; this.color = color;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
+			}
+
+			draw() {
+				ctx.beginPath();
+				ctx.moveTo(this.x,this.y - this.h);
+				ctx.lineTo(this.x, this.y);
+				ctx.lineTo(this.x + this.w, this.y - (this.h / 2));
+				ctx.lineTo(this.x, this.y - this.h);
+				ctx.fillStyle = this.color;
+				ctx.fill();
+				ctx.closePath();
+			}
+		}
+
+		class LCorner {
+			constructor(x, y, name="lcorner", color="#FFA500") {
+				this.x = x; this.y = y; this.h = 8; this.w = 4;
+				this.name = name; this.color = color;
+				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
+			}
+
+			draw() {
+				ctx.beginPath();
+				ctx.moveTo(this.x,this.y - this.h);
+				ctx.lineTo(this.x, this.y);
+				ctx.lineTo(this.x - this.w, this.y - (this.h / 2));
+				ctx.lineTo(this.x, this.y - this.h);
+				ctx.fillStyle = this.color;
 				ctx.fill();
 				ctx.closePath();
 			}
 		}
 
 		/* -------------------------------------------------------------- */
+		var gameElements = [];
+		gameElements.push(new Floor(10, 320, width - 20));
+		gameElements.push(new Exit(75, 315, visible=true));
+		gameElements.push(new Hat(325, 315, visible=true));
+		gameElements.push(new Snowman(200, 315));
+		gameElements.push(new RCorner(10, 315));
+		gameElements.push(new LCorner(470, 315));
 
-		var flr = new Floor(5, 5);
-		flr.setW(75);
 		/* -------------------------------------------------------------- */
-
 		function draw() {
-			flr.draw(ctx);
+			//console.log('Drawing Game Elements (' + gameElements.length + ").");
+			for (var ii = 0; ii < gameElements.length; ii++) {
+    			gameElements[ii].draw();
+    			//console.log('\t > Drawing > ' + gameElements[ii].name);
+			}
 		}
 
 		setInterval(draw, 15);
