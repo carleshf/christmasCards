@@ -54,9 +54,10 @@
 
 			draw() {
 				if(this.visible) {
+					var yS = this.y - 25;
 					ctx.beginPath();
-					ctx.arc(this.x, this.y - this.h, (this.w / 2), Math.PI, 0);
-					ctx.rect(this.x - (this.w / 2), (this.y - this.h), this.w, 25);
+					ctx.arc(this.x + this.w / 2, yS, (this.w / 2), Math.PI, 0);
+					ctx.rect(this.x, yS, this.w, 25);
 					ctx.fillStyle = this.color;
 					ctx.fill();
 					ctx.closePath();
@@ -75,16 +76,17 @@
 
 		class Hat {
 			constructor(x, y, visible=true, name="hat", color="#FF6347") {
-				this.x = x; this.y = y; this.h = 6;
+				this.x = x; this.y = y; this.h = 6; this.w = 16;
 				this.name = name; this.color = color; this.visible = visible;
 				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
 			}
 
 			draw() {
 				if(this.visible) {
+					var yb = this.y - 2;
 					ctx.beginPath();
-					ctx.arc(this.x, this.y - this.h, 4, Math.PI, 0);
-					ctx.rect(this.x - 8, this.y - this.h, 16, 2);
+					ctx.arc(this.x + 8, yb, 4, Math.PI, 0);
+					ctx.rect(this.x, yb, 16, 2);
 					ctx.fillStyle = this.color;
 					ctx.fill();
 					ctx.closePath();
@@ -92,9 +94,10 @@
 			}
 
 			collide(sm, ex) {
-				if(sm.y == this.y) { // same h level
-					console.log(sm.name + " is in the same h level than " + this.name + ".")
+				if(sm.y == this.y) { // y-axis
+					// console.log(sm.name + " is in the same h level than " + this.name + ".")
 					if(sm.x + (sm.w / 2) >= this.x) {
+						console.log(sm.name + "got the " + this.name + ".")
 						this.visible=false;
 						sm.hasHat();
 						ex.visible=true;
@@ -114,16 +117,21 @@
 			}
 
 			draw() {
+				var x = this.x + this.w / 2;
+				var yB = this.y - 7;
+				var yS = this.y - 14;
 				ctx.beginPath();
-				ctx.arc(this.x, this.y - this.h, 4, 0, Math.PI*2);
-				ctx.arc(this.x, this.y - this.h + 8, 7, 0, Math.PI*2);
+				ctx.arc(x, yS, 4, 0, Math.PI*2);
+				ctx.arc(x, yB, 7, 0, Math.PI*2);
 				ctx.fillStyle = this.color;
 				ctx.fill();
 				ctx.closePath();
+				
 				if(this.hat) {
+					var yH = this.y - 18;
 					ctx.beginPath();
-					ctx.arc(this.x, this.y - this.h - 4, 4, Math.PI, 0);
-					ctx.rect(this.x - 8, this.y - this.h - 4, 16, 2);
+					ctx.arc(x, yH, 4, Math.PI, 0);
+					ctx.rect(x - 8, yH, 16, 2);
 					ctx.fillStyle = this.hatColor;
 					ctx.fill();
 					ctx.closePath();
@@ -179,46 +187,54 @@
 			}
 
 			draw() {
+				var y = this.y - this.h;
 				ctx.beginPath();
-				ctx.moveTo(this.x,this.y - this.h);
-				ctx.lineTo(this.x, this.y);
-				ctx.lineTo(this.x + this.w, this.y - (this.h / 2));
-				ctx.lineTo(this.x, this.y - this.h);
+				ctx.moveTo(this.x, y);
+				ctx.lineTo(this.x, y + this.h);
+				ctx.lineTo(this.x + this.w, y + (this.h / 2));
+				ctx.lineTo(this.x, y);
 				ctx.fillStyle = this.color;
 				ctx.fill();
 				ctx.closePath();
 			}
 
 			collide(sm) {
-				if(sm.x - (sm.w / 2) <= this.x + this.w) { // x-axis
-					console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
-				 	sm.toggleMovement();
+				if(sm.y == this.y) { // y-axis
+					// console.log(sm.name + " is in the same h level than " + this.name + ".")
+					if(sm.x <= this.x + this.w) { // x-axis
+						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
+						sm.toggleMovement();
+					}
 				}
 			}
 		}
 
 		class LCorner {
 			constructor(x, y, name="lcorner", color="#FFA500") {
-				this.x = x; this.y = y; this.h = 8; this.w = 4;
+				this.x = x; this.y = y; this.h = 10; this.w = 4;
 				this.name = name; this.color = color;
 				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
 			}
 
 			draw() {
+				var y = this.y - this.h;
 				ctx.beginPath();
-				ctx.moveTo(this.x,this.y - this.h);
-				ctx.lineTo(this.x, this.y);
-				ctx.lineTo(this.x - this.w, this.y - (this.h / 2));
-				ctx.lineTo(this.x, this.y - this.h);
+				ctx.moveTo(this.x, y);
+				ctx.lineTo(this.x, y + this.h);
+				ctx.lineTo(this.x - this.w, y + (this.h / 2));
+				ctx.lineTo(this.x, y);
 				ctx.fillStyle = this.color;
 				ctx.fill();
 				ctx.closePath();
 			}
 
 			collide(sm) {
-				if((sm.x + (sm.w / 2) >= this.x - this.w)) { // x-axis
-					console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
-					sm.toggleMovement();
+				if(sm.y == this.y) { // y-axis
+					// console.log(sm.name + " is in the same h level than " + this.name + ".")
+					if(sm.x + sm.w >= this.x) { // x-axis
+						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
+						sm.toggleMovement();
+					}
 				}
 			}
 		}
@@ -231,13 +247,13 @@
 
 			draw() {
 				if(this.size == "small") {
-					ctx.font = "11px serif";
+					ctx.font = "11px sans-serif";
 				}
 				if(this.size == "normal") {
-					ctx.font = "16px serif";
+					ctx.font = "16px sans-serif";
 				}
 				if(this.size == "large") {
-					ctx.font = "48px serif";
+					ctx.font = "48px sans-serif";
 				}
 				ctx.fillText(this.text, this.x, this.y);
 			}
@@ -279,20 +295,36 @@
 		/* -------------------------------------------------------------- */
 		function Level1() {
 			var map = new GameSet();
-			map.snowman = new Snowman(200, 315);
-			map.exit = new Exit(75, 315, visible=false);
-			map.hat = new Hat(325, 315, visible=true);
+			map.snowman = new Snowman(200, 310);
+			map.exit = new Exit(75, 310, visible=false);
+			map.hat = new Hat(325, 310, visible=true);
 			map.floors.push(new Floor(10, 320, width - 20));
-			map.corners.push(new RCorner(10, 315));
-			map.corners.push(new LCorner(470, 315));
+			map.corners.push(new RCorner(10, 310));
+			map.corners.push(new LCorner(470, 310));
 			map.texts.push(new Text(10, 15, "normal", "Mr. Snowman has lost his orange hat."));
 			map.texts.push(new Text(10, 30, "normal", "Can you help him to find it? Use the "));
 			map.texts.push(new Text(10, 45, "normal", "arrow keys to indicate to Mr. Snowman"));
 			map.texts.push(new Text(10, 60, "normal", "where to find the hat."));
 			return map;
 		}
-
 		function Level2() {
+			var map = new GameSet();
+			map.snowman = new Snowman(200, 310);
+
+			map.floors.push(new Floor(10, 320, width - 20));
+			map.floors.push(new Floor(100, 310, 100));
+			map.floors.push(new Floor(150, 300, 50));
+
+			map.corners.push(new LCorner(width - 10, 310, name="lcorner-1"));
+			map.corners.push(new LCorner(200, 290, name="lcorner-3"));
+			map.corners.push(new RCorner(10, 310));
+
+			map.exit = new Exit(375, 310, visible=true);
+			map.hat = new Hat(160, 290, visible=true);
+			return map;
+		}
+
+		function Level3() {
 			var map = new GameSet();
 			map.snowman = new Snowman(300, 315);
 			map.exit = new Exit(375, 315, visible=true);
@@ -303,13 +335,13 @@
 			map.corners.push(new RCorner(10, 315));
 			map.corners.push(new LCorner(470, 315));
 			map.texts.push(new Text(10, 30, "normal", "By pressing the key 'space' you can"));
-			map.texts.push(new Text(10, 30, "normal", "make Mr. Snowman to jump!"));
+			map.texts.push(new Text(10, 45, "normal", "make Mr. Snowman to jump!"));
 			return map;
 		}
 		/* -------------------------------------------------------------- */
 
 		/* -------------------------------------------------------------- */
-		map = Level2();
+		map = Level1();
 
 		function draw() {
 			ctx.clearRect(0, 0, width, height);
