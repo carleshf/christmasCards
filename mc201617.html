@@ -94,7 +94,7 @@
 			}
 
 			collide(sm, ex) {
-				if(sm.y == this.y) { // y-axis
+				/*if(sm.y == this.y) { // y-axis
 					// console.log(sm.name + " is in the same h level than " + this.name + ".")
 					if(sm.x + (sm.w / 2) >= this.x) {
 						console.log(sm.name + "got the " + this.name + ".")
@@ -102,7 +102,7 @@
 						sm.hasHat();
 						ex.visible=true;
 					}
-				}
+				}*/
 			}
 		}
 
@@ -167,10 +167,21 @@
 				}
 				if(this.direction == "jump" && this.cnt >= 10) {
 					this.direction = "fall";
+					this.cnt = 0;
 				}
-				if(this.direction == "fall" && this.cnt > 0) {
-					this.cnt -= 1;
-					this.y += this.strenght;
+				if(this.direction == "fall") {
+					var dec = true;
+					for(var ii = 0; ii < floorObjects.length; ii++) {
+						if(floorObjects[ii].y - floorHeight == this.y) { // same y-axis
+							console.log(this.name + " is in the same h level than " + floorObjects[ii].name + ".")
+							if(floorObjects[ii].x <= this.x && (floorObjects[ii].x + floorObjects[ii].w) >= this.x + this.w) { // in the x-axis floor
+								dec = false;
+							}
+						}
+					}
+					if(dec) {
+						this.y += this.strenght;
+					}
 				}
 			}
 
@@ -287,7 +298,7 @@
 				}
 				this.snowman.draw();
 				this.snowman.move();
-				this.snowman.fall();
+				this.snowman.fall(this.floors);
 			}
 
 		}
@@ -309,14 +320,14 @@
 		}
 		function Level2() {
 			var map = new GameSet();
-			map.snowman = new Snowman(200, 310);
+			map.snowman = new Snowman(230, 310);
 
-			map.floors.push(new Floor(10, 320, width - 20));
-			map.floors.push(new Floor(100, 310, 100));
-			map.floors.push(new Floor(150, 300, 50));
+			map.floors.push(new Floor(10, 320, width - 20, name="floor-1"));
+			map.floors.push(new Floor(100, 310, 150, name="floor-2"));
+			map.floors.push(new Floor(150, 300, 50, anme="floor-3"));
 
 			map.corners.push(new LCorner(width - 10, 310, name="lcorner-1"));
-			map.corners.push(new LCorner(200, 290, name="lcorner-3"));
+			//map.corners.push(new LCorner(200, 290, name="lcorner-3"));
 			map.corners.push(new RCorner(10, 310));
 
 			map.exit = new Exit(375, 310, visible=true);
@@ -341,7 +352,7 @@
 		/* -------------------------------------------------------------- */
 
 		/* -------------------------------------------------------------- */
-		map = Level1();
+		map = Level2();
 
 		function draw() {
 			ctx.clearRect(0, 0, width, height);
