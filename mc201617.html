@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>A Snowman Christmas Story</title>
+    <title>A Snowman Christmas Tale</title>
     <style>
 		* { padding: 0; margin: 0; }
 		canvas { background: #eee; display: block; margin: 0 auto; }
@@ -419,7 +419,7 @@
             var map = new GameSet(jump=false);
             map.texts.push(new Text(210, 50, "small", "Welcome to", color="#8B0000"));
             map.texts.push(new Text(140, 70, "normal", "A Snowman Christmas Tale", color="#006400"));
-            map.texts.push(new Text(165, 90, "small", "Press 'space' to start the game", color="#8B0000"));
+            map.texts.push(new Text(160, 90, "small", "Press 'spacebar' to start the game", color="#8B0000"));
 
             map.floors.push(new Floor(165, 200, 150));
             map.corners.push(new RCorner(165, 190));
@@ -431,11 +431,19 @@
             map.exit = new Exit(10, 300, visible=false);
             map.hat = new Hat(10, 300, visible=false);
 
-            return(map);
+            return map;
         }
 
         function create_ending() {
+            var map = new GameSet(jump=false);
 
+            map.texts.push(new Text(135, 100, "normal", "Mr. Snowman and I wish you", color="#006400"));
+            map.texts.push(new Text(145, 120, "normal", "a merry Christmas and", color="#8B0000"));
+            map.texts.push(new Text(160, 140, "normal", "a happy New Year", color="#006400"));
+            map.texts.push(new Text(280, 185, "normal", "~ Carles", color="#000"));
+            map.texts.push(new Text(150, 300, "small", "Press 'F5' to start the game again", color="#AAA"));
+
+            return map;
         }
 
 		/* -------------------------------------------------------------- */
@@ -491,11 +499,12 @@
                                 map = Level5();
                                 break;
                             default:
-                            gameStatus = "end";
+                                gameStatus = "end";
                         }
                     }
                     break;
                 case "end":
+                    ending.draw();
                     break;
                 default:
             }
