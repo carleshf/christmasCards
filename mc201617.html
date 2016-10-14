@@ -67,8 +67,9 @@
 			collide(sm) {
 				if(this.y == sm.y) {
 					if(sm.x > this.x && sm.x + sm.w < this.x + this.w && sm.hat) {
-						console.log(sm.name + " is in the same h level than " + this.name + " and has the hat.");
+						console.log(sm.name + " has the cat and got the " + this.name + ".");
 						sm.movement = "stop";
+                        map.win = "true"
 					}
 				}
 			}
@@ -95,9 +96,8 @@
 
 			collide(sm, ex) {
 				if(sm.y == this.y) { // y-axis
-					// console.log(sm.name + " is in the same h level than " + this.name + ".")
 					if(sm.x + (sm.w / 2) >= this.x) {
-						console.log(sm.name + "got the " + this.name + ".")
+						console.log(sm.name + " got the " + this.name + ".")
 						this.visible=false;
 						sm.hasHat();
 						ex.visible=true;
@@ -107,10 +107,10 @@
 		}
 
 		class Snowman {
-			constructor(x, y, speed=2, strenght=2, name="snowman", color="#0095DD", hatColor="#FF6347") {
+			constructor(x, y, speed=2, strenght=2, name="snowman", color="#0095DD", hatColor="#FF6347", movement="stop") {
 				this.x = x; this.y = y; this.h = 20; this.w = 14;
 				this.name = name; this.color = color; this.hat=false;
-				this.movement = "stop"; this.speed = speed; this.strenght = strenght;
+				this.movement = movement; this.speed = speed; this.strenght = strenght;
 				this.hatColor = hatColor;
 				this.direction = "fall"; this.cnt = 0;
 				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
@@ -140,7 +140,6 @@
 
 			toggleMovement(mov) {
 				console.log(this.name + " toggled direction.")
-				// this.movement = ((this.movement == "right") ? "left" : "right");
 				if(this.movement != "stop") {
 					this.movement = mov;
 				}
@@ -159,8 +158,10 @@
 				}
 			}
 
-			jump() {
-				this.direction = "jump"
+			jump(allowed) {
+                if(allowed) {
+				    this.direction = "jump"
+                }
 			}
 
 			fall(floorObjects) {
@@ -221,7 +222,6 @@
 
 			collide(sm) {
 				if(sm.y == this.y) { // y-axis
-					// console.log(sm.name + " is in the same h level than " + this.name + ".")
 					if(sm.x <= this.x + this.w) { // x-axis
 						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
 						sm.toggleMovement("right");
@@ -251,7 +251,6 @@
 
 			collide(sm) {
 				if(sm.y == this.y) { // y-axis
-					// console.log(sm.name + " is in the same h level than " + this.name + ".")
 					if(sm.x + sm.w >= this.x) { // x-axis
 						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
 						sm.toggleMovement("left");
@@ -261,8 +260,9 @@
 		}
 
 		class Text {
-			constructor(x, y, size, text) {
+			constructor(x, y, size, text, color="#FFA500") {
 				this.x = x; this.y = y; this.size = size; this.text = text;
+                this.color = color;
 				console.log('text at (x:' + this.x + ', y:' + this.y + ').');
 			}
 
@@ -276,6 +276,7 @@
 				if(this.size == "large") {
 					ctx.font = "48px sans-serif";
 				}
+                ctx.fillStyle = this.color;
 				ctx.fillText(this.text, this.x, this.y);
 			}
 
@@ -283,7 +284,7 @@
 		}
 
 		class GameSet {
-			constructor() {
+			constructor(jump=true) {
 				this.snowman = null;
 				this.exit = null;
 				this.hat = null;
@@ -291,6 +292,7 @@
 				this.corners = [];
 				this.texts = [];
 				this.win = false;
+                this.jump = jump;
 			}
 
 			hasWin() {
@@ -298,6 +300,7 @@
 			}
 
 			draw() {
+                ctx.clearRect(0, 0, width, height);
 				var gameElements = this.floors.concat(this.corners).concat(this.texts);
 				gameElements.push(this.hat); gameElements.push(this.exit);
 				gameElements.forEach(function(item, idx) {
@@ -315,7 +318,7 @@
 
 		/* -------------------------------------------------------------- */
 		function Level1() {
-			var map = new GameSet();
+			var map = new GameSet(jump=false);
 			map.snowman = new Snowman(200, 310);
 			map.exit = new Exit(75, 310, visible=false);
 			map.hat = new Hat(325, 310, visible=true);
@@ -324,10 +327,12 @@
 			map.corners.push(new LCorner(470, 310));
 			map.texts.push(new Text(10, 15, "normal", "Mr. Snowman has lost his orange hat."));
 			map.texts.push(new Text(10, 30, "normal", "Can you help him to find it? Use the "));
-			map.texts.push(new Text(10, 45, "normal", "arrow keys to indicate to Mr. Snowman"));
+			map.texts.push(new Text(10, 45, "normal", "arrow keys to indicate Mr. Snowman"));
 			map.texts.push(new Text(10, 60, "normal", "where to find the hat."));
+            map.texts.push(new Text(420, 20, "small", "Stage 1/5", color="#000"));
 			return map;
 		}
+
 		function Level2() {
 			var map = new GameSet();
 			map.snowman = new Snowman(280, 310);
@@ -342,30 +347,107 @@
 			map.hat = new Hat(160, 290, visible=true);
 			map.texts.push(new Text(10, 30, "normal", "By pressing the key 'space' you can"));
 			map.texts.push(new Text(10, 45, "normal", "make Mr. Snowman to jump!"));
+            map.texts.push(new Text(420, 20, "small", "Stage 2/5", color="#000"));
 			return map;
 		}
 
 		function Level3() {
 			var map = new GameSet();
 			map.floors.push(new Floor(10, 320, width - 20));
-			map.floors.push(new Floor(100, 280, 100));
-			map.floors.push(new Floor(150, 300, 100));
-			
-			map.snowman = new Snowman(300, 315);
-			map.exit = new Exit(375, 315, visible=true);
-			map.hat = new Hat(160, 300, visible=true);
-			
-			map.corners.push(new RCorner(10, 315));
-			map.corners.push(new LCorner(470, 315));
+		    map.floors.push(new Floor(100, 280, 100));
+			map.floors.push(new Floor(100, 300, 50));
+            map.floors.push(new Floor(300, 280, 100))
+            map.floors.push(new Floor(350, 300, 50));
+			map.snowman = new Snowman(240, 310);
+			map.exit = new Exit(304, 270, visible=false);
+			map.hat = new Hat(180, 270, visible=true);
+			map.corners.push(new RCorner(10, 310));
+			map.corners.push(new LCorner(470, 310));
+            map.texts.push(new Text(420, 20, "small", "Stage 3/5", color="#000"));
 			return map;
 		}
-		/* -------------------------------------------------------------- */
+
+        function Level4() {
+            var map = new GameSet();
+            map.floors.push(new Floor(10, 320, width - 20));
+            map.corners.push(new RCorner(10, 310));
+            map.corners.push(new LCorner(470, 310));
+            for(var ii = 0; ii < 10; ii++) {
+                y = 320 - (ii * 10);
+                w = 150 - (ii * 15);
+                if(ii % 2 == 0) {
+                    map.floors.push(new Floor(10, y, w));
+                    map.corners.push(new RCorner(10, y - 10));
+                    map.floors.push(new Floor(470 - w, y, w));
+                    map.corners.push(new LCorner(470, y - 10));
+                }
+            }
+            map.snowman = new Snowman(20, 230);
+            map.exit = new Exit(105, 290, visible=false);
+            map.hat = new Hat(420, 250, visible=true);
+            map.texts.push(new Text(420, 20, "small", "Stage 4/5", color="#000"));
+            return map;
+        }
+
+        function Level5() {
+            var map = new GameSet();
+            map.floors.push(new Floor(10, 320, width - 20));
+            map.corners.push(new RCorner(10, 310));
+            map.corners.push(new LCorner(470, 310));
+            for(var ii = 0; ii < 10; ii++) {
+                y = 320 - (ii * 10);
+                w = 150 - (ii * 15);
+                if(ii % 2 == 0) {
+                    map.floors.push(new Floor(10 + 200 - w, y, w));
+                    map.floors.push(new Floor(470 - 200, y, w));
+                }
+            }
+            map.corners.push(new RCorner(180, 230));
+            map.corners.push(new LCorner(300, 230));
+            map.floors.push(new Floor(225, 230, 30));
+            map.floors.push(new Floor(225, 250, 30));
+            map.floors.push(new Floor(225, 290, 30));
+            map.snowman = new Snowman(20, 310);
+            map.exit = new Exit(230, 280, visible=false);
+            map.hat = new Hat(232, 220, visible=true);
+            map.texts.push(new Text(420, 20, "small", "Stage 5/5", color="#000"));
+            return map;
+        }
+
+        /* -------------------------------------------------------------- */
+        function create_starring() {
+            var map = new GameSet(jump=false);
+            map.texts.push(new Text(210, 50, "small", "Welcome to", color="#8B0000"));
+            map.texts.push(new Text(140, 70, "normal", "A Snowman Christmas Tale", color="#006400"));
+            map.texts.push(new Text(165, 90, "small", "Press 'space' to start the game", color="#8B0000"));
+
+            map.floors.push(new Floor(165, 200, 150));
+            map.corners.push(new RCorner(165, 190));
+            map.corners.push(new LCorner(315, 190));
+
+            map.snowman = new Snowman(185, 190, speed=1, strenght=0, 
+                name="snowman", color="#0095DD", hatColor="#FF6347", 
+                movement="right");
+            map.exit = new Exit(10, 300, visible=false);
+            map.hat = new Hat(10, 300, visible=false);
+
+            return(map);
+        }
+
+        function create_ending() {
+
+        }
 
 		/* -------------------------------------------------------------- */
-		map = Level3();
+        var gameStatus = "staring";
+        var gameLevel = 1;
+        var starring = create_starring();
+        var ending = create_ending();
+        map = Level1();
 
+		/* -------------------------------------------------------------- */
 		function draw() {
-			ctx.clearRect(0, 0, width, height);
+			//ctx.clearRect(0, 0, width, height);
 			if(rightPressed) {
 				map.snowman.start("right");
 			}
@@ -373,16 +455,51 @@
 				map.snowman.start("left");
 			}
 			if(upPressed) {
-				map.snowman.jump();
+				map.snowman.jump(map.jump);
 				upPressed = false;
 			}
-
 			map.draw();
-
-			if(map.hasWin()) {
-
-			}
+            return(map.hasWin());
 		}
+
+        function game() {
+            var victory = false;
+
+            switch(gameStatus) {
+                case "staring":
+                    starring.draw();
+                    if(upPressed) {
+                        gameStatus = "play";
+                    }
+                    break;
+                case "play":
+                    victory = draw();
+                    console.log("victory? " + victory);
+                    if(victory) {
+                        gameLevel += 1;
+                        switch(gameLevel) {
+                            case 2:
+                                map = Level2();
+                                break;
+                            case 3:
+                                map = Level3();
+                                break;
+                            case 4:
+                                map = Level4();
+                                break;
+                            case 5:
+                                map = Level5();
+                                break;
+                            default:
+                            gameStatus = "end";
+                        }
+                    }
+                    break;
+                case "end":
+                    break;
+                default:
+            }
+        }
 
 		/* -------------------------------------------------------------- */
 		function keyDownHandler(e) {
@@ -408,7 +525,7 @@
 			}
 		}
 
-		setInterval(draw, 15);
+		setInterval(game, 15);
 	</script>
 </body>
 </html>
