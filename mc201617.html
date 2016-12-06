@@ -112,7 +112,7 @@
 				this.ox = x; this.oy = y;
 				this.name = name; this.color = color; this.hat=false;
 				this.movement = movement; this.speed = speed; this.strenght = strenght;
-				this.hatColor = hatColor;
+				this.hatColor = hatColor; this.key = false;
 				this.direction = "fall"; this.cnt = 0;
 				console.log(this.name + ' at (x:' + this.x + ', y:' + this.y + ').');
 			}
@@ -160,12 +160,17 @@
 			}
 
 			jump(allowed) {
-                if(allowed) {
+                if(allowed & !this.key) {
 				    this.direction = "jump"
                 }
+
+				if(!this.key) {
+					this.key = true;
+				}
 			}
 
 			fall(floorObjects) {
+
 				if(this.direction == "jump" && this.cnt < 10) {
 					this.cnt += 1;
 					this.y -= this.strenght;
@@ -180,6 +185,7 @@
 						if(floorObjects[ii].y - floorHeight == this.y) { // same y-axis
 							if(floorObjects[ii].x <= (this.x + this.w / 2) && (floorObjects[ii].x + floorObjects[ii].w) >= this.x + 0.5 * this.w) { // in the x-axis floor
 								dec = false;
+								this.key = false;
 							} else {
 
 								if(floorObjects[ii].x <= (this.x + this.w / 2)) {
@@ -458,10 +464,10 @@
 
 		/* -------------------------------------------------------------- */
         var gameStatus = "staring";
-        var gameLevel = 1;
+        var gameLevel = 3;
         var starring = create_starring();
         var ending = create_ending();
-        map = Level1();
+        map = Level3();
 
 		/* -------------------------------------------------------------- */
 		function draw() {
