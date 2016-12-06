@@ -96,7 +96,7 @@
 
 			collide(sm, ex) {
 				if(sm.y == this.y) { // y-axis
-					if(sm.x + (sm.w / 2) >= this.x) {
+					if(sm.x + (sm.w / 2) >= this.x & sm.x - (sm.w / 2) <= this.x) {
 						console.log(sm.name + " got the " + this.name + ".")
 						this.visible=false;
 						sm.hasHat();
@@ -109,6 +109,7 @@
 		class Snowman {
 			constructor(x, y, speed=2, strenght=2, name="snowman", color="#0095DD", hatColor="#FF6347", movement="stop") {
 				this.x = x; this.y = y; this.h = 20; this.w = 14;
+				this.ox = x; this.oy = y;
 				this.name = name; this.color = color; this.hat=false;
 				this.movement = movement; this.speed = speed; this.strenght = strenght;
 				this.hatColor = hatColor;
@@ -194,10 +195,19 @@
 						this.y += this.strenght;
 					}
 				}
+
+				if(this.x < 0 | this.x > width | this.y < 0) {
+					this.replace();
+				}
 			}
 
 			hasHat() {
 				this.hat=true;
+			}
+
+			replace() {
+				this.x = this.ox; this.y = this.oy;
+				this.movement = "stop";
 			}
 		}
 
