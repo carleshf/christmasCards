@@ -238,7 +238,7 @@
 
 			collide(sm) {
 				if(sm.y == this.y) { // y-axis
-					if(sm.x <= this.x + this.w) { // x-axis
+					if(sm.x <= this.x + this.w & sm.x > this.x) { // x-axis
 						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
 						sm.toggleMovement("right");
 					}
@@ -267,7 +267,7 @@
 
 			collide(sm) {
 				if(sm.y == this.y) { // y-axis
-					if(sm.x + sm.w >= this.x) { // x-axis
+					if(sm.x + sm.w >= this.x & sm.x <= this.x) { // x-axis
 						console.log(this.name + " ping at (x:" + (this.x - this.w) + ", y:" + (this.y / 2) + ").");
 						sm.toggleMovement("left");
 					}
@@ -551,10 +551,10 @@
 
 		/* -------------------------------------------------------------- */
         var gameStatus = "staring";
-        var gameLevel = 7;
+        var gameLevel = 1;
         var starring = create_starring();
         var ending = create_ending();
-        map = Level7();
+        map = Level1();
 
 		/* -------------------------------------------------------------- */
 		function draw() {
