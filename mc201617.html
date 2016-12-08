@@ -476,6 +476,47 @@
 			return map;
 		}
 
+        function Level7() {
+            var map = new GameSet();
+
+            for(var ii = 0; ii < 12; ii = ii + 2) {
+                y = 100 + ii * 10;
+                map.floors.push(new Floor(70, y, 50));
+                map.floors.push(new Floor(25, y + 10, 50));
+
+                map.corners.push(new LCorner(120, y - 10));
+                map.corners.push(new RCorner(25, y));
+            }
+            map.floors.push(new Floor(70, 220, 50));
+
+            for(var ii = 0; ii < 12; ii = ii + 2) {
+                y = 100 + ii * 10;
+                map.floors.push(new Floor(width - 70 - 50, y, 50));
+                map.floors.push(new Floor(width - 25 - 50, y + 10, 50));
+
+                map.corners.push(new LCorner(width - 25, y));
+                map.corners.push(new RCorner(width - 120, y - 10));
+            }
+            map.floors.push(new Floor(width - 70 - 50, 220, 50));
+
+            for(var ii = 0; ii < 16; ii = ii + 2) {
+                y = 70 + ii * 10;
+                map.floors.push(new Floor(240, y, 50));
+                map.floors.push(new Floor(195, y + 10, 50));
+
+                map.corners.push(new LCorner(290, y - 10));
+                map.corners.push(new RCorner(195, y));
+            }
+
+            map.floors.push(new Floor(50, 230, width-100));
+
+            map.snowman = new Snowman(85, 90);
+            map.exit = new Exit(width - 100, 90, visible=false);
+            map.hat = new Hat(250, 60, visible=true);
+            map.texts.push(new Text(420, 20, "small", "Stage 7/7", color="#000"));
+            return map;
+        }
+
         /* -------------------------------------------------------------- */
         function create_starring() {
             var map = new GameSet(jump=false);
@@ -510,10 +551,10 @@
 
 		/* -------------------------------------------------------------- */
         var gameStatus = "staring";
-        var gameLevel = 1;
+        var gameLevel = 7;
         var starring = create_starring();
         var ending = create_ending();
-        map = Level1();
+        map = Level7();
 
 		/* -------------------------------------------------------------- */
 		function draw() {
@@ -562,6 +603,9 @@
                                 break;
 							case 6:
 								map = Level6();
+								break;
+							case 7:
+								map = Level7();
 								break;
                             default:
                                 gameStatus = "end";
