@@ -405,7 +405,53 @@
             return map;
         }
 
-        function Level5() {
+		function Level5() {
+			var map = new GameSet();
+			map.floors.push(new Floor(50, 50, 50));
+			map.floors.push(new Floor(110, 50, 50));
+			map.floors.push(new Floor(170, 50, 50));
+			map.floors.push(new Floor(220, 70, 50));
+
+			map.floors.push(new Floor(275, 60, 50));
+			//map.floors.push(new Floor(275, 85, 50));
+
+			map.floors.push(new Floor(80, 100, 120));
+			map.floors.push(new Floor(25, 120, 100));
+			map.floors.push(new Floor(110, 130, 50));
+			map.floors.push(new Floor(75, 140, 50));
+			map.floors.push(new Floor(110, 150, 50));
+			map.floors.push(new Floor(75, 160, 50));
+			map.floors.push(new Floor(110, 170, 50));
+			map.floors.push(new Floor(75, 180, 50));
+			map.floors.push(new Floor(110, 190, 50));
+			map.floors.push(new Floor(75, 200, 50));
+			map.floors.push(new Floor(110, 210, 50));
+
+			map.floors.push(new Floor(100, 240, 125));
+			map.floors.push(new Floor(250, 240, 125));
+			map.floors.push(new Floor(175, 290, 150));
+
+			map.snowman = new Snowman(55, 40);
+			map.exit = new Exit(305, 280, visible=false);
+			map.hat = new Hat(85, 90, visible=true);
+
+			map.corners.push(new LCorner(325, 50));
+			map.corners.push(new RCorner(25, 110));
+			map.corners.push(new LCorner(325, 50));
+			map.corners.push(new LCorner(160, 120));
+			map.corners.push(new RCorner(75, 130));
+			map.corners.push(new LCorner(160, 140));
+			map.corners.push(new RCorner(75, 150));
+			map.corners.push(new LCorner(160, 160));
+			map.corners.push(new RCorner(75, 170));
+			map.corners.push(new LCorner(160, 180));
+			map.corners.push(new RCorner(75, 190));
+
+			map.texts.push(new Text(420, 20, "small", "Stage 5/7", color="#000"));
+			return map;
+		}
+
+        function Level6() {
             var map = new GameSet();
             map.floors.push(new Floor(10, 320, width - 20));
             map.corners.push(new RCorner(10, 310));
@@ -426,55 +472,9 @@
             map.snowman = new Snowman(20, 310);
             map.exit = new Exit(230, 280, visible=false);
             map.hat = new Hat(232, 220, visible=true);
-            map.texts.push(new Text(420, 20, "small", "Stage 5/7", color="#000"));
+            map.texts.push(new Text(420, 20, "small", "Stage 6/7", color="#000"));
             return map;
         }
-
-		function Level6() {
-			var map = new GameSet();
-			map.floors.push(new Floor(50, 50, 50));
-			map.floors.push(new Floor(110, 50, 50));
-			map.floors.push(new Floor(170, 50, 50));
-			map.floors.push(new Floor(220, 70, 50));
-
-			map.floors.push(new Floor(275, 60, 50));
-            map.floors.push(new Floor(275, 85, 50));
-
-            map.floors.push(new Floor(80, 100, 120));
-            map.floors.push(new Floor(25, 120, 100));
-            map.floors.push(new Floor(110, 130, 50));
-            map.floors.push(new Floor(75, 140, 50));
-            map.floors.push(new Floor(110, 150, 50));
-            map.floors.push(new Floor(75, 160, 50));
-            map.floors.push(new Floor(110, 170, 50));
-            map.floors.push(new Floor(75, 180, 50));
-            map.floors.push(new Floor(110, 190, 50));
-            map.floors.push(new Floor(75, 200, 50));
-            map.floors.push(new Floor(110, 210, 50));
-
-            map.floors.push(new Floor(100, 240, 125));
-			map.floors.push(new Floor(250, 240, 125));
-			map.floors.push(new Floor(175, 290, 150));
-
-			map.snowman = new Snowman(55, 40);
-			map.exit = new Exit(305, 280, visible=false);
-			map.hat = new Hat(85, 90, visible=true);
-
-            map.corners.push(new LCorner(325, 50));
-            map.corners.push(new RCorner(25, 110));
-            map.corners.push(new LCorner(325, 50));
-            map.corners.push(new LCorner(160, 120));
-            map.corners.push(new RCorner(75, 130));
-            map.corners.push(new LCorner(160, 140));
-            map.corners.push(new RCorner(75, 150));
-            map.corners.push(new LCorner(160, 160));
-            map.corners.push(new RCorner(75, 170));
-            map.corners.push(new LCorner(160, 180));
-            map.corners.push(new RCorner(75, 190));
-
-			map.texts.push(new Text(420, 20, "small", "Stage 6/7", color="#000"));
-			return map;
-		}
 
         function Level7() {
             var map = new GameSet();
@@ -551,10 +551,10 @@
 
 		/* -------------------------------------------------------------- */
         var gameStatus = "staring";
-        var gameLevel = 1;
+        var gameLevel = 5;
         var starring = create_starring();
         var ending = create_ending();
-        map = Level1();
+        map = Level5();
 
 		/* -------------------------------------------------------------- */
 		function draw() {
