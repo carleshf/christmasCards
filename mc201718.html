@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>A Snowman Christmas Tale</title>
+    <style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+	<canvas id="myCanvas" width="800" height="600"></canvas>
+	<script>
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		/* -------------------------------------------------------------- */
+		var width = 800;
+		var height = 600;
+
+
+		/* -------------------------------------------------------------- */
+		class Brush {
+			constructor( x = 0, y = 0, color = "#FFE4E1" ) {
+				this.x = x; this.y = y; this.color = color;
+				console.log( "Created brush at (x: " + this.x + ", y: " + this.y + ")" );
+				this.ox = this.x; this.oy = y;
+				this.draw = true;
+			}
+
+			move( x, y ) {
+				this.ox = this.x; this.oy = this.y;
+				this.x = x; this.y = y;
+				if( this.draw ) {
+					ctx.beginPath();
+					ctx.lineTo(450, 50);
+					ctx.stroke();
+					console.log( "Brush is painting" );
+				} else {
+					ctx.moveTo( this.x, this.y );
+				}
+			}
+
+			set_draw( status = true ) {
+				this.draw = status;
+				if( this.draw ) {
+					console.log( "Brush is down" );
+				} else {
+					console.log( "Brush is up" );
+				}
+			}
+
+			set_color( color ) {
+				this.color = color;
+			}
+		}
+
+		class Canvas {
+			constructor( background = "#FFFFFF" ) {
+				this.color = background;
+				this.brush = new Brush();
+				this.orders = null;
+				this.idx = 0;
+				this.end = false;
+			}
+
+			set_color( color ) {
+				this.brush.set_color( color );
+			}
+
+			up() {
+				this.brush.set_draw( false );
+			}
+
+			down() {
+				this.brush.set_draw( true );
+			}
+
+			set_orders( orders ) {
+				this.orders = orders;
+			}
+
+			animate( ) {
+				console.log( "STATUS " + this.end + " (" + this.idx + ")" );
+				if( !this.end ) {
+					for ( var ii = 0; ii < this.idx; ii++ ) {
+						ins = this.instructions[ ii ];
+						switch(ins[ 0 ]) {
+							case "up":
+								this.up();
+								break;
+							case "down":
+								this.down();
+								break;
+							case "move":
+								this.brush.move( x = ins[ 1 ], ins[ 2 ] );
+								break;
+							case "stop":
+								console.log( "ANIMATION WAS STOPED" );
+								this.end = true;
+								break;
+							case "none":
+							default:
+						}
+					}
+					this.idx = this.idx + 1;
+				}
+			}
+		}
+
+		/* -------------------------------------------------------------- */
+
+
+		/* -------------------------------------------------------------- */
+		var instructions = [ [ "none" ], [ "up" ], [ "move", 50, 50 ], [ "down" ], [ "move", 100, 50 ], [ "move", 100, 100 ], [ "move", 50, 100 ], [ "move", 50, 50 ], [ "stop" ] ];
+		var gameStatus = "play";
+		var canvas = new Canvas();
+		canvas.set_orders( instructions );
+        
+
+		/* -------------------------------------------------------------- */
+		/*function draw() {
+			//ctx.clearRect(0, 0, width, height);
+			if(rightPressed) {
+				map.snowman.start("right");
+			}
+			if(leftPressed) {
+				map.snowman.start("left");
+			}
+			if(upPressed) {
+				map.snowman.jump(map.jump);
+				upPressed = false;
+			}
+			map.draw();
+            return(map.hasWin());
+		}
+
+        function game() {
+            var end = false;
+
+                if (gameStatus == "play" ) {
+                    end = draw();
+                    console.log("end? " + end);
+                    if(victory) {
+						gameStatus = "end";
+                    }
+                }
+                
+        }*/
+
+		/* -------------------------------------------------------------- */
+		/*function keyDownHandler(e) {
+			if(e.keyCode == 39) {
+				console.log("right arrow key was pressed.");
+				rightPressed = true;
+			} else if(e.keyCode == 37) {
+				console.log("left arrow key was pressed.");
+				leftPressed = true;
+			} else if(e.keyCode == 32) {
+				console.log("space key was pressed.");
+				upPressed = true;
+			}
+		}
+
+		function keyUpHandler(e) {
+			if(e.keyCode == 39) {
+				rightPressed = false;
+			} else if(e.keyCode == 37) {
+				leftPressed = false;
+			} else if(e.keyCode == 32) {
+				upPressed = false;
+			}
+		}*/
+
+		setInterval( canvas.animate, 15 );
+	</script>
+</body>
+</html>
+
