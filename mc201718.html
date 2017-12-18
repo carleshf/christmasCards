@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>A Snowman Christmas Tale</title>
+    <title>Cross-stitch Christmas</title>
     <style>
 		* { padding: 0; margin: 0; }
 		canvas { background: #eee; display: block; margin: 0 auto; }
@@ -11,169 +11,178 @@
 <body>
 	<canvas id="myCanvas" width="800" height="600"></canvas>
 	<script>
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
+		var canvas = document.getElementById( "myCanvas" );
+		var ctx = canvas.getContext( "2d" );
 		
-		/* -------------------------------------------------------------- */
-		var width = 800;
-		var height = 600;
+		/* ----------------------------------------------------------------- */
+		/* DRAWINGS                                                          */
+		/* ----------------------------------------------------------------- */
+
+		var rudolph = [
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF","#1E90FF","#1E90FF","#1E90FF","#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#1E90FF", "#FFE4C4", "#1E90FF", "#FFE4C4", "#1E90FF", "#FFE4C4", "#1E90FF", "#FFE4C4", "#1E90FF", "#FFE4C4", "#1E90FF","#1E90FF","#1E90FF","#1E90FF","#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", , "#1E90FF","#1E90FF","#1E90FF","#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#1E90FF", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#FFFFFF", "#FFFFFF", "#8B4513", "#8B4513", "#FFFFFF", "#FFFFFF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#FFFFFF", "#000000", "#000000", "#8B4513", "#FFFFFF", "#000000", "#000000", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#FFFFFF", "#000000", "#000000", "#8B4513", "#FFFFFF", "#000000", "#000000", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#000000", "#1E90FF", "#000000", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF", "#000000", "#000000", "#000000", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#FFE4C4", "#FFE4C4", "#B22222", "#B22222", "#B22222", "#FFE4C4", "#FFE4C4", "#8B4513", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#B22222", "#B22222", "#B22222", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#8B4513", "#FFE4C4", "#FFE4C4", "#000000", "#000000", "#000000", "#FFE4C4", "#FFE4C4", "#8B4513", "#8B4513", "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513",  "#1E90FF", "#1E90FF" ],
+			[ "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF",  "#1E90FF", "#1E90FF" ],
+			[ "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF",  "#1E90FF", "#1E90FF" ],
+			[ "#8B4513", "#1E90FF", "#8B4513", "#8B4513", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#8B4513", "#8B4513", "#8B4513", "#8B4513", "#1E90FF",  "#1E90FF", "#1E90FF" ]
+		]
+
+		var circos = [
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#228B22", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#DC143C", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#228B22", "#228B22", "#FFD700", "#FFD700", "#DC143C", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#DC143C", "#228B22", "#228B22", "#FFD700", "#FFD700", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#DC143C", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#FFD700", "#FFD700", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#FFD700", "#FFD700", "#DC143C", "#DC143C", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#DC143C", "#DC143C", "#228B22", "#228B22", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#FFD700", "#FFD700", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#DC143C", "#DC143C", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#228B22", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#DC143C", "#DC143C", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#FFD700", "#FFD700", "#228B22", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#228B22", "#228B22", "#DC143C", "#DC143C", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#DC143C", "#FFD700", "#FFD700", "#228B22", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#228B22", "#FFD700", "#FFD700", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#228B22", "#DC143C", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#228B22", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#228B22", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#DC143C", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#228B22", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#228B22", "#FFD700", "#FFD700", "#228B22", "#DC143C", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#FFD700", "#FFD700", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+			[ "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F", "#CD853F" ],
+		]
+
+		var elf = [
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FF6347", "#FF6347", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FF6347", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FF6347", "#FFE4C4", "#FF6347", "#FFE4C4", "#FF6347", "#FF6347", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FF6347", "#FF6347", "#FFE4C4", "#FF6347", "#FFE4C4", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FF6347", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#000000", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#000000", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FF6347", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#FFFFFF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#FFFFFF", "#FFE4C4", "#FFE4C4", "#FF6347", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#000000", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#000000", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#000000", "#000000", "#000000", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#9ACD32", "#000000", "#9ACD32", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#FFFFFF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#FFFFFF", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#000000", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#9ACD32", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ]
+		]
+
+		var papa = [
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FF0000", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFE4C4", "#FFFFFF", "#FFE4C4", "#FFFFFF", "#FFE4C4", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFE4C4", "#000000", "#FFE4C4", "#000000", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FFE4C4", "#FFE4C4", "#FFE4C4", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FF0000", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF8C00", "#FF8C00", "#FF8C00", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#000000", "#000000", "#000000", "#000000", "#FF8C00", "#000000", "#FF8C00", "#000000", "#000000", "#000000", "#000000", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#FFE4C4", "#FFE4C4", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF8C00", "#FF8C00", "#FF8C00", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFE4C4", "#FFE4C4", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ]
+		]
+
+		var tree = [
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFD700", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFD700", "#FFD700", "#FFD700", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#DC143C", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#FFD700", "#FFD700", "#FFD700", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#DC143C", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#FFD700", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#FFD700", "#FFD700", "#FFD700", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#FFD700", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#FFD700", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#228B22", "#FFD700", "#FFD700", "#FFD700", "#FFD700", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#FFD700", "#FFD700", "#FFD700", "#FFD700", "#228B22", "#228B22", "#228B22", "#228B22", "#FFD700", "#FFD700", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#DC143C", "#228B22", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#228B22", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ],
+			[ "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#8B4513", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF", "#1E90FF" ]
+		]
+
+		/* ----------------------------------------------------------------- */
+		/* GLOBALS                                                           */
+		/* ----------------------------------------------------------------- */
+		var sz = 25;
+		var idx = 0;
+		var off_x = 150;
+		var off_y = 75;
+		var choose = [ rudolph, circos, papa, tree ][
+			Math.floor( Math.random() * 4 )
+		];
+		
 
 
-		/* -------------------------------------------------------------- */
-		class Brush {
-			constructor( x = 0, y = 0, color = "#FFE4E1" ) {
-				this.x = x; this.y = y; this.color = color;
-				console.log( "Created brush at (x: " + this.x + ", y: " + this.y + ")" );
-				this.ox = this.x; this.oy = y;
-				this.draw = true;
-			}
+		/* ----------------------------------------------------------------- */
+		/* DRAWING                                                           */
+		/* ----------------------------------------------------------------- */
+		function animate( ) {
+			if( gameStatus == "play" ) {
+				var col = Math.floor( idx / 20 );
+				var row = idx % 20;
+				var x = ( row * sz ) + off_x;
+				var y = ( col * sz ) + off_y;
 
-			move( x, y ) {
-				this.ox = this.x; this.oy = this.y;
-				this.x = x; this.y = y;
-				if( this.draw ) {
-					ctx.beginPath();
-					ctx.lineTo(450, 50);
-					ctx.stroke();
-					console.log( "Brush is painting" );
-				} else {
-					ctx.moveTo( this.x, this.y );
+				console.log( "STATUS: " + gameStatus + " (" + col + ", " + row + ")" );
+
+				ctx.beginPath();
+				ctx.rect( x, y - sz, sz, sz );
+				ctx.fillStyle = choose[ col ][ row ];
+				ctx.fill();
+				ctx.closePath();
+
+
+				idx = idx + 1;
+
+				if( idx >= 400 ) {
+					gameStatus = "stop";
 				}
-			}
-
-			set_draw( status = true ) {
-				this.draw = status;
-				if( this.draw ) {
-					console.log( "Brush is down" );
-				} else {
-					console.log( "Brush is up" );
-				}
-			}
-
-			set_color( color ) {
-				this.color = color;
 			}
 		}
 
-		class Canvas {
-			constructor( background = "#FFFFFF" ) {
-				this.color = background;
-				this.brush = new Brush();
-				this.orders = null;
-				this.idx = 0;
-				this.end = false;
-			}
-
-			set_color( color ) {
-				this.brush.set_color( color );
-			}
-
-			up() {
-				this.brush.set_draw( false );
-			}
-
-			down() {
-				this.brush.set_draw( true );
-			}
-
-			set_orders( orders ) {
-				this.orders = orders;
-			}
-
-			animate( ) {
-				console.log( "STATUS " + this.end + " (" + this.idx + ")" );
-				if( !this.end ) {
-					for ( var ii = 0; ii < this.idx; ii++ ) {
-						ins = this.instructions[ ii ];
-						switch(ins[ 0 ]) {
-							case "up":
-								this.up();
-								break;
-							case "down":
-								this.down();
-								break;
-							case "move":
-								this.brush.move( x = ins[ 1 ], ins[ 2 ] );
-								break;
-							case "stop":
-								console.log( "ANIMATION WAS STOPED" );
-								this.end = true;
-								break;
-							case "none":
-							default:
-						}
-					}
-					this.idx = this.idx + 1;
-				}
-			}
-		}
-
 		/* -------------------------------------------------------------- */
 
 
 		/* -------------------------------------------------------------- */
-		var instructions = [ [ "none" ], [ "up" ], [ "move", 50, 50 ], [ "down" ], [ "move", 100, 50 ], [ "move", 100, 100 ], [ "move", 50, 100 ], [ "move", 50, 50 ], [ "stop" ] ];
 		var gameStatus = "play";
-		var canvas = new Canvas();
-		canvas.set_orders( instructions );
-        
 
-		/* -------------------------------------------------------------- */
-		/*function draw() {
-			//ctx.clearRect(0, 0, width, height);
-			if(rightPressed) {
-				map.snowman.start("right");
-			}
-			if(leftPressed) {
-				map.snowman.start("left");
-			}
-			if(upPressed) {
-				map.snowman.jump(map.jump);
-				upPressed = false;
-			}
-			map.draw();
-            return(map.hasWin());
-		}
-
-        function game() {
-            var end = false;
-
-                if (gameStatus == "play" ) {
-                    end = draw();
-                    console.log("end? " + end);
-                    if(victory) {
-						gameStatus = "end";
-                    }
-                }
-                
-        }*/
-
-		/* -------------------------------------------------------------- */
-		/*function keyDownHandler(e) {
-			if(e.keyCode == 39) {
-				console.log("right arrow key was pressed.");
-				rightPressed = true;
-			} else if(e.keyCode == 37) {
-				console.log("left arrow key was pressed.");
-				leftPressed = true;
-			} else if(e.keyCode == 32) {
-				console.log("space key was pressed.");
-				upPressed = true;
-			}
-		}
-
-		function keyUpHandler(e) {
-			if(e.keyCode == 39) {
-				rightPressed = false;
-			} else if(e.keyCode == 37) {
-				leftPressed = false;
-			} else if(e.keyCode == 32) {
-				upPressed = false;
-			}
-		}*/
-
-		setInterval( canvas.animate, 15 );
+		setInterval( animate, 50 );
 	</script>
 </body>
 </html>
 
+ 
