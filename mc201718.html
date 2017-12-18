@@ -151,13 +151,12 @@
 		/* DRAWING                                                           */
 		/* ----------------------------------------------------------------- */
 		function animate( ) {
+			console.log( "STATUS: " + gameStatus );
 			if( gameStatus == "play" ) {
 				var col = Math.floor( idx / 20 );
 				var row = idx % 20;
 				var x = ( row * sz ) + off_x;
 				var y = ( col * sz ) + off_y;
-
-				console.log( "STATUS: " + gameStatus + " (" + col + ", " + row + ")" );
 
 				ctx.beginPath();
 				ctx.rect( x, y - sz, sz, sz );
@@ -169,8 +168,22 @@
 				idx = idx + 1;
 
 				if( idx >= 400 ) {
-					gameStatus = "stop";
+					gameStatus = "text";
 				}
+			} else if( gameStatus == "text" ) {
+				ctx.font = "23px sans-serif";
+				ctx.fillStyle = "#FFD700";
+				ctx.fillText( "I wish you a merry", 600, 150 );
+				ctx.fillText( "Christmas and a", 610, 180 );
+				ctx.fillText( "happy New Year", 620, 210 );
+				ctx.font = "10px sans-serif";
+				ctx.fillStyle = "#B22222";
+				ctx.fillText( "(Press F5 to see another pattern)", 325, 40 );
+				ctx.font = "13px sans-serif";
+				ctx.fillText( "~ Carles", 700, 250 );
+				gameStatus = "stop";
+			} else {
+
 			}
 		}
 
@@ -180,7 +193,7 @@
 		/* -------------------------------------------------------------- */
 		var gameStatus = "play";
 
-		setInterval( animate, 50 );
+		setInterval( animate, 100 );
 	</script>
 </body>
 </html>
