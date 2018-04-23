@@ -39,7 +39,6 @@ class VTile {
         var hT = x > this.x && x < this.x + this.sz
         var vT = y > this.y && y < this.y + this.sz
         if(hT && vT) {
-            console.log("Clicked!")
             this.targetAngle += (Math.PI / 180) * 90;
             this.rotate = true;
         }
@@ -54,6 +53,20 @@ class VTile {
             if(this.currentAngle >= this.targetAngle) {
                 this.rotate = false,
                 this.currentAngle = this.targetAngle;
+                switch(this.currentAngle) {
+                    case 0:
+                        this.links = [false, true, false, true]; // E, N, W, S
+                        break;
+                    case (Math.PI / 180) * 90:
+                        this.links = [true, false, true, false];
+                        break;
+                    case (Math.PI / 180) * 180:
+                        this.links = [false, true, false, true];
+                        break;
+                    case (Math.PI / 180) * 270:
+                        this.links = [true, false, true, false];
+                        break;
+                }
             }
         }
     }
@@ -90,7 +103,6 @@ class CTile {
         var hT = x > this.x && x < this.x + this.sz
         var vT = y > this.y && y < this.y + this.sz
         if(hT && vT) {
-            console.log("Clicked!")
             this.targetAngle += (Math.PI / 180) * 90;
             this.rotate = true;
         }
@@ -105,6 +117,20 @@ class CTile {
             if(this.currentAngle >= this.targetAngle) {
                 this.rotate = false,
                 this.currentAngle = this.targetAngle;
+                switch(this.currentAngle) {
+                    case 0:
+                        this.links = [true, true, false, true]; // E, N, W, S
+                        break;
+                    case (Math.PI / 180) * 90:
+                        this.links = [true, true, true, false];
+                        break;
+                    case (Math.PI / 180) * 180:
+                        this.links = [true, true, false, true];
+                        break;
+                    case (Math.PI / 180) * 270:
+                        this.links = [true, false, true, true];
+                        break;
+                }
             }
         }
     }
@@ -141,7 +167,6 @@ class RTile {
         var hT = x > this.x && x < this.x + this.sz
         var vT = y > this.y && y < this.y + this.sz
         if(hT && vT) {
-            console.log("Clicked!")
             this.targetAngle += (Math.PI / 180) * 90;
             this.rotate = true;
         }
@@ -156,57 +181,20 @@ class RTile {
             if(this.currentAngle >= this.targetAngle) {
                 this.rotate = false,
                 this.currentAngle = this.targetAngle;
-            }
-        }
-    }
-}
-
-class LTile {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.sz = 50;
-        this.links = [true, false, false, true]; // E, N, W, S
-        this.currentAngle = 0;
-        this.targetAngle = 0;
-        this.rotate = false;
-
-        this.bkg_color = "#DDDDDD";
-        this.frg_color = "#808080";
-    }
-
-    draw() {
-        ctx.save();
-        this.turn();
-        ctx.beginPath();
-        ctx.fillStyle = this.bkg_color;
-        ctx.fillRect(this.x, this.y, this.sz, this.sz);
-        ctx.fillStyle = this.frg_color;
-        ctx.fillRect(this.x + 20, this.y + this.sz / 2, 10, this.sz / 2);
-        ctx.fillRect(this.x, this.y + this.sz / 2 - 5, this.sz / 2 + 5, 10);
-        ctx.closePath();
-        ctx.restore();
-    }
-
-    update(x, y) {
-        var hT = x > this.x && x < this.x + this.sz
-        var vT = y > this.y && y < this.y + this.sz
-        if(hT && vT) {
-            console.log("Clicked!")
-            this.targetAngle += (Math.PI / 180) * 90;
-            this.rotate = true;
-        }
-    }
-
-    turn() {
-        ctx.translate(this.x + this.sz/2, this.y + this.sz/2);
-        ctx.rotate(this.currentAngle);
-        ctx.translate(-this.x - this.sz/2, -this.y - this.sz/2);
-        if(this.rotate) {
-            this.currentAngle += (Math.PI / 180) * 1;
-            if(this.currentAngle >= this.targetAngle) {
-                this.rotate = false,
-                this.currentAngle = this.targetAngle;
+                switch(this.currentAngle) {
+                    case 0:
+                        this.links = [false, true, true, false]; // E, N, W, S
+                        break;
+                    case (Math.PI / 180) * 90:
+                        this.links = [true, false, false, true];
+                        break;
+                    case (Math.PI / 180) * 180:
+                        this.links = [true, false, true, true];
+                        break;
+                    case (Math.PI / 180) * 270:
+                        this.links = [true, true, false, false];
+                        break;
+                }
             }
         }
     }
@@ -288,7 +276,6 @@ class S1Tile {
         var hT = x > this.x && x < this.x + this.sz
         var vT = y > this.y && y < this.y + this.sz
         if(hT && vT) {
-            console.log("Clicked!")
             this.targetAngle += (Math.PI / 180) * 90;
             this.rotate = true;
         }
@@ -303,6 +290,20 @@ class S1Tile {
             if(this.currentAngle >= this.targetAngle) {
                 this.rotate = false,
                 this.currentAngle = this.targetAngle;
+                switch(this.currentAngle) {
+                    case 0:
+                        this.links = [true, false, false, false]; // E, N, W, S
+                        break;
+                    case (Math.PI / 180) * 90:
+                        this.links = [false, true, false, false];
+                        break;
+                    case (Math.PI / 180) * 180:
+                        this.links = [false, false, true, false];
+                        break;
+                    case (Math.PI / 180) * 270:
+                        this.links = [false, false, false, true];
+                        break;
+                }
             }
         }
     }
@@ -347,9 +348,6 @@ class Map {
                 case "C":
                     objectContent.push(new CTile(accumX, accumY));
                     break;
-                case "L":
-                    objectContent.push(new LTile(accumX, accumY));
-                    break;
                 case "R":
                     objectContent.push(new RTile(accumX, accumY));
                     break;
@@ -393,36 +391,17 @@ class Map {
 function on_canvas_click(ev) {
     var x = ev.clientX - canvas.offsetLeft;
     var y = ev.clientY - canvas.offsetTop;
-    console.log("New Click! x: ", x, " y: ", y)
     map.setClick(x, y);
 }
 
-var map = new Map("LTRLVCRSL", 3, 10, 10);
+var map = new Map("RTRRVCRSR", 3, 10, 10);
 
 function game() {
+    ctx.beginPath();
+    ctx.fillStyle = "#EEEEEE";
+    ctx.fillRect(0, 0, width, heigth);
+    ctx.closePath();
     map.draw();
 }
 
 setInterval(game, 15);
-
-// var T1 = new VTile(200, 200);
-// var T2 = new CTile(400, 200);
-// var T3 = new RTile(50, 200);
-// var T4 = new LTile(50, 400);
-
-// T1.draw();
-// T2.draw();
-// T3.draw();
-// T4.draw();
-
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
-// T1.turn();
