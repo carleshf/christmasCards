@@ -335,8 +335,6 @@ class Map {
     }
 
     create() {
-        console.log(this.stringContent);
-        this.objectContent = new Array();
         var cntCol = 0;
         var accumX = this.padX;
         var accumY = this.padY;
@@ -378,13 +376,35 @@ class Map {
     draw() {
         this.objectContent.forEach(function(elm) {
             elm.draw();
-        })
+        });
     }
 
     setClick(x, y) {
         this.objectContent.forEach(function(elm) {
             elm.update(x, y);
-        })
+        });
+    }
+
+    testConnection() {
+        var ncol = this.ncol;
+        var nrow = this.objectContent.length / this.ncol;
+        this.objectContent.forEach(function(elm, idx) {
+            var col = idx % ncol;
+            var row = Math.floor(idx/ncol);
+            var neighbours = new Array();
+            if(col > 0) { // Add left neigbour
+
+            }
+            if(col < ncol) { // Add right neigbour
+
+            }
+            if(row > 0) { // Add upper neigboud
+
+            }
+            if(row < nrow) { // Add lower neighbour
+
+            }
+        });
     }
 }
 
