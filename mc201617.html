@@ -549,29 +549,29 @@
             return map;
         }
 
-		/* -------------------------------------------------------------- */
+	/* -------------------------------------------------------------- */
         var gameStatus = "staring";
         var gameLevel = 1;
         var starring = create_starring();
         var ending = create_ending();
-        map = Level5();
+        map = Level1();
 
-		/* -------------------------------------------------------------- */
-		function draw() {
-			//ctx.clearRect(0, 0, width, height);
-			if(rightPressed) {
-				map.snowman.start("right");
-			}
-			if(leftPressed) {
-				map.snowman.start("left");
-			}
-			if(upPressed) {
-				map.snowman.jump(map.jump);
-				upPressed = false;
-			}
-			map.draw();
-            return(map.hasWin());
+	/* -------------------------------------------------------------- */
+	function draw() {
+		//ctx.clearRect(0, 0, width, height);
+		if(rightPressed) {
+			map.snowman.start("right");
 		}
+		if(leftPressed) {
+			map.snowman.start("left");
+		}
+		if(upPressed) {
+			map.snowman.jump(map.jump);
+			upPressed = false;
+		}
+		map.draw();
+		return(map.hasWin());
+	}
 
         function game() {
             var victory = false;
@@ -601,14 +601,14 @@
                             case 5:
                                 map = Level5();
                                 break;
-							case 6:
-								map = Level6();
-								break;
-							case 7:
-								map = Level7();
-								break;
+                            case 6:
+				map = Level6();
+				break;
+                            case 7:
+				map = Level7();
+				break;
                             default:
-                                gameStatus = "end";
+				gameStatus = "end";
                         }
                     }
                     break;
