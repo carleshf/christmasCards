@@ -47,6 +47,10 @@
             hide() {
                 this.status = "h";
             }
+
+            collide( elf ) {
+
+            }
         }
 
         class Present {
@@ -76,6 +80,10 @@
             hide() {
                 this.status = "h";
             }
+
+            collide( elf ) {
+
+            }
         }
 
         class Tile {
@@ -87,7 +95,7 @@
             //   5: LEFT + TOP      6: RIGHT + TOP
             //   8: LEFT + BOTOM    9: RIGHT + BOTOM
             //   .: COIN            P: PRESENT
-            constructor(x, y, sz, type) {
+            constructor( x, y, sz, type ) {
                 this.x = x;
                 this.y = y;
                 this.type = type;
@@ -159,19 +167,78 @@
             isPresent() {
                 return this.is_present;
             }
+
+            collide( elf ) {
+                let elfX = elf.get_x();
+                let elfY = elf.get_y();
+                switch(this.type) {
+                    case "T":
+                        return this.collide_top( elfY );
+                        break;
+                    case "B":
+                        return this.collide_bottom( elfY );
+                        break;
+                    case "R":
+                        return this.collide_right( elfX );
+                        break;
+                    case "L":
+                        return this.collide_left( elfX );
+                        break;
+                    case "5":
+                        break;
+                    case "6":
+                        break;
+                    case "8":
+                        break;
+                    case "9":
+                        break;
+                    case "X":
+                        break
+                    case ".":
+                        break;
+                    case "P":
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            collide_left( elfX ) {
+                return elfX == this.x - this.sz / 2;
+            }
+
+            collide_right( elfX ) {
+                return elfX == this.x + this.sz / 2;
+            }
+
+            collide_top( elfY ) {
+                return elfY == this.y - this.sz / 2;
+            }
+
+            collide_bottom( elfY ) {
+                return elfY == this.y + this.sz / 2;
+            }
         }
 
         class Elf {
-            constructor( x, y, tsz, speed = 2, movement = "stop" ) {
+            constructor( x, y, tsz, speed = 1, direction = "stop" ) {
                 this.x = x;
                 this.y = y;
                 this.tsz = tsz;
                 this.h = 20;
                 this.w = 10;
-                this.movement = movement;
+                this.direction = direction;
                 this.speed = speed;
                 this.bodyColor = "#32CD32";
                 this.fleshColor = "#FFE4B5";
+            }
+
+            get_x() {
+                return this.direction == "right" ? this.x + this.w : this.x;
+            }
+
+            get_y() {
+                return this.y
             }
 
             draw() {
@@ -201,8 +268,8 @@
             }
             
             move() {
-				if(this.movement != "stop") {
-                    switch( this.movement ) {
+				if( this.direction != "stop" ) {
+                    switch( this.direction ) {
                         case "right":
                             this.x += this.speed;
                             break;
