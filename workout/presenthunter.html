@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>An Elf Christmas Tale</title>
+    <style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+	<script>
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		/* -------------------------------------------------------------- */
+		var width = 480;
+		var height = 320;
+		var floorHeight = 10;
+		var rightPressed = false;
+		var leftPressed = false;
+		var upPressed = false;
+
+		/* -------------------------------------------------------------- */
+		document.addEventListener("keydown", keyDownHandler, false);
+		document.addEventListener("keyup", keyUpHandler, false);
+        /* -------------------------------------------------------------- */
+        class Coin {
+            constructor( x, y, sz ) {
+                this.sz = sz / 10;
+                this.x = x + sz / 2;
+                this.y = y + sz / 2;
+                this.status = "s"
+                this.color = "#808080";
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc( this.x, this.y, this.sz, 0, 2 * Math.PI, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath()
+            }
+
+            hide() {
+                this.status = "h";
+            }
+        }
+
+        class Present {
+            constructor( x, y, sz ) {
+                this.sz1 = 10;
+                this.sz2 = 2;
+                this.x = x + sz / 2 - this.sz1 / 2;
+                this.y = y + sz / 2 - this.sz1 / 2;
+                this.status = "s"
+                this.bkg_color = "#DDDDDD";
+                this.frg_color = "#808080";
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = this.frg_color;
+                ctx.fillRect(this.x, this.y, this.sz1, this.sz1);
+                let x = this.x + this.sz1 / 2 - this.sz2 / 2;
+                let y = this.y + this.sz1 / 2 - this.sz2 / 2;
+                ctx.fillStyle = this.bkg_color;
+                ctx.fillRect( x, this.y, this.sz2, this.sz1 );
+                ctx.fillRect( this.x, y, this.sz1, this.sz2 );
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            hide() {
+                this.status = "h";
+            }
+        }
+
+        class Tile {
+            // TYPE: 
+            //   0: START POSITION  1: END POSITION
+            //   E: EMPTY           .: COIN
+            //   T: TOP ONLY        B: BOTOM ONLY
+            //   R: RIGHT ONLY      L: LEFT ONLY
+            //   5: LEFT + TOP      6: RIGHT + TOP
+            //   8: LEFT + BOTOM    9: RIGHT + BOTOM
+            constructor(x, y, sz, type) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.sz = sz;
+                this.bkg_color = "#DDDDDD";
+                this.frg_color = "#808080";
+                this.has_present = false;
+                this.has_coin = false;
+            }
+            
+            draw() {
+                // Draw empty square
+                ctx.save()
+                ctx.beginPath();
+                ctx.fillStyle = this.bkg_color;
+                ctx.fillRect(this.x, this.y, this.sz, this.sz);
+                ctx.fillStyle = this.frg_color;
+                // Draw borders
+                switch(this.type) {
+                    case "T":
+                        ctx.fillRect(this.x, this.y, this.sz, 5);
+                        break;
+                    case "B":
+                        ctx.fillRect(this.x, this.y + 20, this.sz, 5);
+                        break;
+                    case "R":
+                        ctx.fillRect(this.x + 20, this.y, 5, this.sz);
+                        break;
+                    case "L":
+                        ctx.fillRect(this.x, this.y, 5, this.sz);
+                        break;
+                    case "5":
+                        ctx.fillRect(this.x, this.y, this.sz, 5);
+                        ctx.fillRect(this.x, this.y, 5, this.sz);
+                        break;
+                    case "6":
+                        ctx.fillRect(this.x, this.y, this.sz, 5);
+                        ctx.fillRect(this.x + 20, this.y, 5, this.sz);
+                        break;
+                    case "8":
+                        ctx.fillRect(this.x, this.y + 20, this.sz, 5);
+                        ctx.fillRect(this.x, this.y, 5, this.sz);
+                        break;
+                    case "9":
+                        ctx.fillRect(this.x, this.y + 20, this.sz, 5);
+                        ctx.fillRect(this.x + 20, this.y, 5, this.sz);
+                        break;
+                    case ".":
+                        this.is_coin = true;
+                        break;
+                    case "P":
+                        this.is_present = true;
+                        break;
+                    default:
+                        break;
+                }
+                // Close path
+                ctx.closePath();
+                ctx.restore()
+            }
+
+            isCoin() {
+                return this.is_coin;
+            }
+
+            isPresent() {
+                return this.is_present;
+            }
+        }
+
+        class Elf {
+            constructor( x, y, tsz, speed = 2, movement = "stop" ) {
+                this.x = x;
+                this.y = y;
+                this.tsz = tsz;
+                this.h = 20;
+                this.w = 10;
+                this.movement = movement;
+                this.speed = speed;
+                this.bodyColor = "#32CD32";
+                this.fleshColor = "#FFE4B5";
+            }
+
+            draw() {
+                var xB = this.x + 25 / 2;
+                var xH = this.x + 25 / 1.7;
+                var yB = this.y + this.tsz - this.w / 2;
+                var yF = this.y + this.tsz - this.w * 1.3;
+                var yH = this.y + this.tsz - this.w * 1.7;
+                
+                ctx.beginPath();
+                ctx.arc( xB, yB, this.w / 2, 0, 2 * Math.PI, false );
+                ctx.fillStyle = this.bodyColor;
+                ctx.fill();
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.arc( xB, yF, this.w / 4, 0, 2 * Math.PI, false );
+                ctx.fillStyle = this.fleshColor;
+                ctx.fill();
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.arc( xH, yH, this.w / 6, 0, 2 * Math.PI, false );
+                ctx.fillStyle = this.bodyColor;
+                ctx.fill();
+                ctx.closePath();
+			}
+        }
+
+        class Flag {
+            constructor( x, y, tsz ) {
+                this.x = x;
+                this.y = y;
+                this.sz = tsz;
+                this.frg_color = "#808080";
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = this.frg_color;
+                ctx.fillRect(this.x + 8, this.y + 3, 2, this.sz - 6 );
+                ctx.fillRect(this.x + 10, this.y + 4, 8, this.sz - 15 );
+                ctx.closePath();
+            }
+        }
+
+        class Map {
+            constructor( string, tsz, padX, padY ) {
+                this.nrow = string.lenght;
+                this.ncol = string[ 0 ].split( "" );
+                this.padX = padX;
+                this.padY = padY;
+                this.tsz = tsz;
+                this.grid = [];
+                this.objects = [];
+                this.elf = null;
+                this.flag = null;
+                this.process( string );
+            }
+
+            process( string ) {
+                let accumY = this.padY;
+                for( let ii = 0; ii < string.length; ii++ ) {
+                    let accumX = this.padX;
+                    let sline = string[ ii ].split( "" );
+                    for( let jj = 0; jj < sline.length; jj++ ) {
+                        this.grid.push( new Tile( accumX, accumY, this.tsz, sline[ jj ] ) );
+                        switch( sline[ jj ] ) {
+                            case ".": // Coin
+                                this.objects.push( new Coin( accumX, accumY, this.tsz ) );
+                                break;
+                            case "P":
+                                this.objects.push( new Present( accumX, accumY, this.tsz ) );
+                                break;
+                            case "0": // Elf
+                                this.elf = new Elf( accumX, accumY, this.tsz );
+                                break;
+                            case "1": // Flag
+                                this.flag = new Flag( accumX, accumY, this.tsz );
+                                break;
+                            default:
+                                break;
+                        }
+                        accumX += this.tsz;
+                    }
+                    accumY += this.tsz;
+                }
+            }
+
+            draw() {
+                this.grid.forEach( function( elm ) {
+                    elm.draw();
+                });
+                this.objects.forEach( function( elm ) {
+                    elm.draw();
+                });
+                this.flag.draw();
+                this.elf.draw();
+            }
+        }
+        /* -------------------------------------------------------------- */
+        console.log( "Creating map" );
+        var map = new Map(["EBEEEEEEBE", "R0LEEEE91L", "R.8BBB9..L", "R...P...5E", "ETTTTTTTEE"], 25, 10, 10);
+        function game() {
+            map.draw();
+        }
+        /* -------------------------------------------------------------- */
+		function keyDownHandler(e) {
+			if(e.keyCode == 39) {
+				console.log("right arrow key was pressed.");
+				rightPressed = true;
+			} else if(e.keyCode == 37) {
+				console.log("left arrow key was pressed.");
+				leftPressed = true;
+			} else if(e.keyCode == 32) {
+				console.log("space key was pressed.");
+				upPressed = true;
+			}
+		}
+
+		function keyUpHandler(e) {
+			if(e.keyCode == 39) {
+				rightPressed = false;
+			} else if(e.keyCode == 37) {
+				leftPressed = false;
+			} else if(e.keyCode == 32) {
+				upPressed = false;
+			}
+		}
+
+		setInterval(game, 20);
+	</script>
+</body>
+</html>
