@@ -19,8 +19,9 @@
 		var height = 320;
 		var floorHeight = 10;
 		var rightPressed = false;
-		var leftPressed = false;
-		var upPressed = false;
+        var leftPressed = false;
+        var upPressed = false;
+		var downPressed = false;
 
 		/* -------------------------------------------------------------- */
 		document.addEventListener("keydown", keyDownHandler, false);
@@ -80,11 +81,12 @@
         class Tile {
             // TYPE: 
             //   0: START POSITION  1: END POSITION
-            //   E: EMPTY           .: COIN
+            //   E: EMPTY           X: BLOCK
             //   T: TOP ONLY        B: BOTOM ONLY
             //   R: RIGHT ONLY      L: LEFT ONLY
             //   5: LEFT + TOP      6: RIGHT + TOP
             //   8: LEFT + BOTOM    9: RIGHT + BOTOM
+            //   .: COIN            P: PRESENT
             constructor(x, y, sz, type) {
                 this.x = x;
                 this.y = y;
@@ -133,6 +135,9 @@
                         ctx.fillRect(this.x, this.y + 20, this.sz, 5);
                         ctx.fillRect(this.x + 20, this.y, 5, this.sz);
                         break;
+                    case "X":
+                        ctx.fillRect(this.x, this.y, this.sz, this.sz);
+                        break
                     case ".":
                         this.is_coin = true;
                         break;
@@ -193,6 +198,25 @@
                 ctx.fillStyle = this.bodyColor;
                 ctx.fill();
                 ctx.closePath();
+            }
+            
+            move() {
+				if(this.movement != "stop") {
+                    switch( this.movement ) {
+                        case "right":
+                            this.x += this.speed;
+                            break;
+                        case "left":
+                            this.x -= this.speed;
+                            break;
+                        case "up":
+                            this.y -= this.speed;
+                            break;
+                        case "down":
+                            this.y += this.speed;
+                            break;
+                    }
+				}
 			}
         }
 
@@ -269,7 +293,8 @@
         }
         /* -------------------------------------------------------------- */
         console.log( "Creating map" );
-        var map = new Map(["EBEEEEEEBE", "R0LEEEE91L", "R.8BBB9..L", "R...P...5E", "ETTTTTTTEE"], 25, 10, 10);
+        var map = new Map([" B      B ", "R0L    91L", "R.8BBB9..L", "R...P...5 ", " TTTTTTT  "], 25, 10, 10);
+        //var map = new Map([ "-BBB--BBB--", "R0. LR..1L-", "-T6.LR.5T--", "--R.89.L---", "--R. ..L---", "--R..XX----", "---6  PL---", "----TTT----"], 25, 10, 10);
         function game() {
             map.draw();
         }
@@ -281,19 +306,27 @@
 			} else if(e.keyCode == 37) {
 				console.log("left arrow key was pressed.");
 				leftPressed = true;
+			} else if(e.keyCode == 38) {
+				console.log("up arrow was pressed.");
+				upPressed = true;
+			} else if(e.keyCode == 40) {
+				console.log("down arrow was pressed.");
+				downPressed = true;
 			} else if(e.keyCode == 32) {
 				console.log("space key was pressed.");
-				upPressed = true;
 			}
 		}
 
-		function keyUpHandler(e) {
-			if(e.keyCode == 39) {
+		function keyUpHandler( e ) {
+			if( e.keyCode == 39 ) {
 				rightPressed = false;
-			} else if(e.keyCode == 37) {
+			} else if( e.keyCode == 37 ) {
 				leftPressed = false;
-			} else if(e.keyCode == 32) {
+			} else if( e.keyCode == 38 ) {
 				upPressed = false;
+			} else if( e.keyCode == 40 ) {
+				downPressed = false;
+			} else if( e.keyCode == 32 ) {
 			}
 		}
 
