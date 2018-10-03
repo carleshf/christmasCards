@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>A Snowman Christmas Tale [vol. 2]</title>
+    <style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <script>
+        /* -------------------------------------------------------------- */
+        let width = 800;
+        let height = 600;
+        /* -------------------------------------------------------------- */
+        let mouseX = 0;
+        let mouseY = 0;
+        let mouseDown = false;
+        let mouseAction = false;
+        /* -------------------------------------------------------------- */
+        let canvas = document.getElementById("myCanvas");
+        let ctx = canvas.getContext("2d");
+        /* -------------------------------------------------------------- */
+        /* Compendium of levels that saves the state of the game */
+        class Board {
+            constructor( start_level ) {
+                this.current_level = start_level - 1;
+                this.list_of_levels = [];
+            }
+
+            add_level( level ) {
+                this.list_of_levels.push( level );
+            }
+
+            draw( ctx ) {
+                if( this.current_level < this.list_of_levels.length ) {
+                    this.list_of_levels[ this.current_level ].draw( ctx );
+                } else {
+                    console.log( 'Error in Board draw - current_level larger that number of levels.' )
+                }
+            }
+        }
+
+        class Level {
+            constructor( name ) {
+                this.name = name;
+                this.game_elements = [];
+                this.player_elements = [];
+            }
+
+            add_game_element( element ) {
+                this.game_elements.push( element );
+            }
+
+            add_player_element( element ) {
+                this.player_elements.push( element );
+            }
+
+            draw( ctx ) {
+                // TODO: Draw level properties
+                // Draw element
+                this.game_elements.forEach( (item) => item.draw( ctx ) );
+                this.player_elements.forEach( (item) => item.draw( ctx ) );
+            }
+        }
+
+        class Element {
+            constructor( x, y ) {
+                this.x = x;
+                this.y = y;
+            }
+
+            draw( ctx ) { }
+        }
+
+        class Button extends Element {
+            constructor( x, y, text ) {
+                super( x, y, 'button', 'interface' );
+                this.text = text;
+                this.style_default = { border: '#696969', fill: '#F8F8FF' };
+                this.style_over = { border: '#90EE90', fill: '#F8F8FF' };
+                this.selected = false
+                this.height = 100;
+                this.width = 80;
+                this.depth = 5;
+            }
+
+            draw( ctx ) {
+                let frg = this.style_default.border;
+                let bkg = this.style_default.fill; 
+                if( this.selected ) {
+                    let frg = this.style_over.border;
+                    let bkg = this.style_over.fill;
+                }
+
+                ctx.beginPath();
+                // Draw box
+                ctx.fillStyle = frg;
+                ctx.fillRect( this.x, this.y, this.width, this.height );
+                ctx.fillStyle = bkg;
+                ctx.fillRect( this.x + this.depth, this.y + this.depth, this.width - 2 * this.depth, this.height - 2 * this.depth );
+                // Add text
+                // ctx.fillStyle = fdr;
+                // ctx.font = "20px Arial";
+                // ctx.fillText( this.text, initX + 32, 110 );
+                ctx.closePath();
+            }
+        }
+
+        class HBarGame extends Element {
+            constructor ( x, y ) {
+                super( x, y );
+                this.width = 100;
+                this.height = 5;
+                this.fill = '#808080';
+            }
+            
+            draw( ctx ) {
+                ctx.fillStyle = this.fill;
+                ctx.fillRect( this.x, this.y, this.width, this.height );
+            }
+        }
+
+        class DBarGame extends Element {
+            constructor ( x, y ) {
+                super( x, y );
+                this.width = 90;
+                this.height = 5;
+                this.fill = '#808080';
+            }
+            
+            draw( ctx ) {
+                ctx.save();
+                    //ctx.translate( width / 2 , height / 2 );
+                    ctx.translate( this.x - this.width / 2, this.y - this.height / 2 )
+                    ctx.rotate(Math.PI / 180 * 35);
+                    ctx.fillRect( this.width / -2, this.height / -2, this.width, this.height );
+                    ctx.translate( this.x , this.y );
+                ctx.restore();
+            }
+        }
+
+        class ABarGame extends Element {
+            constructor ( x, y ) {
+                super( x, y );
+                this.width = 90;
+                this.height = 5;
+                this.triangle = 3.54;
+                this.fill = '#808080';
+            }
+            
+            draw( ctx ) {
+                ctx.fillStyle = this.fill;
+                ctx.save();
+                    //ctx.translate( width / 2 , height / 2 );
+                    //ctx.translate( this.x - this.width / 2, this.y - this.height / 2 );
+                    ctx.translate( this.x, this.y );
+                    ctx.rotate(Math.PI / 180 * -35);
+                    ctx.fillRect( 0, 0, this.width, this.height );
+                    //ctx.translate( this.x , this.y );
+                ctx.restore();
+                // the triangle 1
+                /* ctx.fillStyle = "#FF0000"
+                ctx.beginPath();
+                ctx.moveTo( this.x, this.y );
+                ctx.lineTo( this.x, this.y + this.triangle );
+                ctx.lineTo( this.x + this.triangle, this.y + this.triangle );
+                ctx.closePath();
+                ctx.fill(); */
+            }
+        }
+
+        class HBarPlayer extends Element {
+            constructor ( x, y ) {
+                super( x, y );
+                this.width = 100;
+                this.height = 5;
+                this.fill = '#0000FF';
+            }
+            
+            draw( ctx ) {
+                ctx.fillStyle = this.fill;
+                ctx.fillRect( this.x, this.y, this.width, this.height );
+            }
+        }
+
+        /* -------------------------------------------------------------- */
+        let game = new Board( 1 );
+
+
+        /* -------------------------------------------------------------- */
+        create_bar = function( level, y_pos, button_labels ) {
+            let x_pos = ( width - ( 100 * button_labels.length ) ) / 2
+            button_labels.forEach( (label) => {
+                level.add_game_element( new Button( x_pos, y_pos, label ) );
+                x_pos += 100
+            } );
+        }
+        /* -------------------------------------------------------------- */
+        let lvl1 = new Level( 'the starting' );
+        lvl1.add_game_element( new HBarGame( 100, 500 ) );
+        lvl1.add_game_element( new ABarGame( 200, 500 ) );
+        lvl1.add_game_element( new HBarGame( 277, 448 ) );
+        lvl1.add_game_element( new DBarGame( 461, 478.5 ) );
+        lvl1.add_game_element( new HBarGame( 454.5, 500 ) );
+        create_bar( lvl1, 10, [ 'A', 'B', 'C' ] );
+        game.add_level( lvl1 );
+        game.draw( ctx );
+
+
+        </script>
+</body>
+</html>
