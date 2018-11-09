@@ -49,7 +49,7 @@
             }
 
             collide( elf ) {
-
+				return false;
             }
         }
 
@@ -82,7 +82,7 @@
             }
 
             collide( elf ) {
-
+				return false;
             }
         }
 
@@ -171,22 +171,30 @@
             collide( elf ) {
                 let elfX = elf.get_x();
                 let elfY = elf.get_y();
-                switch(this.type) {
+                let top = false;
+                let bottom = false;
+                let left = false;
+                let right = false;
+                switch( this.type ) {
                     case "T":
-                        return this.collide_top( elfY );
+                        top = this.collide_top( elfY );
                         break;
                     case "B":
-                        return this.collide_bottom( elfY );
+                        bottom = this.collide_bottom( elfY );
                         break;
                     case "R":
-                        return this.collide_right( elfX );
+                        right = this.collide_right( elfX );
                         break;
                     case "L":
-                        return this.collide_left( elfX );
+                        left = this.collide_left( elfX );
                         break;
                     case "5":
+                        top = this.collide_top( elfY );
+                        left = this.collide_left( elfX );
                         break;
                     case "6":
+                        top = this.collide_top( elfY );
+                        right = this.collide_right( elfX );
                         break;
                     case "8":
                         break;
@@ -201,6 +209,7 @@
                     default:
                         break;
                 }
+                return { top: top, right: right, bottom: bottom, left: left };
             }
 
             collide_left( elfX ) {
@@ -212,11 +221,12 @@
             }
 
             collide_top( elfY ) {
-                return elfY == this.y - this.sz / 2;
+                return elfY == this.y - this.sz;
             }
 
             collide_bottom( elfY ) {
-                return elfY == this.y + this.sz / 2;
+                console.log( "collide botom (", this.x, ", ", this.y, ") vs. ", elfY, " -> ", elfY == this.y + this.sz )
+                return elfY == this.y + this.sz;
             }
         }
 
@@ -228,6 +238,7 @@
                 this.h = 20;
                 this.w = 10;
                 this.direction = direction;
+                this.options = [ 1, 1, 1, 1 ];
                 this.speed = speed;
                 this.bodyColor = "#32CD32";
                 this.fleshColor = "#FFE4B5";
@@ -238,7 +249,7 @@
             }
 
             get_y() {
-                return this.y
+            	return this.direction == "down" ? this.y + this.h : this.y;
             }
 
             draw() {
@@ -267,6 +278,14 @@
                 ctx.closePath();
             }
             
+            set_direction( direction ) {
+                this.direction = direction;
+            }
+
+            set_options( options ) {
+                this.options = options;
+            }
+
             move() {
 				if( this.direction != "stop" ) {
                     switch( this.direction ) {
@@ -301,6 +320,10 @@
                 ctx.fillRect(this.x + 8, this.y + 3, 2, this.sz - 6 );
                 ctx.fillRect(this.x + 10, this.y + 4, 8, this.sz - 15 );
                 ctx.closePath();
+            }
+            
+            collide( elf ) {
+            	return elf.get_x() == this.x & elf.get_y() == this.y;
             }
         }
 
@@ -348,21 +371,43 @@
             }
 
             draw() {
-                this.grid.forEach( function( elm ) {
-                    elm.draw();
-                });
-                this.objects.forEach( function( elm ) {
-                    elm.draw();
-                });
+            	let collisions = this.grid.map( elm => elm.collide( this.elf ) );
+                console.log("collision 1: ", collisions);
+                collisions = collisions.reduce( (acc, val) => {
+                    return [ acc[0] | val[0] , acc[1] | val[1], acc[2] | val[2], acc[3] | val[3] ]
+                } )
+                console.log("collision 2: ", collisions);
+                this.elf.set_options( collisions );
+                
+                this.grid.forEach( elm => elm.draw() );
+                this.objects.forEach( elm => elm.draw() );
                 this.flag.draw();
+                this.elf.move();
                 this.elf.draw();
             }
         }
         /* -------------------------------------------------------------- */
         console.log( "Creating map" );
-        var map = new Map([" B      B ", "R0L    91L", "R.8BBB9..L", "R...P...5 ", " TTTTTTT  "], 25, 10, 10);
+        var map = new Map(["EBE", "R0L", "R L", "R1L", "ETE"], 25, 10, 10 );
+        //var map = new Map([" B      B ", "R0L    91L", "R.8BBB9..L", "R...P...5 ", " TTTTTTT  "], 25, 10, 10);
         //var map = new Map([ "-BBB--BBB--", "R0. LR..1L-", "-T6.LR.5T--", "--R.89.L---", "--R. ..L---", "--R..XX----", "---6  PL---", "----TTT----"], 25, 10, 10);
         function game() {
+            if( rightPressed ) {
+                map.elf.set_direction( "right" );
+                rightPressed = false;
+            }
+            if( leftPressed ) {
+                map.elf.set_direction( "left" );
+                leftPressed = false;
+            }
+            if( upPressed ) {
+                map.elf.set_direction( "up" );
+                upPressed = false;
+            }
+            if( downPressed ) {
+                map.elf.set_direction( "down" );
+                downPressed = false;
+            }
             map.draw();
         }
         /* -------------------------------------------------------------- */
@@ -397,7 +442,7 @@
 			}
 		}
 
-		setInterval(game, 20);
+		setInterval(game, 30);
 	</script>
 </body>
 </html>
