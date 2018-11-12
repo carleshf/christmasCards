@@ -36,6 +36,7 @@
         this.padY = padY;
         this.sz = sz;
         this.grid = [];
+        this.objects = [];
         this.text = [];
         this.elf = null;
         this.fg = fg;
@@ -48,6 +49,7 @@
         let accumY = this.padY;
         for(let ii = 0; ii < string.length; ii++) {
           let row = [];
+          let obj = [];
           let accumX = this.padX;
           let sline = string[ ii ].split("");
           for(let jj = 0; jj < sline.length; jj++) {
@@ -58,12 +60,15 @@
               case "1": // Elf
                 this.elf = new Elf(accumX, accumY, ii, jj, this.sz);
                 break;
+              case "P": // Present
+                obj.push(new Present(accumX, accumY, this.sz));
               default:
-
+                obj.push(null);
             }
             accumX += this.sz;
           }
           this.grid.push(row);
+          this.objects.push(obj);
           accumY += this.sz;
         }
       }
@@ -71,6 +76,11 @@
       collide() {
         if(this.grid[this.elf.i][this.elf.j].type == "2") {
           this.victory = true;
+        }
+        if(this.objects[this.elf.i][this.elf.j] != null) {
+          if(this.objects[this.elf.i][this.elf.j].type == "P") {
+            this.objects[this.elf.i][this.elf.j].hide();
+          }
         }
       }
 
@@ -82,6 +92,7 @@
         ctx.clearRect(0, 0, width, height);
         this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
         this.text.forEach(txt => txt.draw(ctx));
+        this.objects.forEach(row => row.forEach(obj => { if(obj != null) { obj.draw(ctx) } }));
         this.elf.move(this.grid);
         this.collide();
         this.elf.draw(ctx);
@@ -91,6 +102,10 @@
 
       add_text(text) {
         this.text.push(text);
+      }
+
+      add_object(obj) {
+        this.objects.push(obj);
       }
     }
 
@@ -120,9 +135,18 @@
           case "2":
             ctx.fillStyle = this.bg;
             ctx.fillRect(this.x, this.y, this.sz, this.sz);
-            ctx.fillStyle = "#00FF00";
-            ctx.arc(this.x + this.sz / 2, this.y + this.sz / 2, this.sz / 4, 0, 2 * Math.PI);
-            ctx.fill();
+            //ctx.fillStyle = "#00FF00";
+            //ctx.arc(this.x + this.sz / 2, this.y + this.sz / 2, this.sz / 4, 0, 2 * Math.PI);
+            //ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle = this.fg;
+            ctx.fillRect(this.x + 8, this.y + 3, 2, this.sz - 6 );
+            ctx.fillRect(this.x + 10, this.y + 4, 8, this.sz - 15 );
+            ctx.closePath();
+            break;
+          case "P":
+            ctx.fillStyle = this.bg;
+            ctx.fillRect(this.x, this.y, this.sz, this.sz);
             break;
           default:
             ctx.fillStyle = this.fg;
@@ -157,7 +181,6 @@
         this.options[1] = grid[this.i][this.j + 1].type != "X" // 03h
         this.options[2] = grid[this.i + 1][this.j].type != "X" // 06h
         this.options[3] = grid[this.i][this.j - 1].type != "X" // 09h
-        //console.log("Updated options: (", this.i, this.j, ") [", this.options[0], this.options[1], this.options[2], this.options[3], "]")
       }
 
       draw(ctx) {
@@ -245,18 +268,88 @@
       }
     }
 
+    class Present {
+      constructor(x, y, sz) {
+        this.sz1 = 10;
+        this.sz2 = 2;
+        this.x = x + sz / 2 - this.sz1 / 2;
+        this.y = y + sz / 2 - this.sz1 / 2;
+        this.status = "s"
+        this.bkg_color = "#DDDDDD";
+        this.frg_color = "#808080";
+        this.type = "P";
+      }
+
+      draw(ctx) {
+        if(this.status != "h") {
+          ctx.beginPath();
+          ctx.fillStyle = this.frg_color;
+          ctx.fillRect(this.x, this.y, this.sz1, this.sz1);
+          let x = this.x + this.sz1 / 2 - this.sz2 / 2;
+          let y = this.y + this.sz1 / 2 - this.sz2 / 2;
+          ctx.fillStyle = this.bkg_color;
+          ctx.fillRect( x, this.y, this.sz2, this.sz1 );
+          ctx.fillRect( this.x, y, this.sz1, this.sz2 );
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+
+      hide() {
+        this.status = "h";
+      }
+    }
+
     /* ---------------------------------------------------------------------- */
     console.log( "Creating map" );
     function Level1() {
-      var map = new Map(["XXXXX", "X1XXX", "X   X", "XXX2X", "XXXXX"],
-        25, 10, 10);
+      var map = new Map([
+        "XXXXX                          ",
+        "X1XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXX                          ",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                            2X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 35);
+      map.add_text(new Text(250, 80, "normal", "This is Mike 'the elf'."));
+			map.add_text(new Text(250, 100, "normal", "Mike works for Santa, but he has lost the presents he crafted"));
+			map.add_text(new Text(250, 120, "normal", "for this year's Christmas. Can you help him recover the lost"));
+			map.add_text(new Text(250, 140, "normal", "presents?"));
+      map.add_text(new Text(250, 160, "small", "Use tha arrow keys to indicate Mike the way to the flag!"));
+      map.add_text(new Text(725, 20, "small", "Stage 1/7", color="#000"));
       return(map);
     }
     function Level2() {
-      var map = new Map(["XXXXXXXXXXXXXXXXX", "X1XX       X   2X",
-        "X XX XXXXX X XXXX", "X XX  XXXX X  XXX", "X XXX XXXX XX XXX",
-        "X     XXX  XX   X", "XXXXXXXXX XXXXX X", "XXXXXXX         X",
-        "XXXXXXXXXXXXXXXXX"], 25, 10, 10);
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X2                            X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "X                             X",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X               P             X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "X                             X",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                            1X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175);
+      map.add_text(new Text(200, 80, "normal", "As you see, Mike is very good at following indications."));
+			map.add_text(new Text(410, 100, "normal", "Do you see!?"));
+			map.add_text(new Text(230, 120, "normal", "The is a present in the midde of the path!"));
+      map.add_text(new Text(210, 140, "normal", "Hurry! Let's move Mike so he can get it!"));
       return(map);
     }
     /* ---------------------------------------------------------------------- */
@@ -278,11 +371,11 @@
       return(map);
     }
     /* ---------------------------------------------------------------------- */
-    var gameStatus = "staring";
+    var gameStatus = "play";
     var gameLevel = 1;
     var starring = create_starring();
     var ending = create_ending();
-    var map = Level1();
+    var map = Level2();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
