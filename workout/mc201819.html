@@ -181,9 +181,9 @@
       }
 
       set_direction(direction) {
-        //if(this.direction == "stop") {
+        if(this.direction == "stop") {
           this.direction = direction;
-        //}
+        }
       }
 
       update_options(grid) {
@@ -217,8 +217,6 @@
         ctx.fillStyle = this.bodyColor;
         ctx.fill();
         ctx.closePath();
-
-        console.log(this.i, this.j, this.direction, this.options[0], this.options[1], this.options[2], this.options[3])
       }
 
       move(grid) {
@@ -232,7 +230,7 @@
                 this.j += 1
                 this.x += this.sz;
               } else {
-                this.direction == "stop"
+                this.direction = "stop"
               }
               break;
             case "left":
@@ -240,7 +238,7 @@
                 this.j -= 1
                 this.x -= this.sz;
               } else {
-                this.direction == "stop"
+                this.direction = "stop"
               }
               break;
             case "up":
@@ -248,7 +246,7 @@
                 this.i -= 1
                 this.y -= this.sz;
               } else {
-                this.direction == "stop"
+                this.direction = "stop"
               }
               break;
             case "down":
@@ -256,8 +254,7 @@
                 this.i += 1
                 this.y += this.sz;
               } else {
-                //console.log("STOP")
-                this.direction == "stop"
+                this.direction = "stop"
               }
               break;
           }
@@ -407,6 +404,30 @@
       map.add_text(new Text(725, 20, "small", "Stage 4/7", color="#000"));
       return(map);
     }
+    function Level5() {
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                             X",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "X   X      X        P X       X",
+        "XX                          X X",
+        "XPXX                       X  X",
+        "X                 X           X",
+        "X    X                    X   X",
+        "X2       X    X P X       P   X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "X1X    X  X      X          P X",
+        "X      X     X                X",
+        "XX       X XX                 X",
+        "X X                 X         X",
+        "X               XX           XX",
+        "X                             X",
+        "XP X                          X",
+        "X      X                      X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 6);
+      map.add_text(new Text(725, 20, "small", "Stage 5/7", color="#000"));
+      return(map);
+    }
     /* ---------------------------------------------------------------------- */
     function create_starring() {
       let foregroud = "#EEEEEE";
@@ -430,7 +451,7 @@
     var gameLevel = 1;
     var starring = create_starring();
     var ending = create_ending();
-    var map = Level4();
+    var map = Level5();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
@@ -454,6 +475,9 @@
                 break;
               case 4:
                 map = Level4();
+                break;
+              case 5:
+                map = Level5();
                 break;
               default:
                 gameStatus = "end";
