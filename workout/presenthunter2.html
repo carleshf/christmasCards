@@ -29,7 +29,7 @@
     /* ---------------------------------------------------------------------- */
 
     class Map {
-      constructor(string, sz, padX, padY, fg = "#696969", bg = "#EEEEEE") {
+      constructor(string, sz, padX, padY, nP = 0, fg = "#696969", bg = "#EEEEEE") {
         this.nrow = string.lenght;
         this.ncol = string[ 0 ].split("");
         this.padX = padX;
@@ -41,6 +41,7 @@
         this.elf = null;
         this.fg = fg;
         this.bg = bg;
+        this.presents = {total: nP, user:0}
         this.victory = false;
         this.process(string);
       }
@@ -78,8 +79,10 @@
           this.victory = true;
         }
         if(this.objects[this.elf.i][this.elf.j] != null) {
-          if(this.objects[this.elf.i][this.elf.j].type == "P") {
+          if(this.objects[this.elf.i][this.elf.j].type == "P" &
+              this.objects[this.elf.i][this.elf.j].status == "s") {
             this.objects[this.elf.i][this.elf.j].hide();
+            this.presents.user += 1;
           }
         }
       }
@@ -92,6 +95,11 @@
         ctx.clearRect(0, 0, width, height);
         this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
         this.text.forEach(txt => txt.draw(ctx));
+
+        if(this.presents.total > 0) {
+          new Text(710, 40, "small", "Presents " + this.presents.user + "/" + this.presents.total, color="#000").draw(ctx);
+        }
+
         this.objects.forEach(row => row.forEach(obj => { if(obj != null) { obj.draw(ctx) } }));
         this.elf.move(this.grid);
         this.collide();
@@ -173,7 +181,9 @@
       }
 
       set_direction(direction) {
-        this.direction = direction;
+        //if(this.direction == "stop") {
+          this.direction = direction;
+        //}
       }
 
       update_options(grid) {
@@ -207,39 +217,47 @@
         ctx.fillStyle = this.bodyColor;
         ctx.fill();
         ctx.closePath();
+
+        console.log(this.i, this.j, this.direction, this.options[0], this.options[1], this.options[2], this.options[3])
       }
 
       move(grid) {
         this.update_options(grid);
 
         if(this.direction != "stop") {
+          //console.log("move>", this.direction, this.options[2])
           switch( this.direction ) {
             case "right":
               if(this.options[1]) {
-                //this.x += this.speed;
                 this.j += 1
                 this.x += this.sz;
+              } else {
+                this.direction == "stop"
               }
               break;
             case "left":
               if(this.options[3]) {
-                //this.x -= this.speed;
                 this.j -= 1
                 this.x -= this.sz;
+              } else {
+                this.direction == "stop"
               }
               break;
             case "up":
               if(this.options[0]) {
-                //this.y -= this.speed;
                 this.i -= 1
                 this.y -= this.sz;
+              } else {
+                this.direction == "stop"
               }
               break;
             case "down":
               if(this.options[2]) {
-                //this.y += this.speed;
                 this.i += 1
                 this.y += this.sz;
+              } else {
+                //console.log("STOP")
+                this.direction == "stop"
               }
               break;
           }
@@ -345,11 +363,48 @@
         "X                             X",
         "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                            1X",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175);
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 1);
       map.add_text(new Text(200, 80, "normal", "As you see, Mike is very good at following indications."));
 			map.add_text(new Text(410, 100, "normal", "Do you see!?"));
 			map.add_text(new Text(230, 120, "normal", "The is a present in the midde of the path!"));
       map.add_text(new Text(210, 140, "normal", "Hurry! Let's move Mike so he can get it!"));
+      map.add_text(new Text(725, 20, "small", "Stage 2/7", color="#000"));
+      return(map);
+    }
+    function Level3() {
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "XXX                      XXXXXX",
+        "XXX XXXXXXXXXXXXXXXXXXXX XXXXXX",
+        "X1X XXXXXXXXXXXXXXXXX  P     2X",
+        "X X XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                             X",
+        "XXX            X              X",
+        "XXX XXXXXXXXXXXX XXXXXXXXXXXXXX",
+        "XXX      P       XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 2);
+      map.add_text(new Text(725, 20, "small", "Stage 3/7", color="#000"));
+      return(map);
+    }
+    function Level4() {
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X1  X                      X2 X",
+        "X                          X  X",
+        "X                          X  X",
+        "X  X P                     X  X",
+        "X                             X",
+        "X                       X     X",
+        "X        X                   PX",
+        "X         X                   X",
+        "XXX       X                 X X",
+        "X         X                  XX",
+        "X        X                 X  X",
+        "X                        X    X",
+        "X    XX                   XXX X",
+        "X                             X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 2);
+      map.add_text(new Text(725, 20, "small", "Stage 4/7", color="#000"));
       return(map);
     }
     /* ---------------------------------------------------------------------- */
@@ -375,7 +430,7 @@
     var gameLevel = 1;
     var starring = create_starring();
     var ending = create_ending();
-    var map = Level2();
+    var map = Level4();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
@@ -393,6 +448,12 @@
             switch(gameLevel) {
               case 2:
                 map = Level2();
+                break;
+              case 3:
+                map = Level3();
+                break;
+              case 4:
+                map = Level4();
                 break;
               default:
                 gameStatus = "end";
