@@ -36,6 +36,7 @@
         this.padY = padY;
         this.sz = sz;
         this.grid = [];
+        this.text = [];
         this.elf = null;
         this.fg = fg;
         this.bg = bg;
@@ -80,12 +81,17 @@
 			draw(ctx) {
         ctx.clearRect(0, 0, width, height);
         this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
+        this.text.forEach(txt => txt.draw(ctx));
         this.elf.move(this.grid);
         this.collide();
         this.elf.draw(ctx);
 
         return(map.has_win());
 			}
+
+      add_text(text) {
+        this.text.push(text);
+      }
     }
 
     class Tile {
@@ -216,7 +222,27 @@
           }
         }
       }
+    }
 
+    class Text {
+      constructor(x, y, size, text, color="#FFA500") {
+        this.x = x; this.y = y; this.size = size; this.text = text;
+        this.color = color;
+      }
+
+      draw(ctx) {
+        if(this.size == "small") {
+          ctx.font = "11px sans-serif";
+        }
+        if(this.size == "normal") {
+          ctx.font = "16px sans-serif";
+        }
+        if(this.size == "large") {
+          ctx.font = "48px sans-serif";
+        }
+        ctx.fillStyle = this.color;
+        ctx.fillText(this.text, this.x, this.y);
+      }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -239,6 +265,9 @@
       let background = "#EEEEEE";
       var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 100,
         foregroud, background);
+      map.add_text(new Text(360, 175, "small", "Welcome to", color="#8B0000"));
+      map.add_text(new Text(310, 200, "normal", "An Elf Christmas Tale", color="#006400"));
+      map.add_text(new Text(320, 225, "small", "Press 'up' to sart the game", color="#8B0000"));
       return(map);
     }
     function create_ending() {
