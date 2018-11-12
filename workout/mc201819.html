@@ -371,15 +371,16 @@
     function Level3() {
       var map = new Map([
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "XXX                      XXXXXX",
-        "XXX XXXXXXXXXXXXXXXXXXXX XXXXXX",
-        "X1X XXXXXXXXXXXXXXXXX  P     2X",
+        "X1X                           X",
+        "X X XXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "X X X                       X2X",
         "X X XXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                             X",
-        "XXX            X              X",
-        "XXX XXXXXXXXXXXX XXXXXXXXXXXXXX",
-        "XXX      P       XXXXXXXXXXXXXX",
+        "XXX XXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "XXX XXXXXXXXXXXXXXXXXXXXXXXXX X",
+        "XXX  P                     P  X",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 2);
+      map.add_text(new Text(200, 80, "normal", "You're on your own!"));
       map.add_text(new Text(725, 20, "small", "Stage 3/7", color="#000"));
       return(map);
     }
@@ -401,6 +402,7 @@
         "X    XX                   XXX X",
         "X                             X",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 2);
+      map.add_text(new Text(240, 100, "normal", "Don't worry too much! It is easier than it seems!"));
       map.add_text(new Text(725, 20, "small", "Stage 4/7", color="#000"));
       return(map);
     }
@@ -425,6 +427,8 @@
         "XP X                          X",
         "X      X                      X",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 6);
+      map.add_text(new Text(240, 50, "normal", "Okay! The game gotta start being hard!"));
+      map.add_text(new Text(200, 70, "normal", "Don't forget the presents! We came here for them!"));
       map.add_text(new Text(725, 20, "small", "Stage 5/7", color="#000"));
       return(map);
     }
@@ -447,11 +451,11 @@
       return(map);
     }
     /* ---------------------------------------------------------------------- */
-    var gameStatus = "staring";
+    var gameStatus = "play";
     var gameLevel = 1;
     var starring = create_starring();
     var ending = create_ending();
-    var map = Level1();
+    var map = Level5();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
