@@ -63,9 +63,14 @@
         }
       }
 
+      collide() {
+
+      }
+
 			draw(ctx) {
         this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
         this.elf.move(this.grid);
+        this.collide();
         this.elf.draw(ctx);
 			}
     }
@@ -108,7 +113,7 @@
     }
 
     class Elf {
-      constructor(x, y, i, j, sz, speed = 1, direction = "stop") {
+      constructor(x, y, i, j, sz, direction = "stop") {
         this.x = x;
         this.y = y;
         this.i = i;
@@ -118,8 +123,6 @@
         this.w = 10;
         this.direction = direction;
         this.options = [ true, true, true, true ];
-        this.speed = speed;
-        //console.log("Created elf in (x:", this.x, " (", this.i, "), y:", this.y, " (", this.j, ")) --> [", this.options[0], this.options[1], this.options[2], this.options[3], "]");
       }
 
       set_direction(direction) {
@@ -183,7 +186,10 @@
 
     /* ---------------------------------------------------------------------- */
     console.log( "Creating map" );
-    var map = new Map(["XXXXX", "XX1XX", "X  2X", "XXXXX"], 25, 10, 10);
+    var map = new Map(["XXXXX", "X1XXX", "X   X", "XXX2X", "XXXXX"], 25, 10, 10);
+    //var map = new Map(["XXXXXXXXXXXXXXXXX", "X1XX       X   2X",  "X XX XXXXX X XXXX", "X XX  XXXX X  XXX",
+    //  "X XXX XXXX XX XXX", "X     XXX  XX   X", "XXXXXXXXX XXXXX X", "XXXXXXX         X", "XXXXXXXXXXXXXXXXX"], 25, 10, 10 );
+
     //var map = new Map(["EBE", "R0L", "R L", "R1L", "ETE"], 25, 10, 10 );
     //var map = new Map([" B      B ", "R0L    91L", "R.8BBB9..L", "R...P...5 ", " TTTTTTT  "], 25, 10, 10);
     //var map = new Map([ "-BBB--BBB--", "R0. LR..1L-", "-T6.LR.5T--", "--R.89.L---", "--R. ..L---", "--R..XX----", "---6  PL---", "----TTT----"], 25, 10, 10);
