@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>An Elf Christmas Tale</title>
+  <style>
+    * { padding: 0; margin: 0; }
+    canvas { background: #eee; display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="800" height="600"></canvas>
+	<script>
+		var canvas = document.getElementById("myCanvas");
+		var context = canvas.getContext("2d");
+
+		/* --------------------------------------------------------------------- */
+		var width = 800;
+		var height = 600;
+		var floorHeight = 10;
+		var rightPressed = false;
+    var leftPressed = false;
+    var upPressed = false;
+		var downPressed = false;
+
+		/* ---------------------------------------------------------------------- */
+		document.addEventListener("keydown", keyDownHandler, false);
+		document.addEventListener("keyup", keyUpHandler, false);
+    /* ---------------------------------------------------------------------- */
+
+    class Map {
+      constructor(string, sz, padX, padY) {
+        this.nrow = string.lenght;
+        this.ncol = string[ 0 ].split("");
+        this.padX = padX;
+        this.padY = padY;
+        this.sz = sz;
+        this.grid = [];
+        this.elf = null;
+        this.process(string);
+      }
+
+      process(string) {
+        let accumY = this.padY;
+        for(let ii = 0; ii < string.length; ii++) {
+          let row = [];
+          let accumX = this.padX;
+          let sline = string[ ii ].split("");
+          for(let jj = 0; jj < sline.length; jj++) {
+            let tile = new Tile(accumX, accumY, this.sz, sline[ jj ])
+            row.push(tile);
+            switch (tile.type) {
+              case "1": // Elf
+                this.elf = new Elf(accumX, accumY, ii, jj, this.sz);
+                break;
+              default:
+
+            }
+            accumX += this.sz;
+          }
+          this.grid.push(row);
+          accumY += this.sz;
+        }
+      }
+
+			draw(ctx) {
+        this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
+        this.elf.move(this.grid);
+        this.elf.draw(ctx);
+			}
+    }
+
+    class Tile {
+      constructor(posX, posY, sz, type) {
+        this.x = posX;
+        this.y = posY;
+        this.type = type;
+        this.sz = sz;
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        switch (this.type) {
+          case " ":
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(this.x, this.y, this.sz, this.sz);
+            break;
+          case "1":
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(this.x, this.y, this.sz, this.sz);
+            ctx.fillStyle = "#FF0000";
+            ctx.arc(this.x + this.sz / 2, this.y + this.sz / 2, this.sz / 4, 0, 2 * Math.PI);
+            ctx.fill();
+            break;
+          case "2":
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(this.x, this.y, this.sz, this.sz);
+            ctx.fillStyle = "#00FF00";
+            ctx.arc(this.x + this.sz / 2, this.y + this.sz / 2, this.sz / 4, 0, 2 * Math.PI);
+            ctx.fill();
+            break;
+          default:
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(this.x, this.y, this.sz, this.sz);
+            break;
+        }
+        ctx.closePath();
+      }
+    }
+
+    class Elf {
+      constructor(x, y, i, j, sz, speed = 1, direction = "stop") {
+        this.x = x;
+        this.y = y;
+        this.i = i;
+        this.j = j;
+        this.sz = sz;
+        this.h = 20;
+        this.w = 10;
+        this.direction = direction;
+        this.options = [ true, true, true, true ];
+        this.speed = speed;
+        //console.log("Created elf in (x:", this.x, " (", this.i, "), y:", this.y, " (", this.j, ")) --> [", this.options[0], this.options[1], this.options[2], this.options[3], "]");
+      }
+
+      set_direction(direction) {
+        this.direction = direction;
+      }
+
+      update_options(grid) {
+        this.options[0] = grid[this.i - 1][this.j].type != "X" // 12h
+        this.options[1] = grid[this.i][this.j + 1].type != "X" // 03h
+        this.options[2] = grid[this.i + 1][this.j].type != "X" // 06h
+        this.options[3] = grid[this.i][this.j - 1].type != "X" // 09h
+        console.log("Updated options: (", this.i, this.j, ") [", this.options[0], this.options[1], this.options[2], this.options[3], "]")
+      }
+
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = "#0000FF";
+        ctx.arc(this.x + this.sz / 2, this.y + this.sz / 2, this.sz / 4, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      move(grid) {
+        this.update_options(grid);
+
+        if(this.direction != "stop") {
+          switch( this.direction ) {
+            case "right":
+              if(this.options[1]) {
+                //this.x += this.speed;
+                this.j += 1
+                this.x += this.sz;
+              }
+              break;
+            case "left":
+              if(this.options[3]) {
+                //this.x -= this.speed;
+                this.j -= 1
+                this.x -= this.sz;
+              }
+              break;
+            case "up":
+              if(this.options[0]) {
+                //this.y -= this.speed;
+                this.i -= 1
+                this.y -= this.sz;
+              }
+              break;
+            case "down":
+              if(this.options[2]) {
+                //this.y += this.speed;
+                this.i += 1
+                this.y += this.sz;
+              }
+              break;
+          }
+        }
+      }
+
+    }
+
+    /* ---------------------------------------------------------------------- */
+    console.log( "Creating map" );
+    var map = new Map(["XXXXX", "XX1XX", "X  2X", "XXXXX"], 25, 10, 10);
+    //var map = new Map(["EBE", "R0L", "R L", "R1L", "ETE"], 25, 10, 10 );
+    //var map = new Map([" B      B ", "R0L    91L", "R.8BBB9..L", "R...P...5 ", " TTTTTTT  "], 25, 10, 10);
+    //var map = new Map([ "-BBB--BBB--", "R0. LR..1L-", "-T6.LR.5T--", "--R.89.L---", "--R. ..L---", "--R..XX----", "---6  PL---", "----TTT----"], 25, 10, 10);
+    function game() {
+      if(rightPressed) {
+        map.elf.set_direction("right");
+        rightPressed = false;
+      }
+      if(leftPressed) {
+        map.elf.set_direction("left");
+        leftPressed = false;
+      }
+      if(upPressed) {
+        map.elf.set_direction("up");
+        upPressed = false;
+      }
+      if(downPressed) {
+        map.elf.set_direction("down");
+        downPressed = false;
+      }
+      map.draw(context);
+    }
+    /* ---------------------------------------------------------------------- */
+		function keyDownHandler(e) {
+			if(e.keyCode == 39) {
+				console.log("right arrow key was pressed.");
+				rightPressed = true;
+			} else if(e.keyCode == 37) {
+				console.log("left arrow key was pressed.");
+				leftPressed = true;
+			} else if(e.keyCode == 38) {
+				console.log("up arrow was pressed.");
+				upPressed = true;
+			} else if(e.keyCode == 40) {
+				console.log("down arrow was pressed.");
+				downPressed = true;
+			} else if(e.keyCode == 32) {
+				console.log("space key was pressed.");
+			}
+		}
+
+    function keyUpHandler(e) {
+      if(e.keyCode == 39) {
+        rightPressed = false;
+      } else if(e.keyCode == 37) {
+        leftPressed = false;
+      } else if(e.keyCode == 38) {
+        upPressed = false;
+      } else if(e.keyCode == 40) {
+        downPressed = false;
+      } else if(e.keyCode == 32) {
+      }
+    }
+
+		setInterval(game, 30);
+	</script>
+</body>
+</html>
