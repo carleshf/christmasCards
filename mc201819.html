@@ -432,6 +432,32 @@
       map.add_text(new Text(725, 20, "small", "Stage 5/7", color="#000"));
       return(map);
     }
+    function Level6() {
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X      X P            X       X",
+        "X XXX XXXXX XXXXXXXXX X XXXXX X",
+        "X P X     X X    X    X       X",
+        "XX             X          X   X",
+        "X2X                           X",
+        "X       X                     X",
+        "X  X   X          X        X  X",
+        "X  P  X X      X  PX      P   X",
+        "XXXXXXXPXXX XXXXXXXXX X XXXXXXX",
+        "X1X   X X X      X    X     P X",
+        "X   X X     X        X        X",
+        "XXXPX  X  XX        X         X",
+        "X  X   X    X  X       X      X",
+        "X      X        XX           XX",
+        "X  PX    X XP        X        X",
+        "X XX XX        X              X",
+        "X        X                    X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 9);
+      map.add_text(new Text(200, 50, "normal", "Yeah! I see you get how this works..."));
+      map.add_text(new Text(300, 70, "normal", "Don't stop! See you at the end!"));
+      map.add_text(new Text(725, 20, "small", "Stage 6/7", color="#000"));
+      return(map);
+    }
     /* ---------------------------------------------------------------------- */
     function create_starring() {
       let foregroud = "#EEEEEE";
@@ -482,6 +508,9 @@
                 break;
               case 5:
                 map = Level5();
+                break;
+              case 6:
+                map = Level6();
                 break;
               default:
                 gameStatus = "end";
