@@ -26,6 +26,7 @@
 		/* ---------------------------------------------------------------------- */
 		document.addEventListener("keydown", keyDownHandler, false);
 		document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("click", onClick, false);
     /* ---------------------------------------------------------------------- */
 
     class Map {
@@ -37,6 +38,7 @@
         this.sz = sz;
         this.grid = [];
         this.objects = [];
+        this.extras = [];
         this.text = [];
         this.elf = null;
         this.fg = fg;
@@ -95,6 +97,7 @@
         ctx.clearRect(0, 0, width, height);
         this.grid.forEach(row => row.forEach(elm => elm.draw(ctx)));
         this.text.forEach(txt => txt.draw(ctx));
+        this.extras.forEach(elm => elm.draw(ctx));
 
         if(this.presents.total > 0) {
           new Text(710, 40, "small", "Presents " + this.presents.user + "/" + this.presents.total, color="#000").draw(ctx);
@@ -112,8 +115,18 @@
         this.text.push(text);
       }
 
-      add_object(obj) {
-        this.objects.push(obj);
+      add_extra(obj) {
+        this.extras.push(obj);
+      }
+
+      check_buttons(mX, mY) {
+        this.extras.forEach(obj => {
+          let bX = obj.x <= mX && obj.x + obj.sz > mX;
+          let bY = obj.y <= mY && obj.y + obj.sz > mY;
+          if(bX & bY) {
+            obj.click();
+          }
+        })
       }
     }
 
@@ -303,8 +316,8 @@
           let x = this.x + this.sz1 / 2 - this.sz2 / 2;
           let y = this.y + this.sz1 / 2 - this.sz2 / 2;
           ctx.fillStyle = this.bkg_color;
-          ctx.fillRect( x, this.y, this.sz2, this.sz1 );
-          ctx.fillRect( this.x, y, this.sz1, this.sz2 );
+          ctx.fillRect(x, this.y, this.sz2, this.sz1);
+          ctx.fillRect(this.x, y, this.sz1, this.sz2);
           ctx.fill();
           ctx.closePath();
         }
@@ -312,6 +325,89 @@
 
       hide() {
         this.status = "h";
+      }
+    }
+
+    class ButtonT {
+      constructor(x, y, sz) {
+        this.x = x;
+        this.y = y;
+        this.sz = sz;
+        this.letter = "t";
+        this.bg = "#1DA1F2";
+        this.fg = "#FFFFFF";
+      }
+
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = this.bg;
+        ctx.fillRect(this.x, this.y, this.sz, this.sz);
+        ctx.fillStyle = this.fg;
+        ctx.font = "48px sans-serif";
+        ctx.fillText(this.letter, this.x + this.sz / 2.75, this.y + this.sz);
+        ctx.closePath();
+      }
+
+      click() {
+        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job! ");
+        let url = encodeURI("https://github.com/carleshf/christmasCards/blob/master/mc201819.html");
+        window.open("https://twitter.com/share?text=" + message + "&url=" + url, "twitter-popup", "height=350,width=600");
+      }
+    }
+
+    class ButtonF {
+      constructor(x, y, sz) {
+        this.x = x;
+        this.y = y;
+        this.sz = sz;
+        this.letter = "f";
+        this.bg = "#3b5998";
+        this.fg = "#f7f7f7";
+      }
+
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = this.bg;
+        ctx.fillRect(this.x, this.y, this.sz, this.sz);
+        ctx.fillStyle = this.fg;
+        ctx.font = "48px sans-serif";
+        ctx.fillText(this.letter, this.x + this.sz / 2.75, this.y + this.sz);
+        ctx.closePath();
+      }
+
+      click() {
+        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job! ");
+        let url = encodeURI("https://htmlpreview.github.io/?https://github.com/carleshf/christmasCards/blob/master/mc201819.html");
+        let imgurl = encodeURI("https://carleshf.github.io/christmasCards/img/mc201819.png");
+        window.open("https://www.facebook.com/sharer/sharer.php?s=100&t=" + subject + "&p[url]=" + url + "&p[images][0]=" + imgurl + "&p[summary]=" + message, "facebook-popup", "height=350,width=600");
+      }
+    }
+
+    class ButtonE {
+      constructor(x, y, sz) {
+        this.x = x;
+        this.y = y;
+        this.sz = sz;
+        this.letter = "@";
+        this.bg = "#4682B4";
+        this.fg = "#F0F8FF";
+      }
+
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = this.bg;
+        ctx.fillRect(this.x, this.y, this.sz, this.sz);
+        ctx.fillStyle = this.fg;
+        ctx.font = "48px sans-serif";
+        ctx.fillText(this.letter, this.x + 1.5, this.y + this.sz);
+        ctx.closePath();
+      }
+
+      click() {
+        let subject = "Mike%20the%20elf%20wishes%20you%20a%20Marry%20Christmas";
+        let body = "message%20goes%20here";
+        let email = "mailto:?&subject=Mike the elf and me wish you a Marry Christmas!&body=Woha!%20I%20helped%20Mike%20the%20elf%20to%20recover%20his%20lost%20presents!%20And%20I%20did%20a%20good%20job!%20You%20can%20play%20to%20the%20same%20Christmas%20minigame%20here%3A%20https%3A//carleshf.github.io/christmasCards/img/mc201819.png";
+        window.open(email,"black_")
       }
     }
 
@@ -472,8 +568,16 @@
     function create_ending() {
       let foregroud = "#EEEEEE";
       let background = "#EEEEEE";
-      var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 100,
+      var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 200,
         foregroud, background);
+      map.add_extra(new ButtonT(260, 300, 50));
+      map.add_extra(new ButtonF(360, 300, 50));
+      map.add_extra(new ButtonE(460, 300, 50));
+      map.add_text(new Text(310, 100, "normal", "Mike 'the elf' and I wish you", color="#006400"));
+      map.add_text(new Text(320, 120, "normal", "a merry Christmas and", color="#8B0000"));
+      map.add_text(new Text(340, 140, "normal", "a happy New Year", color="#006400"));
+      map.add_text(new Text(410, 170, "normal", "~ Carles", color="#000000"));
+      map.add_text(new Text(225, 275, "small", "You can share your score or the link to this game using these buttons...", color="#8B0000"));
       return(map);
     }
     /* ---------------------------------------------------------------------- */
@@ -574,6 +678,12 @@
         downPressed = false;
       } else if(e.keyCode == 32) {
       }
+    }
+
+    function onClick(e) {
+      let mX = event.pageX - canvas.offsetLeft;
+      let mY = event.pageY - canvas.offsetTop;
+      ending.check_buttons(mX, mY);
     }
 
 		setInterval(game, 30);
