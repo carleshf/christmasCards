@@ -236,7 +236,6 @@
         this.update_options(grid);
 
         if(this.direction != "stop") {
-          //console.log("move>", this.direction, this.options[2])
           switch( this.direction ) {
             case "right":
               if(this.options[1]) {
@@ -440,7 +439,7 @@
 			map.add_text(new Text(250, 100, "normal", "Mike works for Santa, but he has lost the presents he crafted"));
 			map.add_text(new Text(250, 120, "normal", "for this year's Christmas. Can you help him recover the lost"));
 			map.add_text(new Text(250, 140, "normal", "presents?"));
-      map.add_text(new Text(250, 160, "small", "Use tha arrow keys to indicate Mike the way to the flag!"));
+      map.add_text(new Text(250, 160, "small", "Use the arrow keys to indicate Mike the way to the flag!"));
       map.add_text(new Text(725, 20, "small", "Stage 1/7", color="#000"));
       return(map);
     }
@@ -459,7 +458,7 @@
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 175, nP = 1);
       map.add_text(new Text(200, 80, "normal", "As you see, Mike is very good at following indications."));
 			map.add_text(new Text(410, 100, "normal", "Do you see!?"));
-			map.add_text(new Text(230, 120, "normal", "The is a present in the midde of the path!"));
+			map.add_text(new Text(230, 120, "normal", "The is a present in the middle of the path!"));
       map.add_text(new Text(210, 140, "normal", "Hurry! Let's move Mike so he can get it!"));
       map.add_text(new Text(725, 20, "small", "Stage 2/7", color="#000"));
       return(map);
@@ -562,7 +561,7 @@
         foregroud, background);
       map.add_text(new Text(360, 175, "small", "Welcome to", color="#8B0000"));
       map.add_text(new Text(310, 200, "normal", "An Elf Christmas Tale", color="#006400"));
-      map.add_text(new Text(320, 225, "small", "Press 'up' to sart the game", color="#8B0000"));
+      map.add_text(new Text(320, 225, "small", "Press 'up' to start the game", color="#8B0000"));
       return(map);
     }
     function create_ending() {
