@@ -398,7 +398,7 @@
         ctx.fillRect(this.x, this.y, this.sz, this.sz);
         ctx.fillStyle = this.fg;
         ctx.font = "48px sans-serif";
-        ctx.fillText(this.letter, this.x + 1.5, this.y + this.sz);
+        ctx.fillText(this.letter, this.x + 1.5, this.y + this.sz - 5);
         ctx.closePath();
       }
 
@@ -537,7 +537,7 @@
         "X2X                           X",
         "X       X                     X",
         "X  X   X          X        X  X",
-        "X  P  X X      X  PX      P   X",
+        "X  P  X X      X P X      P   X",
         "XXXXXXXPXXX XXXXXXXXX X XXXXXXX",
         "X1X   X X X      X    X     P X",
         "X   X X     X        X        X",
@@ -547,7 +547,7 @@
         "X  PX    X XP        X        X",
         "X XX XX        X              X",
         "X        X                    X",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 9);
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 10);
       map.add_text(new Text(200, 50, "normal", "Yeah! I see you get how this works..."));
       map.add_text(new Text(300, 70, "normal", "Don't stop! See you at the end!"));
       map.add_text(new Text(725, 20, "small", "Stage 6/7", color="#000"));
