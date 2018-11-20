@@ -328,7 +328,7 @@
     }
 
     class ButtonT {
-      constructor(x, y, sz) {
+      constructor(x, y, sz, s) {
         this.x = x;
         this.y = y;
         this.sz = sz;
@@ -355,7 +355,7 @@
     }
 
     class ButtonF {
-      constructor(x, y, sz) {
+      constructor(x, y, sz, s) {
         this.x = x;
         this.y = y;
         this.sz = sz;
@@ -383,7 +383,7 @@
     }
 
     class ButtonE {
-      constructor(x, y, sz) {
+      constructor(x, y, sz, s) {
         this.x = x;
         this.y = y;
         this.sz = sz;
@@ -564,18 +564,25 @@
       map.add_text(new Text(320, 225, "small", "Press 'up' to start the game", color="#8B0000"));
       return(map);
     }
-    function create_ending() {
+    function create_ending(scores) {
+      console.log(scores);
       let foregroud = "#EEEEEE";
       let background = "#EEEEEE";
-      var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 200,
+      var map = new Map(["XXXXX", "X 1 X", "XXXXX"], 25, 400, 200,
         foregroud, background);
-      map.add_extra(new ButtonT(260, 300, 50));
-      map.add_extra(new ButtonF(360, 300, 50));
-      map.add_extra(new ButtonE(460, 300, 50));
+      map.add_extra(new ButtonT(260, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      map.add_extra(new ButtonE(460, 300, 50, scores.reduce((a, b) => a + b, 0)));
       map.add_text(new Text(310, 100, "normal", "Mike 'the elf' and I wish you", color="#006400"));
       map.add_text(new Text(320, 120, "normal", "a merry Christmas and", color="#8B0000"));
       map.add_text(new Text(340, 140, "normal", "a happy New Year", color="#006400"));
       map.add_text(new Text(410, 170, "normal", "~ Carles", color="#000000"));
+      map.add_text(new Text(225, 200, "small", "Stage 2: " + scores[1], color="#8B0000"));
+      map.add_text(new Text(225, 220, "small", "Stage 3: " + scores[2], color="#8B0000"));
+      map.add_text(new Text(225, 240, "small", "Stage 4: " + scores[3], color="#8B0000"));
+      map.add_text(new Text(300, 200, "small", "Stage 5: " + scores[4], color="#8B0000"));
+      map.add_text(new Text(300, 220, "small", "Stage 6: " + scores[5], color="#8B0000"));
+      map.add_text(new Text(300, 240, "small", "Stage 7: " + scores[6], color="#8B0000"));
       map.add_text(new Text(225, 275, "small", "You can share your score or the link to this game using these buttons...", color="#8B0000"));
       return(map);
     }
@@ -583,12 +590,12 @@
     var gameStatus = "staring";
     var gameLevel = 1;
     var starring = create_starring();
-    var ending = create_ending();
+    var ending = null; //create_ending();
+    var scores = [0, 0, 0, 0, 0, 0, 0];
     var map = Level1();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
-      var scores = [0, 0, 0, 0, 0, 0, 0]
       switch(gameStatus) {
         case "staring":
           starring.draw(context);
@@ -599,7 +606,7 @@
         case "play":
           let rst = draw();
           victory = rst['victory'];
-          scores[gameLevel] = rst['score'];
+          scores[gameLevel - 1] = rst['score'];
           if(victory) {
             gameLevel += 1;
             switch(gameLevel) {
@@ -619,6 +626,7 @@
                 map = Level6();
                 break;
               default:
+                ending = create_ending(scores);
                 gameStatus = "end";
                 break;
             }
