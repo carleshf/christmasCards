@@ -89,8 +89,8 @@
         }
       }
 
-      has_win() {
-        return(this.victory);
+      has_ended() {
+        return({victory: this.victory, score: this.presents.user});
       }
 
 			draw(ctx) {
@@ -108,7 +108,7 @@
         this.collide();
         this.elf.draw(ctx);
 
-        return(map.has_win());
+        return(map.has_ended());
 			}
 
       add_text(text) {
@@ -588,6 +588,7 @@
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
+      var scores = [0, 0, 0, 0, 0, 0, 0]
       switch(gameStatus) {
         case "staring":
           starring.draw(context);
@@ -596,7 +597,9 @@
           }
           break;
         case "play":
-          victory = draw();
+          let rst = draw();
+          victory = rst['victory'];
+          scores[gameLevel] = rst['score'];
           if(victory) {
             gameLevel += 1;
             switch(gameLevel) {
