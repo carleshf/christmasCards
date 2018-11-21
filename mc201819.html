@@ -335,6 +335,7 @@
         this.letter = "t";
         this.bg = "#1DA1F2";
         this.fg = "#FFFFFF";
+        this.s = s;
       }
 
       draw(ctx) {
@@ -348,7 +349,7 @@
       }
 
       click() {
-        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job! ");
+        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job collecting " + this.s + " presents! #christmasishere #geekchristmas");
         let url = encodeURI("https://github.com/carleshf/christmasCards/blob/master/mc201819.html");
         window.open("https://twitter.com/share?text=" + message + "&url=" + url, "twitter-popup", "height=350,width=600");
       }
@@ -362,6 +363,7 @@
         this.letter = "f";
         this.bg = "#3b5998";
         this.fg = "#f7f7f7";
+        this.s = s;
       }
 
       draw(ctx) {
@@ -375,7 +377,7 @@
       }
 
       click() {
-        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job! ");
+        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job collecting " + this.s + " presents!");
         let url = encodeURI("https://htmlpreview.github.io/?https://github.com/carleshf/christmasCards/blob/master/mc201819.html");
         let imgurl = encodeURI("https://carleshf.github.io/christmasCards/img/mc201819.png");
         window.open("https://www.facebook.com/sharer/sharer.php?s=100&t=" + subject + "&p[url]=" + url + "&p[images][0]=" + imgurl + "&p[summary]=" + message, "facebook-popup", "height=350,width=600");
@@ -390,6 +392,7 @@
         this.letter = "@";
         this.bg = "#4682B4";
         this.fg = "#F0F8FF";
+        this.s = s;
       }
 
       draw(ctx) {
@@ -403,9 +406,10 @@
       }
 
       click() {
-        let subject = "Mike%20the%20elf%20wishes%20you%20a%20Marry%20Christmas";
-        let body = "message%20goes%20here";
-        let email = "mailto:?&subject=Mike the elf and me wish you a Marry Christmas!&body=Woha!%20I%20helped%20Mike%20the%20elf%20to%20recover%20his%20lost%20presents!%20And%20I%20did%20a%20good%20job!%20You%20can%20play%20to%20the%20same%20Christmas%20minigame%20here%3A%20https%3A//carleshf.github.io/christmasCards/img/mc201819.png";
+        let subject = encodeURI("Mike the elf wishes you a Marry Christmas!");
+        let message = encodeURI("Woha! I helped Mike the elf to recover his lost presents! And I did a good job collecting " + this.s + " presents!\n\nYou can also play here: https://htmlpreview.github.io/?https://github.com/carleshf/christmasCards/blob/master/mc201819.html");
+
+        let email = "mailto:?&subject=" + subject + "&body=" + message;
         window.open(email,"black_")
       }
     }
@@ -568,11 +572,11 @@
       console.log(scores);
       let foregroud = "#EEEEEE";
       let background = "#EEEEEE";
-      var map = new Map(["XXXXX", "X 1 X", "XXXXX"], 25, 400, 200,
+      var map = new Map(["XXX", "X1X", "XXX"], 25, 500, 200,
         foregroud, background);
-      map.add_extra(new ButtonT(260, 300, 50, scores.reduce((a, b) => a + b, 0)));
-      map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
-      map.add_extra(new ButtonE(460, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      map.add_extra(new ButtonT(320, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      //map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      map.add_extra(new ButtonE(410, 300, 50, scores.reduce((a, b) => a + b, 0)));
       map.add_text(new Text(310, 100, "normal", "Mike 'the elf' and I wish you", color="#006400"));
       map.add_text(new Text(320, 120, "normal", "a merry Christmas and", color="#8B0000"));
       map.add_text(new Text(340, 140, "normal", "a happy New Year", color="#006400"));
@@ -587,7 +591,7 @@
       return(map);
     }
     /* ---------------------------------------------------------------------- */
-    var gameStatus = "staring";
+    var gameStatus = "play";
     var gameLevel = 1;
     var starring = create_starring();
     var ending = null; //create_ending();
