@@ -588,7 +588,7 @@
     function create_starring() {
       let foregroud = "#EEEEEE";
       let background = "#EEEEEE";
-      var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 100,
+      var map = new Map(["XXX", "X1X", "XXX"], 25, 350, 100, 0,
         foregroud, background);
       map.add_text(new Text(360, 175, "small", "Welcome to", color="#8B0000"));
       map.add_text(new Text(310, 200, "normal", "An Elf Christmas Tale", color="#006400"));
@@ -618,12 +618,12 @@
       return(map);
     }
     /* ---------------------------------------------------------------------- */
-    var gameStatus = "play";
-    var gameLevel = 1;
+    var gameStatus = "staring";
+    var gameLevel = 7;
     var starring = create_starring();
     var ending = null; //create_ending();
     var scores = [0, 0, 0, 0, 0, 0, 0];
-    var map = Level1();
+    var map = Level7();
     /* ---------------------------------------------------------------------- */
     function game() {
       var victory = false;
