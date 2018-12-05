@@ -30,7 +30,7 @@
     /* ---------------------------------------------------------------------- */
 
     class Map {
-      constructor(string, sz, padX, padY, nP = 0, fg = "#696969", bg = "#EEEEEE") {
+      constructor(string, sz, padX, padY, nP = 0, fg = "#696969", bg = "#FFFFFF") { // bg = "#EEEEEE") {
         this.nrow = string.lenght;
         this.ncol = string[ 0 ].split("");
         this.padX = padX;
@@ -418,22 +418,22 @@
     console.log( "Creating map" );
     function Level1() {
       var map = new Map([
-        "XXXXX                          ",
-        "X1XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
-        "X XXX                          ",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X1XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -534,6 +534,35 @@
     function Level6() {
       var map = new Map([
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X1X                           X",
+        "X    XXXXX XXXXXXXXXXXXXXXXXX X",
+        "X    X        X P          X  X",
+        "XXX  X    P X XXXX          X X",
+        "X             X             X X",
+        "X  XXX        X  X            X",
+        "X             X          X    X",
+        "XX           PX       2       X",
+        "X   XX      X X               X",
+        "X  X       XXX  X           X X",
+        "XX          X              X  X",
+        "X         X   X  X          X X",
+        "X             X        X      X",
+        "X X           X               X",
+        "X X           X               X",
+        "X X X       X X X       P   X X",
+        "X X        XX X XX      X   X X",
+        "X X        PX X            X  X",
+        "X XXXX XXXXXX XXXXXXXXXXXXXXX X",
+        "XP        P X                 X",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 45, nP = 7);
+      map.add_text(new Text(725, 20, "small", "Stage 6/7", color="#000"));
+      map.add_text(new Text(110, 20, "normal", "Yeah! I see you get how this works..."));
+      map.add_text(new Text(150, 40, "normal", "Don't stop! See you at the end!"));
+      return(map);
+    }
+    function Level7() {
+      var map = new Map([
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X      X P            X       X",
         "X XXX XXXXX XXXXXXXXX X XXXXX X",
         "X P X     X X    X    X       X",
@@ -552,9 +581,7 @@
         "X XX XX        X              X",
         "X        X                    X",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"], 25, 13, 100, nP = 10);
-      map.add_text(new Text(200, 50, "normal", "Yeah! I see you get how this works..."));
-      map.add_text(new Text(300, 70, "normal", "Don't stop! See you at the end!"));
-      map.add_text(new Text(725, 20, "small", "Stage 6/7", color="#000"));
+      map.add_text(new Text(725, 20, "small", "Stage 7/7", color="#000"));
       return(map);
     }
     /* ---------------------------------------------------------------------- */
@@ -572,7 +599,7 @@
       console.log(scores);
       let foregroud = "#EEEEEE";
       let background = "#EEEEEE";
-      var map = new Map(["XXX", "X1X", "XXX"], 25, 500, 200,
+      var map = new Map(["XXX", "X1X", "XXX"], 25, 500, 200, 0,
         foregroud, background);
       map.add_extra(new ButtonT(320, 300, 50, scores.reduce((a, b) => a + b, 0)));
       //map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
@@ -628,6 +655,9 @@
                 break;
               case 6:
                 map = Level6();
+                break;
+              case 7:
+                map = Level7();
                 break;
               default:
                 ending = create_ending(scores);
