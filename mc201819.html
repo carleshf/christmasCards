@@ -601,9 +601,9 @@
       let background = "#EEEEEE";
       var map = new Map(["XXX", "X1X", "XXX"], 25, 500, 200, 0,
         foregroud, background);
-      map.add_extra(new ButtonT(320, 300, 50, scores.reduce((a, b) => a + b, 0)));
-      //map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
-      map.add_extra(new ButtonE(410, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      //map.add_extra(new ButtonT(320, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      ////map.add_extra(new ButtonF(360, 300, 50, scores.reduce((a, b) => a + b, 0)));
+      //map.add_extra(new ButtonE(410, 300, 50, scores.reduce((a, b) => a + b, 0)));
       map.add_text(new Text(310, 100, "normal", "Mike 'the elf' and I wish you", color="#006400"));
       map.add_text(new Text(320, 120, "normal", "a merry Christmas and", color="#8B0000"));
       map.add_text(new Text(340, 140, "normal", "a happy New Year", color="#006400"));
@@ -614,7 +614,7 @@
       map.add_text(new Text(300, 200, "small", "Stage 5: " + scores[4], color="#8B0000"));
       map.add_text(new Text(300, 220, "small", "Stage 6: " + scores[5], color="#8B0000"));
       map.add_text(new Text(300, 240, "small", "Stage 7: " + scores[6], color="#8B0000"));
-      map.add_text(new Text(225, 275, "small", "You can share your score or the link to this game using these buttons...", color="#8B0000"));
+      //map.add_text(new Text(225, 275, "small", "You can share your score or the link to this game using these buttons...", color="#8B0000"));
       return(map);
     }
     /* ---------------------------------------------------------------------- */
