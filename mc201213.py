@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3
 # coding: utf-8
 
 """
@@ -9,6 +9,7 @@
 
 
 from turtle import *
+from functools import reduce
 
 
 line1 = [109, 101, 114, 114, 121, 32, 99, 104, 114, 105, 115, 116, 109, 97, 115]
@@ -63,4 +64,4 @@ if __name__ == "__main__":
     pendown()
     cc_full_snowflake( length, level )
     cc_message()
-    raw_input( 'Press any key to end the program...' )
+    input( 'Press any key to end the program...' )

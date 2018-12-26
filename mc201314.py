@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3
 # coding: utf-8
 
 """
@@ -67,4 +67,4 @@ if __name__ == "__main__":
     pendown()
     cc_santa()
     cc_message()
-    raw_input( 'Press any key to end the program...' )
+    input( 'Press any key to end the program...' )
