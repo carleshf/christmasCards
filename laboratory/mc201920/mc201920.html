@@ -13,28 +13,49 @@
 	<script>
 		var canvas = document.getElementById("myCanvas")
 		var context = canvas.getContext("2d")
+    /* ----------------------------------------------------------------- */
+    var app_color = '#eeeeee'
 
+    function getColor(char, dft) {
+      switch(char) {
+        case 'b':
+          return('#993333')
+        case 'w':
+          return('#FFFFFF')
+        case 'G':
+          return('#404040')
+        case '#':
+          return(dft)
+        default:
+          return('red')
+      }
+    }
     /* ----------------------------------------------------------------- */
     class TimeTraker {
-      constructor(x, y, slots, width) {
+      constructor(x, y, days, slots, width) {
         this.x = x
         this.y = y
+        this.allowed_days = days;
+        this.used_days = 0
         this.allowed_slots = slots
         this.used_slots = 0
         this.width = width
         this.offset_x = 8
         this.width = (this.width - this.offset_x * (this.allowed_slots - 2)) / this.allowed_slots
         this.height = 10
-        console.log(this.width, " // ", this.height, " // ", this.allowed_slots)
       }
 
       addTime() {
-        if(this.used_slots < this.allowed_slots) {
-          this.used_slots += 1
-        }
+        this.used_days += 1
+        this.used_slots = Math.floor(this.used_days * this.allowed_slots / this.allowed_days )
       }
 
       draw(ctx) {
+        ctx.font = "12px Arial";
+        ctx.fillStyle = 'black'
+        ctx.fillText('Time tracker ' + '.'.repeat(192), this.x, this.y - 3)
+
+
         let iterative_x = this.x
         for(let ii = 0; ii < this.allowed_slots; ii++) {
           ctx.fillStyle = 'black'
@@ -52,15 +73,53 @@
     }
 
     class MenuOption {
-      constructor(text, char) {
+      constructor(text, picture) {
         this.text = text
-        this.char = char
+        this.picture = picture
+        this.x = null
+        this.y = null
       }
-    }
 
-    class Submenu {
-      constructor(options) {
-        this.options = options
+      setCoordinates(x, y) {
+        this.x = x
+        this.y = y
+      }
+
+      _drawPicture(ctx, dft, w) {
+        let sz = 4
+        let row = 0
+        let col = 0
+        let px = this.x + (w / 2) - (6 * sz / 2)
+        let py = this.y + 30
+        this.picture.forEach( (it) => {
+          ctx.fillStyle = getColor(it, dft)
+          let x = px + sz * row
+          let y = py + sz * col
+          ctx.fillRect(x, y, sz, sz)
+
+          col += 1
+          if(col % 6 == 0) {
+            col = 0
+            row += 1
+          }
+        })
+      }
+
+      draw(ctx, px, w, h) {
+        ctx.font = px + "px Courier New";
+        ctx.fillStyle = 'black'
+        ctx.fillRect(this.x, this.y, w, h)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(this.x + 1, this.y + 1, w - 2, h - 2)
+        ctx.fillStyle = 'black'
+        
+        let tx = this.x + (w / 2) - (ctx.measureText(this.text).width / 2)
+
+        ctx.fillText(this.text, tx, this.y + px + 2)
+
+        if(this.picture !== undefined) {
+          this._drawPicture(ctx, 'lightgray', w)
+        }
       }
     }
 
@@ -68,6 +127,8 @@
       constructor(x, y, options) {
         this.x = x
         this.y = y
+        this.width = 125
+        this.height = 75
         this.options = options
         this.offset_x = 8
         this.offset_y = 4
@@ -75,34 +136,42 @@
       }
 
       draw(ctx) {
-        let iterative_x = this.x
-        ctx.font = this.px + "px Courier New";
-        for(let ii = 0; ii < this.options.length; ii++) {
-          let txt = this.options[ii].text
-          ctx.fillStyle = 'black'
-          ctx.fillRect(iterative_x, this.y - this.px - 1, ctx.measureText(txt).width + this.offset_x + 2, this.px + this.offset_y + 2)
-          ctx.fillStyle = 'lightgray'
-          ctx.fillRect(iterative_x + 1, this.y - this.px, ctx.measureText(txt).width + this.offset_x, this.px + this.offset_y)
-          ctx.fillStyle = 'black'
-          ctx.fillText(txt, iterative_x + this.offset_x / 2 + 1, this.y)
+        ctx.font = "12px Arial";
+        ctx.fillStyle = 'black'
+        ctx.fillText('Menu ' + '.'.repeat(112), this.x, this.y - 3)
 
-          iterative_x += ctx.measureText(txt).width + this.offset_x * 2
+        let iterative_x = this.x
+        for(let ii = 0; ii < this.options.length; ii++) {
+          this.options[ii].setCoordinates(iterative_x, this.y)
+          this.options[ii].draw(ctx, this.px, this.width, this.height)
+          let txt = this.options[ii].text
+          
+
+
+          iterative_x += this.width + this.offset_x * 2
         }
       }
     }
 
     function createMainMenu(x = 10, y = 20) {
-      let options = ['Menu', 'Travel', 'Search', 'Connections']
-      options = options.map( (op) => new MenuOption(op, op.charAt(0)))
+      let options = [{'text': 'Travel'}, {
+        'text': 'Search', 'picture': ['#', 'G', 'G', '#', '#', '#', 'G', 'w', 'w', 'G', '#', '#', 'G', 'w', 'w', 'G', '#', '#', '#', 'G', 'G', 'b', '#', '#', '#', '#', '#', '#', 'b', '#', '#', '#', '#', '#', '#', 'b']}, 
+        {'text': 'Connections'}]
+      options = options.map( (op) => new MenuOption(op.text, op.picture))
       return new Menu(x, y, options)  
     }
 
-    let time_traker = new TimeTraker(35, 10, 25, 700)
+    let time_traker = new TimeTraker(35, 20, 9, 25, 700)
+    time_traker.addTime()
+    time_traker.addTime()
+    time_traker.addTime()
+    time_traker.addTime()
+    time_traker.addTime()
     time_traker.addTime()
     time_traker.addTime()
     time_traker.addTime()
     time_traker.draw(context)
-    let main_menu = createMainMenu(10, 500)
+    let main_menu = createMainMenu(375, 500)
     main_menu.draw(context)
   </script>
 </body>
