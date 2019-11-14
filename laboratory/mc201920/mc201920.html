@@ -31,6 +31,31 @@
       }
     }
     /* ----------------------------------------------------------------- */
+    class Map {
+      constructor() {
+        this.current = null
+      }
+
+      addItem(item) {
+        this[item.id] = item
+      }
+
+      drawTravel(x, y, ctx) {
+        let options = []
+        for(let ii = 0; ii < this[this.current].connections.length; ii++) {
+          let id = this[this.current].connections[ii]
+          let x = new MenuOption(this[id]['city'] + ' (' + this[id]['country'] + ')')
+          options.push(x)
+        }
+        let display = new Menu(x, y, options)
+
+        display.setVertical()
+        display.hideTitle()
+        display.setBoxSize(410, 25, 8, 4)
+        display.draw(context)
+      }
+    }
+    /* ----------------------------------------------------------------- */
     class TimeTraker {
       constructor(x, y, days, slots, width) {
         this.x = x
@@ -72,6 +97,7 @@
       }
     }
 
+    /* ----------------------------------------------------------------- */
     class MenuOption {
       constructor(text, picture) {
         this.text = text
@@ -105,7 +131,7 @@
         })
       }
 
-      draw(ctx, px, w, h) {
+      draw(ctx, px, w, h, draw_picture) {
         ctx.font = px + "px Courier New";
         ctx.fillStyle = 'black'
         ctx.fillRect(this.x, this.y, w, h)
@@ -117,9 +143,18 @@
 
         ctx.fillText(this.text, tx, this.y + px + 2)
 
-        if(this.picture !== undefined) {
-          this._drawPicture(ctx, 'lightgray', w)
+        if(draw_picture) {
+          if(this.picture !== undefined) {
+            this._drawPicture(ctx, 'lightgray', w)
+          }
         }
+      }
+
+      clicked(x, y, w, h) {
+        let test_x = x > this.x & x < this.x + w
+        let test_y = y > this.y & x < this.y + h
+        //console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
+        return test_x & test_y
       }
     }
 
@@ -133,46 +168,136 @@
         this.offset_x = 8
         this.offset_y = 4
         this.px = 15
+        this.orientation = 'horizontal'
+        this.show_title = true
+        this.pulse = []
+      }
+
+      setVertical() {
+        this.orientation = 'vertical'
+      }
+
+      setHorizontal() {
+        this.orientation = 'horizontal'
+      }
+
+      showTitle() {
+        this.show_title = true
+      }
+
+      hideTitle() {
+        this.show_title = false
+      }
+
+      setBoxSize(w, h, ox, oy) {
+        this.width = w
+        this.height = h
+        this.offset_x = ox
+        this.offset_y = oy
       }
 
       draw(ctx) {
-        ctx.font = "12px Arial";
-        ctx.fillStyle = 'black'
-        ctx.fillText('Menu ' + '.'.repeat(112), this.x, this.y - 3)
+        if(this.show_title) {
+          ctx.font = "12px Arial";
+          ctx.fillStyle = 'black'
+          ctx.fillText('Menu ' + '.'.repeat(112), this.x, this.y - 3)
+        }
 
-        let iterative_x = this.x
-        for(let ii = 0; ii < this.options.length; ii++) {
-          this.options[ii].setCoordinates(iterative_x, this.y)
-          this.options[ii].draw(ctx, this.px, this.width, this.height)
-          let txt = this.options[ii].text
-          
-
-
-          iterative_x += this.width + this.offset_x * 2
+        if(this.orientation == 'horizontal') {
+          let iterative_x = this.x
+          for(let ii = 0; ii < this.options.length; ii++) {
+            this.options[ii].setCoordinates(iterative_x, this.y)
+            this.options[ii].draw(ctx, this.px, this.width, this.height, true)
+            let txt = this.options[ii].text
+            
+            iterative_x += this.width + this.offset_x * 2
+          }
+        } else { // 'vertical'
+          let iterative_y = this.y
+          for(let ii = 0; ii < this.options.length; ii++) {
+            this.options[ii].setCoordinates(this.x, iterative_y)
+            this.options[ii].draw(ctx, this.px, this.width, this.height, false)
+            let txt = this.options[ii].text
+            
+            iterative_y += this.height + this.offset_y * 2
+          }
         }
       }
+
+      addPulse(pos, fun) {
+        this.pulse[pos] = fun
+      }
+
+      checkButtons(x, y, ctx) {
+        let pos = this.options.map( (it) => it.clicked(x, y, this.width, this.height) )
+        if(pos.indexOf(1) != -1) {
+          this.pulse[pos.indexOf(1)](ctx)
+        }
+      }
+    }
+    /* ----------------------------------------------------------------- */
+    function create_map() {
+      let europe_small_map = [ 
+        {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
+          'connections': ['fr_par', 'uk_lnd', 'it_mil']},
+        {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
+          'connections': ['es_bcn', 'dk_chp', 'de_bln']},
+        {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
+          'connections': ['es_bcn', 'ie_dub', 'de_bln']},
+        {'id': 'dk_chp', 'country': 'Denmark', 'city': 'Copenhagen',
+          'connections': ['fr_par', 'de_bln']},
+        {'id': 'de_bln', 'country': 'Germany', 'city': 'Berlin',
+          'connections': ['dk_chp', 'fr_par', 'uk_lnd']},
+        {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
+          'connections': ['es_bcn', 'gr_ath', 'hn_dbv']},
+        {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athena',
+          'connections': ['hn_dbv', 'it_mil']},
+        {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
+          'connections': ['gr_ath', 'it_mil']},
+        {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
+          'connections': ['uk_lnd']}
+      ]
+
+      let map = new Map()
+      for(let ii = 0; ii < europe_small_map.length; ii++) {
+        map.addItem(europe_small_map[ii])
+      }
+      map.current = 'uk_lnd'
+      return map
     }
 
     function createMainMenu(x = 10, y = 20) {
       let options = [{'text': 'Travel'}, {
         'text': 'Search', 'picture': ['#', 'G', 'G', '#', '#', '#', 'G', 'w', 'w', 'G', '#', '#', 'G', 'w', 'w', 'G', '#', '#', '#', 'G', 'G', 'b', '#', '#', '#', '#', '#', '#', 'b', '#', '#', '#', '#', '#', '#', 'b']}, 
-        {'text': 'Connections'}]
+        {'text': 'Data'}]
       options = options.map( (op) => new MenuOption(op.text, op.picture))
       return new Menu(x, y, options)  
     }
 
+    function showTravelMenu(ctx) {
+      game_map.drawTravel(375, 375, ctx)
+    }
+
+    /* ----------------------------------------------------------------- */
+    let game_map = create_map()
     let time_traker = new TimeTraker(35, 20, 9, 25, 700)
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
-    time_traker.addTime()
     time_traker.draw(context)
     let main_menu = createMainMenu(375, 500)
+    main_menu.setHorizontal()
+    main_menu.showTitle()
+    main_menu.addPulse(0, showTravelMenu)
     main_menu.draw(context)
+
+    /* ----------------------------------------------------------------- */
+
+    /* ----------------------------------------------------------------- */ 
+    document.addEventListener("click", onClick, false);   
+    function onClick(e) {
+      let mX = event.pageX - canvas.offsetLeft;
+      let mY = event.pageY - canvas.offsetTop;
+      console.log('onClick: (', mX, ', ', mY, ')')
+      main_menu.checkButtons(mX, mY, context);
+    }
   </script>
 </body>
 </html>
