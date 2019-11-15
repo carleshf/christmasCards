@@ -42,6 +42,7 @@
         this.height = 25
         this.x = x
         this.y = y
+        this.img = null
       }
 
       addItem(item) {
@@ -70,6 +71,9 @@
         this.options.setVertical()
         this.options.hideTitle()
         this.options.setBoxSize(this.width, this.height, 8, 4)
+
+        this.img = new Image()
+        this.img.src = this[this.current].img
       }
 
       toggleDrawTravel() {
@@ -86,6 +90,17 @@
         if(this.draw_travel_menu) {
           this.options.checkButtons(x, y, ctx)
         }
+      }
+
+      drawLandscape(x, y, ctx) {
+        ctx.fillStyle = 'black'
+        if(this.img != null) {
+          //console.log(this[this.current].img)
+          ctx.drawImage(this.img, x, y)
+        } else {
+          ctx.fillRect(x, y, 600, 350)
+        }
+        ctx.fillRect(620, y, 160, 350)
       }
     }
     /* ----------------------------------------------------------------- */
@@ -274,23 +289,32 @@
     function create_map(x = 15, y = 483) {
       let europe_small_map = [ 
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
-          'connections': ['fr_par', 'uk_lnd', 'it_mil']},
+          'connections': ['fr_par', 'uk_lnd', 'it_mil'],
+          'img': 'dta/barcelona-px.png'},
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
-          'connections': ['es_bcn', 'dk_bil', 'de_hbg']},
+          'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
+          'img': 'dta/paris-px.png'},
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
-          'connections': ['es_bcn', 'ie_dub', 'de_hbg']},
+          'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
+          'img': 'dta/london-px.png'},
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
-          'connections': ['fr_par', 'de_hbg']},
+          'connections': ['fr_par', 'de_hbg'],
+          'img': 'dta/billund-px.png'},
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
-          'connections': ['dk_bil', 'fr_par', 'uk_lnd']},
+          'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
+          'img': 'dta/heidelberg-px.png'},
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
-          'connections': ['es_bcn', 'gr_ath', 'hn_dbv']},
+          'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
+          'img': 'dta/milan-px.png'},
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
-          'connections': ['hn_dbv', 'it_mil']},
+          'connections': ['hn_dbv', 'it_mil'],
+          'img': 'dta/athenas-px.png'},
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
-          'connections': ['gr_ath', 'it_mil']},
+          'connections': ['gr_ath', 'it_mil'],
+          'img': 'dta/dubrovnik-px.png'},
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
-          'connections': ['uk_lnd']}
+          'connections': ['uk_lnd'],
+          'img': 'dta/dublin-px.png'},
       ]
 
       let map = new Map(15, 483)
@@ -313,6 +337,8 @@
     function moveLocation(new_loc) {
       game_map.move(new_loc)
     }
+
+    
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
     let time_traker = new TimeTraker(35, 20, 9, 25, 700)
@@ -326,6 +352,7 @@
       context.clearRect(0, 0, width, height);
       main_menu.draw(context)
       game_map.draw(context)
+      game_map.drawLandscape(15, 75, context)
       time_traker.draw(game_map[game_map.current], context)
     }
 
