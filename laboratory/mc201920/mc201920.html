@@ -45,7 +45,9 @@
         this.travel_options = null
         this.search_options = null
         this.img = null
-        this.info_show = 'NO INFO FOR AGENT'
+        this.info_show = [
+          ['13px Arial', 'black', 'NO INFO FOR AGENT']
+        ]
       }
 
       addItem(item) {
@@ -97,7 +99,6 @@
         this.search_options.setBoxSize(this.width, this.height, 8, 4)
 
         //this.toggleDrawSearch()
-        console.log(this.search_options.pulse)
       }
 
       create() {
@@ -145,11 +146,20 @@
         ctx.fillRect(621, y + 1, 158, 348)
 
         // Default text
-        ctx.font = "13px Arial";
+        ctx.font = '13px Arial';
         ctx.fillStyle = 'black'
         ctx.fillText('Your current location is:', 630, y + 15)
-        ctx.font = "15px Arial";
+        ctx.font = '15px Arial';
         ctx.fillText(this[this.current].city, 630, y + 30)
+
+        // Location information
+        let accum_y = y + 70
+        this.info_show.forEach( (line) => {
+          ctx.font = line[0];
+          ctx.fillStyle = line[1]
+          ctx.fillText(line[2], 630, accum_y)
+          accum_y += 15
+        })
       }
     }
     /* ----------------------------------------------------------------- */
@@ -341,81 +351,81 @@
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
           'img': 'dta/barcelona-px.png',
           'locations': [ 
-            {'name': 'Park Güell', 'des': ''},
-            {'name': 'Casa Milà', 'des': ''},
-            {'name': 'Camp Nou', 'des': ''},
+            {'name': 'Park Güell', 'des': []},
+            {'name': 'Casa Milà', 'des': []},
+            {'name': 'Camp Nou', 'des': []},
           ]
         },
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
           'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
           'img': 'dta/paris-px.png',
           'locations': [ 
-            {'name': 'Notre Dame Cathedral', 'des': ''},
-            {'name': 'Louvre Museum', 'des': ''},
-            {'name': 'Montmartre', 'des': ''},
+            {'name': 'Notre Dame Cathedral', 'des': []},
+            {'name': 'Louvre Museum', 'des': []},
+            {'name': 'Montmartre', 'des': []},
           ]
         },
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
           'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
           'img': 'dta/london-px.png',
           'locations': [ 
-            {'name': 'London Eye', 'des': ''},
-            {'name': 'Tower of London', 'des': ''},
-            {'name': 'The Shard', 'des': ''},
+            {'name': 'London Eye', 'des': []},
+            {'name': 'Tower of London', 'des': []},
+            {'name': 'The Shard', 'des': []},
           ]
         },
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
           'connections': ['fr_par', 'de_hbg'],
           'img': 'dta/billund-px.png',
           'locations': [ 
-            {'name': 'Legoland Park', 'des': ''},
-            {'name': 'Kongernes Jelling', 'des': ''},
-            {'name': 'Grindsted Kirke', 'des': ''},
+            {'name': 'Legoland Park', 'des': []},
+            {'name': 'Kongernes Jelling', 'des': []},
+            {'name': 'Grindsted Kirke', 'des': []},
           ]
         },
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
           'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
           'img': 'dta/heidelberg-px.png',
           'locations': [ 
-            {'name': '', 'des': ''},
-            {'name': '', 'des': ''},
-            {'name': '', 'des': ''},
+            {'name': 'Heidelberg Castle', 'des': []},
+            {'name': 'The Old Bridge', 'des': []},
+            {'name': 'European Molecular Biology Laboratory', 'des': []},
           ]
         },
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
           'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
           'img': 'dta/milan-px.png',
           'locations': [ 
-            {'name': 'Il Duomo', 'des': ''},
-            {'name': 'Galleria Vittorio Emanuele II', 'des': ''},
-            {'name': 'Teatro alla Scala', 'des': ''},
+            {'name': 'Il Duomo', 'des': []},
+            {'name': 'Galleria Vittorio Emanuele II', 'des': []},
+            {'name': 'Teatro alla Scala', 'des': []},
           ]
         },
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
           'connections': ['hn_dbv', 'it_mil'],
           'img': 'dta/athenas-px.png',
           'locations': [ 
-            {'name': 'The Acropolis', 'des': ''},
-            {'name': 'The Parthenon', 'des': ''},
-            {'name': 'Temple of Olympian Zeus', 'des': ''},
+            {'name': 'The Acropolis', 'des': []},
+            {'name': 'The Parthenon', 'des': []},
+            {'name': 'Temple of Olympian Zeus', 'des': []},
           ]
         },
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
           'connections': ['gr_ath', 'it_mil'],
           'img': 'dta/dubrovnik-px.png',
           'locations': [ 
-            {'name': 'The Old City Walls', 'des': ''},
-            {'name': 'Loggia Square', 'des': ''},
-            {'name': 'The Island of Lokrum', 'des': ''},
+            {'name': 'The Old City Walls', 'des': []},
+            {'name': 'Loggia Square', 'des': []},
+            {'name': 'The Island of Lokrum', 'des': []},
           ]
         },
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
           'connections': ['uk_lnd'],
           'img': 'dta/dublin-px.png',
           'locations': [ 
-            {'name': 'Guinness Storehouse', 'des': ''},
-            {'name': 'Kilmainham Gaol', 'des': ''},
-            {'name': 'Trinity College', 'des': ''},
+            {'name': 'Guinness Storehouse', 'des': []},
+            {'name': 'Kilmainham Gaol', 'des': []},
+            {'name': 'Trinity College', 'des': []},
           ]
         }
       ]
