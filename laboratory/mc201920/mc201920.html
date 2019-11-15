@@ -35,19 +35,21 @@
     /* ----------------------------------------------------------------- */
     class Map {
       constructor(x, y) {
-        this.current = null
-        this.draw_travel_menu = true
-        this.options = null
-        this.width = 350
-        this.height = 25
         this.x = x
         this.y = y
+        this.width = 350
+        this.height = 25
+        this.current = null
+        this.draw_travel_menu = true
+        this.draw_search_menu = true
+        this.travel_options = null
+        this.search_options = null
         this.img = null
+        this.info_show = 'NO INFO FOR AGENT'
       }
 
       addItem(item) {
         this[item.id] = item
-        
       }
 
       move(new_id) {
@@ -56,21 +58,21 @@
         this.create()
       }
 
-      create() {
-        this.options = new Menu(this.x, this.y, this[this.current].connections.map( (it) => {
+      _create_travel() {
+        this.travel_options = new Menu(this.x, this.y, this[this.current].connections.map( (it) => {
           return new MenuOption( this[it].city + ' (' + this[it].country + ')' )
         }))
 
         for(let ii = 0; ii < this[this.current].connections.length; ii++) {
           let move_to = this[this.current].connections[ii]
-          this.options.addPulse(ii, function() {
+          this.travel_options.addPulse(ii, function() {
             moveLocation(move_to)
           })
         }
 
-        this.options.setVertical()
-        this.options.hideTitle()
-        this.options.setBoxSize(this.width, this.height, 8, 4)
+        this.travel_options.setVertical()
+        this.travel_options.hideTitle()
+        this.travel_options.setBoxSize(this.width, this.height, 8, 4)
 
         this.img = new Image()
         this.img.src = this[this.current].img
@@ -78,19 +80,54 @@
         this.toggleDrawTravel()
       }
 
+      _create_search() {
+        this.search_options = new Menu(this.x, this.y, this[this.current].locations.map( (it) => {
+          return new MenuOption( it.name )
+        }))
+        
+        for(let ii = 0; ii < this[this.current].locations.length; ii++) {
+          let text_show = this[this.current].locations[ii].desc
+          this.search_options.addPulse(ii, function() {
+            showSearchOption(text_show)
+          })
+        }
+
+        this.search_options.setVertical()
+        this.search_options.hideTitle()
+        this.search_options.setBoxSize(this.width, this.height, 8, 4)
+
+        //this.toggleDrawSearch()
+        console.log(this.search_options.pulse)
+      }
+
+      create() {
+        this._create_travel()
+        this._create_search()
+      }
+
       toggleDrawTravel() {
         this.draw_travel_menu = !this.draw_travel_menu
+        this.draw_search_menu = false
+      }
+
+      toggleDrawSearch() {
+        this.draw_travel_menu = false
+        this.draw_search_menu = !this.draw_search_menu 
       }
 
       draw(ctx) {
         if(this.draw_travel_menu) {
-          this.options.draw(ctx)
+          this.travel_options.draw(ctx)
+        }
+
+        if(this.draw_search_menu) {
+          this.search_options.draw(ctx)
         }
       }
 
       checkButtons(x, y, ctx) {
         if(this.draw_travel_menu) {
-          this.options.checkButtons(x, y, ctx)
+          this.travel_options.checkButtons(x, y, ctx)
         }
       }
 
@@ -404,6 +441,9 @@
       game_map.move(new_loc)
     }
 
+    function showSearchOption(txt) {
+      game_map.info_show = txt
+    }
     
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
@@ -412,6 +452,8 @@
     main_menu.setHorizontal()
     main_menu.showTitle()
     main_menu.addPulse(0, function() { game_map.toggleDrawTravel() })
+    main_menu.addPulse(1, function() { game_map.toggleDrawSearch() })
+    main_menu.addPulse(2, function() { console.log('DATA menu not available') })
 
     /* ----------------------------------------------------------------- */
     function game() {
