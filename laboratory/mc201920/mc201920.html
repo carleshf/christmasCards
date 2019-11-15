@@ -95,18 +95,24 @@
       }
 
       drawLandscape(x, y, ctx) {
-        ctx.font = "13px Arial";
-        ctx.fillStyle = 'black'
-        ctx.fillText('Your current location is: ' + this[this.current].city, x, y - 3)
-
+        // Box for picture
         ctx.fillStyle = 'black'
         if(this.img != null) {
-          //console.log(this[this.current].img)
           ctx.drawImage(this.img, x, y)
         } else {
           ctx.fillRect(x, y, 600, 350)
         }
+        // Box for information
         ctx.fillRect(620, y, 160, 350)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(621, y + 1, 158, 348)
+
+        // Default text
+        ctx.font = "13px Arial";
+        ctx.fillStyle = 'black'
+        ctx.fillText('Your current location is:', 630, y + 15)
+        ctx.font = "15px Arial";
+        ctx.fillText(this[this.current].city, 630, y + 30)
       }
     }
     /* ----------------------------------------------------------------- */
@@ -401,7 +407,7 @@
     
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
-    let time_traker = new TimeTraker(35, 20, 9, 25, 700)
+    let time_traker = new TimeTraker(35, 30, 9, 25, 700)
     let main_menu = createMainMenu(375, 500)
     main_menu.setHorizontal()
     main_menu.showTitle()
