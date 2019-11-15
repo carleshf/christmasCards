@@ -36,7 +36,7 @@
     class Map {
       constructor(x, y) {
         this.current = null
-        this.draw_travel_menu = false
+        this.draw_travel_menu = true
         this.options = null
         this.width = 350
         this.height = 25
@@ -74,6 +74,8 @@
 
         this.img = new Image()
         this.img.src = this[this.current].img
+
+        this.toggleDrawTravel()
       }
 
       toggleDrawTravel() {
@@ -93,6 +95,10 @@
       }
 
       drawLandscape(x, y, ctx) {
+        ctx.font = "13px Arial";
+        ctx.fillStyle = 'black'
+        ctx.fillText('Your current location is: ' + this[this.current].city, x, y - 3)
+
         ctx.fillStyle = 'black'
         if(this.img != null) {
           //console.log(this[this.current].img)
@@ -290,31 +296,85 @@
       let europe_small_map = [ 
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
-          'img': 'dta/barcelona-px.png'},
+          'img': 'dta/barcelona-px.png',
+          'locations': [ 
+            {'name': 'Park Güell', 'des': ''},
+            {'name': 'Casa Milà', 'des': ''},
+            {'name': 'Camp Nou', 'des': ''},
+          ]
+        },
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
           'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
-          'img': 'dta/paris-px.png'},
+          'img': 'dta/paris-px.png',
+          'locations': [ 
+            {'name': 'Notre Dame Cathedral', 'des': ''},
+            {'name': 'Louvre Museum', 'des': ''},
+            {'name': 'Montmartre', 'des': ''},
+          ]
+        },
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
           'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
-          'img': 'dta/london-px.png'},
+          'img': 'dta/london-px.png',
+          'locations': [ 
+            {'name': 'London Eye', 'des': ''},
+            {'name': 'Tower of London', 'des': ''},
+            {'name': 'The Shard', 'des': ''},
+          ]
+        },
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
           'connections': ['fr_par', 'de_hbg'],
-          'img': 'dta/billund-px.png'},
+          'img': 'dta/billund-px.png',
+          'locations': [ 
+            {'name': 'Legoland Park', 'des': ''},
+            {'name': 'Kongernes Jelling', 'des': ''},
+            {'name': 'Grindsted Kirke', 'des': ''},
+          ]
+        },
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
           'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
-          'img': 'dta/heidelberg-px.png'},
+          'img': 'dta/heidelberg-px.png',
+          'locations': [ 
+            {'name': '', 'des': ''},
+            {'name': '', 'des': ''},
+            {'name': '', 'des': ''},
+          ]
+        },
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
           'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
-          'img': 'dta/milan-px.png'},
+          'img': 'dta/milan-px.png',
+          'locations': [ 
+            {'name': 'Il Duomo', 'des': ''},
+            {'name': 'Galleria Vittorio Emanuele II', 'des': ''},
+            {'name': 'Teatro alla Scala', 'des': ''},
+          ]
+        },
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
           'connections': ['hn_dbv', 'it_mil'],
-          'img': 'dta/athenas-px.png'},
+          'img': 'dta/athenas-px.png',
+          'locations': [ 
+            {'name': 'The Acropolis', 'des': ''},
+            {'name': 'The Parthenon', 'des': ''},
+            {'name': 'Temple of Olympian Zeus', 'des': ''},
+          ]
+        },
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
           'connections': ['gr_ath', 'it_mil'],
-          'img': 'dta/dubrovnik-px.png'},
+          'img': 'dta/dubrovnik-px.png',
+          'locations': [ 
+            {'name': 'The Old City Walls', 'des': ''},
+            {'name': 'Loggia Square', 'des': ''},
+            {'name': 'The Island of Lokrum', 'des': ''},
+          ]
+        },
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
           'connections': ['uk_lnd'],
-          'img': 'dta/dublin-px.png'},
+          'img': 'dta/dublin-px.png',
+          'locations': [ 
+            {'name': 'Guinness Storehouse', 'des': ''},
+            {'name': 'Kilmainham Gaol', 'des': ''},
+            {'name': 'Trinity College', 'des': ''},
+          ]
+        }
       ]
 
       let map = new Map(15, 483)
