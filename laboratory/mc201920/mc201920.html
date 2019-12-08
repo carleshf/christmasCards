@@ -46,9 +46,13 @@
         this.search_options = null
         this.img = null
         this.info_show = [
-          ['13px Arial', 'black', 'NO INFO FOR AGENT']
+          ['NO INFO FOR AGENT']
         ]
       }
+
+      setInfo(new_info) {
+        this.info_show = new_info
+      } 
 
       addItem(item) {
         this[item.id] = item
@@ -88,7 +92,7 @@
         }))
         
         for(let ii = 0; ii < this[this.current].locations.length; ii++) {
-          let text_show = this[this.current].locations[ii].desc
+          let text_show = this[this.current].locations[ii].dsc
           this.search_options.addPulse(ii, function() {
             showSearchOption(text_show)
           })
@@ -102,6 +106,7 @@
       }
 
       create() {
+        this.info_show = this[this.current].dsc
         this._create_travel()
         this._create_search()
       }
@@ -130,6 +135,9 @@
         if(this.draw_travel_menu) {
           this.travel_options.checkButtons(x, y, ctx)
         }
+        if(this.draw_search_menu) {
+          this.search_options.checkButtons(x, y, ctx)
+        }
       }
 
       drawLandscape(x, y, ctx) {
@@ -146,18 +154,18 @@
         ctx.fillRect(621, y + 1, 158, 348)
 
         // Default text
-        ctx.font = '13px Arial';
+        ctx.font = '13px Arial'
         ctx.fillStyle = 'black'
         ctx.fillText('Your current location is:', 630, y + 15)
-        ctx.font = '15px Arial';
+        ctx.font = '15px Arial'
         ctx.fillText(this[this.current].city, 630, y + 30)
 
         // Location information
         let accum_y = y + 70
         this.info_show.forEach( (line) => {
-          ctx.font = line[0];
-          ctx.fillStyle = line[1]
-          ctx.fillText(line[2], 630, accum_y)
+          ctx.font = '13px Arial';
+          ctx.fillStyle = 'black'
+          ctx.fillText(line, 630, accum_y)
           accum_y += 15
         })
       }
@@ -260,7 +268,7 @@
       clicked(x, y, w, h) {
         let test_x = x > this.x & x < this.x + w
         let test_y = y > this.y & y < this.y + h
-        //console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
+        // console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
         return test_x & test_y
       }
     }
@@ -350,82 +358,91 @@
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
           'img': 'dta/barcelona-px.png',
+          'dsc': ['NO INFO FOR AGENT (ES)'],  
           'locations': [ 
-            {'name': 'Park Güell', 'des': ['We saw you man wearing', 'a shirt.'], 'time': 1},
-            {'name': 'Casa Milà', 'des': ['Your listened your subject', 'speaking with an Italian women.'], 'time': 2},
-            {'name': 'Camp Nou', 'des': ['No, we cannot make an exception', 'with you and let you in', 'to meet Messi.'], 'time': 1},
+            {'name': 'Park Güell', 'dsc': ['We saw you man', 'wearing a shirt.'], 'time': 1},
+            {'name': 'Casa Milà', 'dsc': ['We listened your subject', 'speaking with an Italian', 'women.'], 'time': 2},
+            {'name': 'Camp Nou', 'dsc': ['No, we cannot make an', 'exception with you', 'and let you in to', 'meet Messi.'], 'time': 1},
           ]
         },
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
           'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
           'img': 'dta/paris-px.png',
+          'dsc': ['NO INFO FOR AGENT (FR)'],
           'locations': [ 
-            {'name': 'Notre Dame Cathedral', 'des': ['Shush!', 'Keep silence!', 'This is a Cathedral!'], 'time': 1},
-            {'name': 'Louvre Museum', 'des': ['We saw your target', 'with another man!', 'Both of them were', 'wearing blue jeans.'], 'time': 1},
-            {'name': 'Montmartre', 'des': ['Your guy was here', 'buying a lot of paintings', ', one with a black bull in it.'], 'time': 2},
+            {'name': 'Notre Dame Cathedral', 'dsc': ['Shush!', 'Keep silence!', 'This is a Cathedral!'], 'time': 1},
+            {'name': 'Louvre Museum', 'dsc': ['We saw your target', 'with another man!', 'Both of them were', 'wearing blue jeans.'], 'time': 1},
+            {'name': 'Montmartre', 'dsc': ['Your guy was here', 'buying a lot of paintings,', 'one with a black', 'bull in it.'], 'time': 2},
           ]
         },
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
           'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
           'img': 'dta/london-px.png',
+          'dsc': ['NO INFO FOR AGENT (UK)'],
           'locations': [ 
-            {'name': 'London Eye', 'des': ['The suspect was seen', 'with a man carrying a', 'flag with black, yellow, and', 'red colours.'], 'time': 1},
-            {'name': 'Tower of London', 'des': ['The person you are', 'looking for was wearing', 'sunglasses'], 'time': 1},
-            {'name': 'The Shard', 'des': ['This is an office building', 'we have not seen your subject.'], 'time': 1},
+            {'name': 'London Eye', 'dsc': ['The suspect was seen', 'with a man carrying a', 'flag with black, yellow,', 'and red colours.'], 'time': 1},
+            {'name': 'Tower of London', 'dsc': ['The person you are', 'looking for was wearing', 'sunglasses'], 'time': 1},
+            {'name': 'The Shard', 'dsc': ['This is an office building', 'we have not seen your', 'subject.'], 'time': 1},
           ]
         },
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
           'connections': ['fr_par', 'de_hbg'],
           'img': 'dta/billund-px.png',
+          'dsc': ['NO INFO FOR AGENT (DK)'],
           'locations': [ 
-            {'name': 'Legoland Park', 'des': ['The person you are looking', 'for bought a lot of blue, ', 'white, and red blocks.'], 'time': 1},
-            {'name': 'Kongernes Jelling', 'des': ['We known nothing about', 'your subject.'], 'time': 2},
-            {'name': 'Grindsted Kirke', 'des': ['Yes, we say your man around here.'], 'time': 1},
+            {'name': 'Legoland Park', 'dsc': ['The person you are', 'looking for bought a lot ', 'of blue, white, and red', 'blocks.'], 'time': 1},
+            {'name': 'Kongernes Jelling', 'dsc': ['We known nothing about', 'your subject.'], 'time': 2},
+            {'name': 'Grindsted Kirke', 'dsc': ['Yes, we say your man', 'around here.'], 'time': 1},
           ]
         },
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
           'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
           'img': 'dta/heidelberg-px.png',
+          'dsc': ['NO INFO FOR AGENT (DE)'],
           'locations': [ 
-            {'name': 'Heidelberg Castle', 'des': ['The subject you look', 'for was wearing red robes.'], 'time': 1},
-            {'name': 'The Old Bridge', 'des': ['Your subject had a boarding', 'pass with a white cross on it.'], 'time': 1},
-            {'name': 'European Molecular Biology Laboratory', 'des': ['We do science here', 'when no one is interrupting us.'], 'time': 3},
+            {'name': 'Heidelberg Castle', 'dsc': ['The subject you look', 'for was wearing red', 'robes.'], 'time': 1},
+            {'name': 'The Old Bridge', 'dsc': ['Your subject had a', 'boarding pass with a', 'white cross on it.'], 'time': 1},
+            {'name': 'European Molecular Biology Laboratory', 'dsc': ['We do science here', 'when no one is', 'interrupting us.'], 'time': 3},
           ]
         },
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
           'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
           'img': 'dta/milan-px.png',
+          'dsc': ['NO INFO FOR AGENT (IT)'],
           'locations': [ 
-            {'name': 'Il Duomo', 'des': ['I do not remember the colours', 'but you man had a three-coloured-flag passport.'], 'time': 1},
-            {'name': 'Galleria Vittorio Emanuele II', 'des': ['Yes! Your subject was here.', 'He really did not pay attention to the gallery.'], 'time': 1},
-            {'name': 'Teatro alla Scala', 'des': ['Your subject was here,' , 'inappropriately wearing sport shoes'], 'time': 1},
+            {'name': 'Il Duomo', 'dsc': ['I do not remember the', 'colours, but you man had' ,'a three-coloured-flag', 'passport.'], 'time': 1},
+            {'name': 'Galleria Vittorio Emanuele II', 'dsc': ['Yes! Your subject was', 'here. He really did', 'not pay attention to', 'the gallery.'], 'time': 1},
+            {'name': 'Teatro alla Scala', 'dsc': ['Your subject was here,' , 'inappropriately wearing', 'sport shoes'], 'time': 1},
           ]
         },
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
           'connections': ['hn_dbv', 'it_mil'],
           'img': 'dta/athenas-px.png',
+          'dsc': ['NO INFO FOR AGENT (GR)'],
           'locations': [ 
-            {'name': 'The Acropolis', 'des': ['We known nothing about', 'your subject.'], 'time': 3},
-            {'name': 'The Parthenon', 'des': ['I do not think I saw', 'the person you are looking for.'], 'time': 3},
-            {'name': 'Temple of Olympian Zeus', 'des': ['No one matching your description', 'was here'], 'time': 3},
+            {'name': 'The Acropolis', 'dsc': ['We known nothing about', 'your subject.'], 'time': 3},
+            {'name': 'The Parthenon', 'dsc': ['I do not think I saw', 'the person you are', 'looking for.'], 'time': 3},
+            {'name': 'Temple of Olympian Zeus', 'dsc': ['No one matching your' ,'description was here.'], 'time': 3},
           ]
         },
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
           'connections': ['gr_ath', 'it_mil'],
           'img': 'dta/dubrovnik-px.png',
+          'dsc': ['NO INFO FOR AGENT (HN)'],
           'locations': [ 
-            {'name': 'The Old City Walls', 'des': ['Yes, we saw you man!'], 'time': 1},
-            {'name': 'Loggia Square', 'des': ['Your subject was here, yes.'], 'time': 1},
-            {'name': 'The Island of Lokrum', 'des': ['The person you are', 'looking for visited this island.'], 'time': 3},
+            {'name': 'The Old City Walls', 'dsc': ['Yes, we saw you man!'], 'time': 1},
+            {'name': 'Loggia Square', 'dsc': ['Your subject was here,', 'yes.'], 'time': 1},
+            {'name': 'The Island of Lokrum', 'dsc': ['The person you are', 'looking for visited this', 'island.'], 'time': 3},
           ]
         },
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
           'connections': ['uk_lnd'],
           'img': 'dta/dublin-px.png',
+          'dsc': ['NO INFO FOR AGENT (IE)'],
           'locations': [ 
-            {'name': 'Guinness Storehouse', 'des': ['If you are not buying', 'beer, stop disturbing the worked.'], 'time': 2},
-            {'name': 'Kilmainham Gaol', 'des': ['I do not think I saw', 'the person you are looking for.'], 'time': 2},
-            {'name': 'Trinity College', 'des': ['We known nothing about', 'your subject.'], 'time': 2},
+            {'name': 'Guinness Storehouse', 'dsc': ['If you are not buying', 'beer, stop disturbing the workers.'], 'time': 2},
+            {'name': 'Kilmainham Gaol', 'dsc': ['I do not think I saw', 'the person you are looking for.'], 'time': 2},
+            {'name': 'Trinity College', 'dsc': ['We known nothing about', 'your subject.'], 'time': 2},
           ]
         }
       ]
@@ -434,8 +451,8 @@
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
-      map.current = 'uk_lnd'
-      map.create(x, y)
+      map.current = 'hn_dbv'
+      map.create()
       return map
     }
 
@@ -452,7 +469,7 @@
     }
 
     function showSearchOption(txt) {
-      game_map.info_show = txt
+      game_map.setInfo(txt)
     }
     
     /* ----------------------------------------------------------------- */
