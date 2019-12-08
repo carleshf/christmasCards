@@ -42,6 +42,7 @@
         this.current = null
         this.draw_travel_menu = true
         this.draw_search_menu = true
+        this.draw_input_menu = true
         this.travel_options = null
         this.search_options = null
         this.img = null
@@ -114,11 +115,19 @@
       toggleDrawTravel() {
         this.draw_travel_menu = !this.draw_travel_menu
         this.draw_search_menu = false
+        this.draw_input_menu = false
       }
 
       toggleDrawSearch() {
         this.draw_travel_menu = false
-        this.draw_search_menu = !this.draw_search_menu 
+        this.draw_search_menu = !this.draw_search_menu
+        this.draw_input_menu = false
+      }
+
+      toggleDrawInput() {
+        this.draw_travel_menu = false
+        this.draw_search_menu = false
+        this.draw_input_menu = !this.draw_input_menu
       }
 
       draw(ctx) {
@@ -353,12 +362,36 @@
       }
     }
     /* ----------------------------------------------------------------- */
+    class Collection {
+      constructor(name, options) {
+        this.name
+        this.options
+      }
+    }
+    class InputMenu {
+      constructor(x, y) {
+        this.x = x
+        this.y = y
+        this.collections = []
+      }
+
+      addCollection(collection) {
+        this.collection.push(collection)
+      }
+
+      draw(ctx) {
+        
+      }
+    }
+
+
+    /* ----------------------------------------------------------------- */
     function create_map(x = 15, y = 483) {
       let europe_small_map = [ 
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
           'img': 'dta/barcelona-px.png',
-          'dsc': ['NO INFO FOR AGENT (ES)'],  
+          'dsc': ['NO INFO FOR AGENT ', '(ES)'],  
           'locations': [ 
             {'name': 'Park Güell', 'dsc': ['We saw you man', 'wearing a shirt.'], 'time': 1},
             {'name': 'Casa Milà', 'dsc': ['We listened your subject', 'speaking with an Italian', 'women.'], 'time': 2},
@@ -368,7 +401,7 @@
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
           'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
           'img': 'dta/paris-px.png',
-          'dsc': ['NO INFO FOR AGENT (FR)'],
+          'dsc': ['NO INFO FOR AGENT', '(FR)'],
           'locations': [ 
             {'name': 'Notre Dame Cathedral', 'dsc': ['Shush!', 'Keep silence!', 'This is a Cathedral!'], 'time': 1},
             {'name': 'Louvre Museum', 'dsc': ['We saw your target', 'with another man!', 'Both of them were', 'wearing blue jeans.'], 'time': 1},
@@ -378,7 +411,7 @@
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
           'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
           'img': 'dta/london-px.png',
-          'dsc': ['NO INFO FOR AGENT (UK)'],
+          'dsc': ['NO INFO FOR AGENT', '(UK)'],
           'locations': [ 
             {'name': 'London Eye', 'dsc': ['The suspect was seen', 'with a man carrying a', 'flag with black, yellow,', 'and red colours.'], 'time': 1},
             {'name': 'Tower of London', 'dsc': ['The person you are', 'looking for was wearing', 'sunglasses'], 'time': 1},
@@ -388,7 +421,7 @@
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
           'connections': ['fr_par', 'de_hbg'],
           'img': 'dta/billund-px.png',
-          'dsc': ['NO INFO FOR AGENT (DK)'],
+          'dsc': ['NO INFO FOR AGENT', '(DK)'],
           'locations': [ 
             {'name': 'Legoland Park', 'dsc': ['The person you are', 'looking for bought a lot ', 'of blue, white, and red', 'blocks.'], 'time': 1},
             {'name': 'Kongernes Jelling', 'dsc': ['We known nothing about', 'your subject.'], 'time': 2},
@@ -398,7 +431,7 @@
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
           'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
           'img': 'dta/heidelberg-px.png',
-          'dsc': ['NO INFO FOR AGENT (DE)'],
+          'dsc': ['NO INFO FOR AGENT', '(DE)'],
           'locations': [ 
             {'name': 'Heidelberg Castle', 'dsc': ['The subject you look', 'for was wearing red', 'robes.'], 'time': 1},
             {'name': 'The Old Bridge', 'dsc': ['Your subject had a', 'boarding pass with a', 'white cross on it.'], 'time': 1},
@@ -408,17 +441,17 @@
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
           'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
           'img': 'dta/milan-px.png',
-          'dsc': ['NO INFO FOR AGENT (IT)'],
+          'dsc': ['NO INFO FOR AGENT', '(IT)'],
           'locations': [ 
             {'name': 'Il Duomo', 'dsc': ['I do not remember the', 'colours, but you man had' ,'a three-coloured-flag', 'passport.'], 'time': 1},
             {'name': 'Galleria Vittorio Emanuele II', 'dsc': ['Yes! Your subject was', 'here. He really did', 'not pay attention to', 'the gallery.'], 'time': 1},
-            {'name': 'Teatro alla Scala', 'dsc': ['Your subject was here,' , 'inappropriately wearing', 'sport shoes'], 'time': 1},
+            {'name': 'Teatro alla Scala', 'dsc': ['Your subject was here,' , 'inappropriately wearing', 'white sneakers.'], 'time': 1},
           ]
         },
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
           'connections': ['hn_dbv', 'it_mil'],
           'img': 'dta/athenas-px.png',
-          'dsc': ['NO INFO FOR AGENT (GR)'],
+          'dsc': ['NO INFO FOR AGENT', '(GR)'],
           'locations': [ 
             {'name': 'The Acropolis', 'dsc': ['We known nothing about', 'your subject.'], 'time': 3},
             {'name': 'The Parthenon', 'dsc': ['I do not think I saw', 'the person you are', 'looking for.'], 'time': 3},
@@ -428,7 +461,7 @@
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
           'connections': ['gr_ath', 'it_mil'],
           'img': 'dta/dubrovnik-px.png',
-          'dsc': ['NO INFO FOR AGENT (HN)'],
+          'dsc': ['NO INFO FOR AGENT', '(HN)'],
           'locations': [ 
             {'name': 'The Old City Walls', 'dsc': ['Yes, we saw you man!'], 'time': 1},
             {'name': 'Loggia Square', 'dsc': ['Your subject was here,', 'yes.'], 'time': 1},
@@ -438,7 +471,7 @@
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
           'connections': ['uk_lnd'],
           'img': 'dta/dublin-px.png',
-          'dsc': ['NO INFO FOR AGENT (IE)'],
+          'dsc': ['NO INFO FOR AGENT', '(IE)'],
           'locations': [ 
             {'name': 'Guinness Storehouse', 'dsc': ['If you are not buying', 'beer, stop disturbing the workers.'], 'time': 2},
             {'name': 'Kilmainham Gaol', 'dsc': ['I do not think I saw', 'the person you are looking for.'], 'time': 2},
@@ -451,15 +484,15 @@
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
-      map.current = 'hn_dbv'
+      map.current = 'uk_lnd'
       map.create()
       return map
     }
 
-    function createMainMenu(x = 10, y = 20) {
+    function create_main_menu(x = 10, y = 20) {
       let options = [{'text': 'Travel'}, {
         'text': 'Search', 'picture': ['#', 'G', 'G', '#', '#', '#', 'G', 'w', 'w', 'G', '#', '#', 'G', 'w', 'w', 'G', '#', '#', '#', 'G', 'G', 'b', '#', '#', '#', '#', '#', '#', 'b', '#', '#', '#', '#', '#', '#', 'b']}, 
-        {'text': 'Data'}]
+        {'text': 'Identify'}]
       options = options.map( (op) => new MenuOption(op.text, op.picture))
       return new Menu(x, y, options)  
     }
@@ -471,16 +504,26 @@
     function showSearchOption(txt) {
       game_map.setInfo(txt)
     }
+
+    function create_input_menu(x = 15, y = 483) {
+      input = InputMenu(x, y)
+      input.addCollection(new Collection('Hair', ['Amber', 'Blonde', 'Brown', 'Caramel', 'Chocolate', 'Copper', 'Espresso', 'Jet Black', 'Red Hot']))
+      input.addCollection(new Collection('Accessory', ['Earrings', 'Necklace', 'Tattoos', 'Regular glasses', 'Sunglasses']))
+      input.addCollection(new Collection('Clothing (1)', ['Black shirt', 'Blue shirt', 'Red shirt', 'White shirt', 'Leather jacket', 'Hoodie']))
+      input.addCollection(new Collection('Clothing (2)', ['Black Chinos', 'Black Jeans', 'Brown Wool Trousers', 'Purple Joggers', 'Blue Jeans']))
+      input.addCollection(new Collection('Footwear', ['Brown Sandals', 'Black Moccasins', 'Gray Boots', 'White Sneakers']))
+    }
     
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
-    let time_traker = new TimeTraker(35, 30, 9, 25, 700)
-    let main_menu = createMainMenu(375, 500)
+    game_map.addInputMenu(create_input_menu())
+    let time_traker = new TimeTraker(35, 30, 6, 18, 700)
+    let main_menu = create_main_menu(375, 500)
     main_menu.setHorizontal()
     main_menu.showTitle()
     main_menu.addPulse(0, function() { game_map.toggleDrawTravel() })
     main_menu.addPulse(1, function() { game_map.toggleDrawSearch() })
-    main_menu.addPulse(2, function() { console.log('DATA menu not available') })
+    main_menu.addPulse(2, function() { game_map.toggleDrawInput() })
 
     /* ----------------------------------------------------------------- */
     function game() {
