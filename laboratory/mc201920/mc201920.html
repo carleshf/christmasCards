@@ -144,6 +144,10 @@
         if(this.draw_search_menu) {
           this.search_options.draw(ctx)
         }
+
+        if(this.draw_input_menu) {
+          this.input_options.draw(ctx)
+        }
       }
 
       checkButtons(x, y, ctx) {
@@ -338,8 +342,6 @@
           for(let ii = 0; ii < this.options.length; ii++) {
             this.options[ii].setCoordinates(iterative_x, this.y)
             this.options[ii].draw(ctx, this.px, this.width, this.height, true)
-            let txt = this.options[ii].text
-            
             iterative_x += this.width + this.offset_x * 2
           }
         } else { // 'vertical'
@@ -348,8 +350,6 @@
             //console.log(this.x, iterative_y)
             this.options[ii].setCoordinates(this.x, iterative_y)
             this.options[ii].draw(ctx, this.px, this.width, this.height, false)
-            let txt = this.options[ii].text
-            
             iterative_y += this.height + this.offset_y * 2
           }
         }
@@ -370,8 +370,49 @@
     /* ----------------------------------------------------------------- */
     class Collection {
       constructor(name, options) {
-        this.name
-        this.options
+        this.name = name
+        this.options = options
+        this.selected = 1
+      }
+
+      draw(ctx, px, w, h) {
+        ctx.font = px + "px Courier New";
+        ctx.fillStyle = 'black'
+        ctx.fillRect(this.x, this.y, w, h)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(this.x + 1, this.y + 1, w - 2, h - 2)
+        ctx.fillStyle = 'black'
+        
+        let tx = this.x + (w / 2) - (ctx.measureText(this.options[this.selected]).width / 2)
+
+        ctx.fillText(this.options[this.selected], tx, this.y + px + 2)
+      }
+
+      clicked(x, y) {
+        let test_x = x > this.x & x < this.x + w
+        let test_y = y > this.y & y < this.y + h
+        // console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
+        if(test_x & test_y) {
+          this.moveSelected()
+        }
+      }
+
+      moveSelected() {
+        this.selected += 1
+        this.selected %= this.options.length
+      }
+
+      getSelected() {
+        return this.options[this.selected]
+      }
+
+      matchSelected(option) {
+        return getSelected() == option
+      }
+
+      setCoordinates(x, y) {
+        this.x = x
+        this.y = y
       }
     }
     class InputMenu {
@@ -379,6 +420,10 @@
         this.x = x
         this.y = y
         this.collections = []
+        this.width = 350
+        this.height = 25
+        this.offset_y = 4
+        this.px = 15
       }
 
       addCollection(collection) {
@@ -386,13 +431,19 @@
       }
 
       draw(ctx) {
-        
+        let iterative_y = this.y
+        for(let ii = 0; ii < this.collections.length; ii++) {
+          //console.log(this.x, iterative_y)
+          this.collections[ii].setCoordinates(this.x, iterative_y)
+          this.collections[ii].draw(ctx, this.px, this.width, this.height, false)
+          iterative_y += this.height + this.offset_y * 2
+        }
       }
     }
 
 
     /* ----------------------------------------------------------------- */
-    function create_map(x = 15, y = 483) {
+    function create_map(x = 15, y = 503) {
       let europe_small_map = [ 
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
@@ -495,7 +546,7 @@
         }
       ]
 
-      let map = new Map(15, 483)
+      let map = new Map(x, y)
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
@@ -525,20 +576,21 @@
       add_time()
     }
 
-    function create_input_menu(x = 15, y = 483) {
+    function create_input_menu(x = 15, y = 438) {
       input = new InputMenu(x, y)
       input.addCollection(new Collection('Hair', ['Amber', 'Blonde', 'Brown', 'Caramel', 'Chocolate', 'Copper', 'Espresso', 'Jet Black', 'Red Hot']))
       input.addCollection(new Collection('Accessory', ['Earrings', 'Necklace', 'Tattoos', 'Regular glasses', 'Sunglasses']))
       input.addCollection(new Collection('Clothing (1)', ['Black shirt', 'Blue shirt', 'Red shirt', 'White shirt', 'Leather jacket', 'Hoodie']))
       input.addCollection(new Collection('Clothing (2)', ['Black Chinos', 'Black Jeans', 'Brown Wool Trousers', 'Purple Joggers', 'Blue Jeans']))
       input.addCollection(new Collection('Footwear', ['Brown Sandals', 'Black Moccasins', 'Gray Boots', 'White Sneakers']))
+      return input
     }
     
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
     game_map.addInputMenu(create_input_menu())
     let time_traker = new TimeTraker(35, 30, 18, 18, 700)
-    let main_menu = create_main_menu(375, 500)
+    let main_menu = create_main_menu(375, 520)
     main_menu.setHorizontal()
     main_menu.showTitle()
     main_menu.addPulse(0, function() { game_map.toggleDrawTravel() })
