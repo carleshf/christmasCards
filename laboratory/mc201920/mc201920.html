@@ -46,6 +46,7 @@
         this.travel_options = null
         this.search_options = null
         this.input_options = null
+        this.arrest_options = null
         this.img = null
         this.info_show = [
           ['NO INFO FOR AGENT']
@@ -60,8 +61,9 @@
         this[item.id] = item
       }
 
-      addInputMenu(input_menu) {
+      addInputMenu(input_menu, arrest_menu) {
         this.input_options = input_menu
+        this.arrest_options = arrest_menu
       }
 
       move(new_id, timeCallback) {
@@ -147,6 +149,7 @@
 
         if(this.draw_input_menu) {
           this.input_options.draw(ctx)
+          this.arrest_options.draw(ctx)
         }
       }
 
@@ -427,6 +430,7 @@
         this.y = y
       }
     }
+
     class InputMenu {
       constructor(x, y) {
         this.x = x
@@ -599,12 +603,17 @@
       input.addCollection(new Collection('Clothing (1)', ['Black shirt', 'Blue shirt', 'Red shirt', 'White shirt', 'Leather jacket', 'Hoodie']))
       input.addCollection(new Collection('Clothing (2)', ['Black Chinos', 'Black Jeans', 'Brown Wool Trousers', 'Purple Joggers', 'Blue Jeans']))
       input.addCollection(new Collection('Footwear', ['Brown Sandals', 'Black Moccasins', 'Gray Boots', 'White Sneakers']))
-      return input
+
+      let arrest = new Menu(375, y, [new MenuOption('Search for suspect')])
+      arrest.setBoxSize(410, 25, 8, 4)
+      arrest.hideTitle()
+      return {'left': input, 'top': arrest}
     }
     
     /* ----------------------------------------------------------------- */
     let game_map = create_map()
-    game_map.addInputMenu(create_input_menu())
+    let input_arrest = create_input_menu()
+    game_map.addInputMenu(input_arrest.left, input_arrest.top)
     let time_traker = new TimeTraker(35, 30, 18, 18, 700)
     let main_menu = create_main_menu(375, 520)
     main_menu.setHorizontal()
