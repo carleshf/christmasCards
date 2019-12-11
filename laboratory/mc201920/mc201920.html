@@ -154,8 +154,13 @@
         if(this.draw_travel_menu) {
           this.travel_options.checkButtons(x, y, ctx)
         }
+
         if(this.draw_search_menu) {
           this.search_options.checkButtons(x, y, ctx)
+        }
+
+        if(this.draw_input_menu) {
+          this.input_options.checkButtons(x, y, ctx)
         }
       }
 
@@ -372,7 +377,7 @@
       constructor(name, options) {
         this.name = name
         this.options = options
-        this.selected = 1
+        this.selected = 0
       }
 
       draw(ctx, px, w, h) {
@@ -382,16 +387,23 @@
         ctx.fillStyle = 'lightgray'
         ctx.fillRect(this.x + 1, this.y + 1, w - 2, h - 2)
         ctx.fillStyle = 'black'
-        
-        let tx = this.x + (w / 2) - (ctx.measureText(this.options[this.selected]).width / 2)
 
-        ctx.fillText(this.options[this.selected], tx, this.y + px + 2)
+        let txt = this.options[this.selected]
+        if(this.selected == (this.options.length - 1)) {
+          txt = this.options[this.selected] + ' <-'
+        } else {
+          txt = this.options[this.selected] + ' ->'
+        }
+        
+        let tx = this.x + (w / 2) - (ctx.measureText(txt).width / 2)
+
+        ctx.fillText(txt, tx, this.y + px + 2)
       }
 
-      clicked(x, y) {
+      clicked(x, y, w, h) {
         let test_x = x > this.x & x < this.x + w
         let test_y = y > this.y & y < this.y + h
-        // console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
+        //console.log('(', x, ', ', y, ') -> (', this.x, ', ', this.y, ', ', this.x + w, ', ', this.y + h, ') -> ', test_x, ' / ', test_y)
         if(test_x & test_y) {
           this.moveSelected()
         }
@@ -438,6 +450,10 @@
           this.collections[ii].draw(ctx, this.px, this.width, this.height, false)
           iterative_y += this.height + this.offset_y * 2
         }
+      }
+
+      checkButtons(x, y, ctx) {
+        this.collections.map( (it) => it.clicked(x, y, this.width, this.height) )
       }
     }
 
