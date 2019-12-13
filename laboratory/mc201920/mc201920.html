@@ -164,6 +164,7 @@
 
         if(this.draw_input_menu) {
           this.input_options.checkButtons(x, y, ctx)
+          this.arrest_options.checkButtons(x, y, ctx)
         }
       }
 
@@ -195,6 +196,14 @@
           ctx.fillText(line, 630, accum_y)
           accum_y += 15
         })
+      }
+
+      matchSelected(location, solution) {
+        if(location == this.current) {
+          return [false] 
+        } else {
+          return [true].concat(this.input_options.matchSelected(solution))
+        }
       }
     }
     /* ----------------------------------------------------------------- */
@@ -422,7 +431,7 @@
       }
 
       matchSelected(option) {
-        return getSelected() == option
+        return this.getSelected() == option
       }
 
       setCoordinates(x, y) {
@@ -458,6 +467,14 @@
 
       checkButtons(x, y, ctx) {
         this.collections.map( (it) => it.clicked(x, y, this.width, this.height) )
+      }
+
+      matchSelected(solution) {
+        let rst = [] 
+        for(var ii = 0; ii < this.collections.length; ii++) {
+          rst.push(this.collections[ii].matchSelected(solution[ii]))
+        }
+        return rst
       }
     }
 
@@ -570,7 +587,7 @@
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
-      map.current = 'uk_lnd'
+      map.current = 'ie_dub' // uk_lnd
       map.create()
       return map
     }
@@ -596,6 +613,12 @@
       add_time()
     }
 
+    function check_solution() {
+      let solution = ['Blonde', 'Sunglasses', 'Red shirt', 'Blue Jeans', 'White Sneakers'] 
+      let answer = game_map.matchSelected('hn_dbv', solution)
+      console.log(answer)
+    }
+
     function create_input_menu(x = 15, y = 438) {
       input = new InputMenu(x, y)
       input.addCollection(new Collection('Hair', ['Amber', 'Blonde', 'Brown', 'Caramel', 'Chocolate', 'Copper', 'Espresso', 'Jet Black', 'Red Hot']))
@@ -607,6 +630,7 @@
       let arrest = new Menu(375, y, [new MenuOption('Search for suspect')])
       arrest.setBoxSize(410, 25, 8, 4)
       arrest.hideTitle()
+      arrest.addPulse(0, check_solution)
       return {'left': input, 'top': arrest}
     }
     
