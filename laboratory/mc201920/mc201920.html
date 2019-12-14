@@ -43,14 +43,21 @@
         this.draw_travel_menu = true
         this.draw_search_menu = true
         this.draw_input_menu = true
+        this.draw_answer_result = true
         this.travel_options = null
         this.search_options = null
         this.input_options = null
         this.arrest_options = null
+        this.is_answer_correct = 'unknown'
         this.img = null
         this.info_show = [
           ['NO INFO FOR AGENT']
         ]
+      }
+
+      setCheckOptions(answer) {
+        console.log(this.current)
+        this.is_answer_correct = answer ? 'correct' : 'wrong'
       }
 
       setInfo(new_info) {
@@ -124,18 +131,31 @@
         this.draw_travel_menu = !this.draw_travel_menu
         this.draw_search_menu = false
         this.draw_input_menu = false
+        this.draw_answer_result = false
+        this.is_answer_correct = 'unknown'
       }
 
       toggleDrawSearch() {
         this.draw_travel_menu = false
         this.draw_search_menu = !this.draw_search_menu
         this.draw_input_menu = false
+        this.draw_answer_result = false
+        this.is_answer_correct = 'unknown'
       }
 
       toggleDrawInput() {
         this.draw_travel_menu = false
         this.draw_search_menu = false
         this.draw_input_menu = !this.draw_input_menu
+        this.draw_answer_result = false
+        this.is_answer_correct = 'unknown'
+      }
+
+      toggleDrawAnswer() {
+        this.draw_travel_menu = false
+        this.draw_search_menu = false
+        this.draw_input_menu = this.draw_input_menu
+        this.draw_answer_result = true
       }
 
       draw(ctx) {
@@ -148,7 +168,7 @@
         }
 
         if(this.draw_input_menu) {
-          this.input_options.draw(ctx)
+          this.input_options.draw(ctx, this.is_answer_correct)
           this.arrest_options.draw(ctx)
         }
       }
@@ -199,7 +219,7 @@
       }
 
       matchSelected(location, solution) {
-        if(location == this.current) {
+        if(location != this.current) {
           return [false] 
         } else {
           return [true].concat(this.input_options.matchSelected(solution))
@@ -227,7 +247,7 @@
       }
 
       draw(current, ctx) {
-        ctx.font = "12px Arial";
+        ctx.font = '12px Arial';
         ctx.fillStyle = 'black'
         ctx.fillText('Time tracker ' + '.'.repeat(192), this.x, this.y - 3)
 
@@ -283,7 +303,7 @@
       }
 
       draw(ctx, px, w, h, draw_picture) {
-        ctx.font = px + "px Courier New";
+        ctx.font = px + 'px Courier New';
         ctx.fillStyle = 'black'
         ctx.fillRect(this.x, this.y, w, h)
         ctx.fillStyle = 'lightgray'
@@ -349,7 +369,7 @@
 
       draw(ctx) {
         if(this.show_title) {
-          ctx.font = "12px Arial";
+          ctx.font = '12px Arial';
           ctx.fillStyle = 'black'
           ctx.fillText('Menu ' + '.'.repeat(112), this.x, this.y - 3)
         }
@@ -393,7 +413,7 @@
       }
 
       draw(ctx, px, w, h) {
-        ctx.font = px + "px Courier New";
+        ctx.font = px + 'px Courier New';
         ctx.fillStyle = 'black'
         ctx.fillRect(this.x, this.y, w, h)
         ctx.fillStyle = 'lightgray'
@@ -455,13 +475,23 @@
         this.collections.push(collection)
       }
 
-      draw(ctx) {
+      draw(ctx, answer) {
         let iterative_y = this.y
         for(let ii = 0; ii < this.collections.length; ii++) {
           //console.log(this.x, iterative_y)
           this.collections[ii].setCoordinates(this.x, iterative_y)
           this.collections[ii].draw(ctx, this.px, this.width, this.height, false)
           iterative_y += this.height + this.offset_y * 2
+        }
+
+        if(answer == 'correct') {
+          ctx.font = '13px Arial';
+          ctx.fillStyle = 'black'
+          ctx.fillText('> The criminal was arrested and is moved to Scotland Yard', this.x + 395, this.y + 45)
+        } else if(answer == 'wrong') {
+          ctx.font = '13px Arial';
+          ctx.fillStyle = 'black'
+          ctx.fillText('> We did not find the subject you described in this location', this.x + 395, this.y + 45)
         }
       }
 
@@ -485,7 +515,11 @@
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
           'img': 'dta/barcelona-px.png',
-          'dsc': ['NO INFO FOR AGENT ', '(ES)'],
+          'dsc': ['Barcelona is the capital', 'and largest city of the', 'autonomous community', 'of Catalonia, as well as',
+            'the second most', 'populous municipality of', 'Spain. Founded as a', 'Roman city, in the Middle', 
+            'Ages Barcelona became', 'the capital of the County', 'of Barcelona. Barcelona', 'continued to be an', 
+            'important city in the', 'Crown of Aragon a', 'an economic and', 'administrative centre', 'of this Crown and the',
+            'capital of the Principality', 'of Catalonia.'],
           'time': 3,
           'locations': [ 
             {'name': 'Park Güell', 'dsc': ['We saw you man', 'wearing a shirt.'], 'time': 1},
@@ -496,7 +530,10 @@
         {'id': 'fr_par', 'country': 'France', 'city': 'Paris',
           'connections': ['es_bcn', 'dk_bil', 'de_hbg'],
           'img': 'dta/paris-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(FR)'],
+          'dsc': ['Paris is the capital and', 'most populous city of', 'France. Since the 17th', 'century, Paris has been',
+            'one of Europe\'s major', 'centres of finance,', 'diplomacy, commerce,', 'fashion, science,', 'and the arts. According',
+            'to the EIU\'s Cost of', 'Living Survey in 2019,', 'Paris was the third most', 'expensive city in the', 'world, after Singapore',
+            'and Hong Kong.'],
           'time': 2,
           'locations': [ 
             {'name': 'Notre Dame Cathedral', 'dsc': ['Shush!', 'Keep silence!', 'This is a Cathedral!'], 'time': 1},
@@ -507,7 +544,10 @@
         {'id': 'uk_lnd', 'country': 'United Kingdom', 'city': 'London',
           'connections': ['es_bcn', 'ie_dub', 'de_hbg'],
           'img': 'dta/london-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(UK)'],
+          'dsc': ['London is the capital', 'and largest city of', 'England and the United', 'Kingdom. London is', 'considered to be one',
+            'of the world\'s most', 'important global cities', 'and has been termed the ', 'world\'s most powerful,', 'most desirable, most',
+            'influential, most visited,', 'most expensive,', 'innovative, sustainable,', 'most investment friendly,', 'and most popular for',
+            'work city in the world.'],
           'time': 2,
           'locations': [ 
             {'name': 'London Eye', 'dsc': ['The suspect was seen', 'with a man carrying a', 'flag with black, yellow,', 'and red colours.'], 'time': 1},
@@ -518,7 +558,9 @@
         {'id': 'dk_bil', 'country': 'Denmark', 'city': 'Billund',
           'connections': ['fr_par', 'de_hbg'],
           'img': 'dta/billund-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(DK)'],
+          'dsc': ['Billund is a town in', 'Jutland, Denmark. It', 'is the home of the Lego', 'Group head office. A', 'company town, it is',
+            'also the site of a theme', 'park, Legoland,', 'waterpark resort,', 'Lalandia, and Billund', 'Airport which is the',
+            'second largest airport in', 'Denmark.'],
           'time': 2,
           'locations': [ 
             {'name': 'Legoland Park', 'dsc': ['The person you are', 'looking for bought a lot ', 'of blue, white, and red', 'blocks.'], 'time': 1},
@@ -529,7 +571,10 @@
         {'id': 'de_hbg', 'country': 'Germany', 'city': 'Heidelberg',
           'connections': ['dk_bil', 'fr_par', 'uk_lnd'],
           'img': 'dta/heidelberg-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(DE)'],
+          'dsc': ['Heidelberg is a university', 'town in the German state', 'of Baden-Württemberg.', 'Heidelberg University', 
+            'was founded in 1386 and', 'it is Germany\'s oldest', 'and one of Europe\'s', 'most reputable', 'universities. Heidelberg',
+            'is a scientific hub in', 'Germany and home to', 'several internationally', 'renowned research', 'facilities adjacent to its',
+            'university.'],
           'time': 3,
           'locations': [ 
             {'name': 'Heidelberg Castle', 'dsc': ['The subject you look', 'for was wearing red', 'robes.'], 'time': 1},
@@ -540,7 +585,9 @@
         {'id': 'it_mil', 'country': 'Italy', 'city': 'Milan',
           'connections': ['es_bcn', 'gr_ath', 'hn_dbv'],
           'img': 'dta/milan-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(IT)'],
+          'dsc': ['Milan is a city in northern', 'Italy, capital of Lombardy,', 'The wider Milan', 'metropolitan area is a',
+            'region that extends over', 'central Lombardy and', 'eastern Piedmont and it', 'is, by far, the largest',
+            'metropolitan area in', 'Italy and the 54th largest', 'in the world.'],
           'time': 2,
           'locations': [ 
             {'name': 'Il Duomo', 'dsc': ['I do not remember the', 'colours, but you man had' ,'a three-coloured-flag', 'passport.'], 'time': 1},
@@ -551,7 +598,9 @@
         {'id': 'gr_ath', 'country': 'Greece', 'city': 'Athens',
           'connections': ['hn_dbv', 'it_mil'],
           'img': 'dta/athenas-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(GR)'],
+          'dsc': ['Athens is the capital and', 'largest city of Greece.', 'Athens dominates the', 'Attica region and is one', 
+            'of the world\'s oldest cities,', 'with its recorded history', 'spanning over 3,400', 'years and its earliest', 
+            'human presence started', 'somewhere between the', '11th and 7th millennium', 'before Christ.'],
           'time': 3,
           'locations': [ 
             {'name': 'The Acropolis', 'dsc': ['We known nothing about', 'your subject.'], 'time': 3},
@@ -562,7 +611,9 @@
         {'id': 'hn_dbv', 'country': 'Croatia', 'city': 'Dubrovnik',
           'connections': ['gr_ath', 'it_mil'],
           'img': 'dta/dubrovnik-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(HN)'],
+          'dsc': ['Dubrovnik is a city on', 'the Adriatic Sea', 'in southern Croatia.', 'It is one of the most',
+            'prominent tourist', 'destinations in the', 'Mediterranean Sea. In', '1979, the city of', 'Dubrovnik joined the',
+            'UNESCO list of World', 'Heritage sites.'],
           'time': 2,
           'locations': [ 
             {'name': 'The Old City Walls', 'dsc': ['Yes, we saw you man!'], 'time': 1},
@@ -573,7 +624,10 @@
         {'id': 'ie_dub', 'country': 'Ireland', 'city': 'Dublin',
           'connections': ['uk_lnd'],
           'img': 'dta/dublin-px.png',
-          'dsc': ['NO INFO FOR AGENT', '(IE)'],
+          'dsc': ['Dublin is the capital', 'and largest city of', 'Ireland.', 'Dublin is a historical', 'and contemporary centre',
+            'for education, the arts,', 'administration and', 'industry. As of 2018 the', 'city was listed by the', 'Globalization and',
+            'World Cities Research', 'Network (GaWC) as', 'a global city, which', 'places it amongst the', 'top thirty cities in',
+            'the world.'],
           'time': 1,
           'locations': [ 
             {'name': 'Guinness Storehouse', 'dsc': ['If you are not buying', 'beer, stop disturbing the workers.'], 'time': 2},
@@ -587,7 +641,7 @@
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
-      map.current = 'ie_dub' // uk_lnd
+      map.current = 'uk_lnd'
       map.create()
       return map
     }
@@ -617,6 +671,8 @@
       let solution = ['Blonde', 'Sunglasses', 'Red shirt', 'Blue Jeans', 'White Sneakers'] 
       let answer = game_map.matchSelected('hn_dbv', solution)
       console.log(answer)
+      game_map.setCheckOptions(answer.every( (y) => y ))
+      game_map.toggleDrawAnswer()
     }
 
     function create_input_menu(x = 15, y = 438) {
