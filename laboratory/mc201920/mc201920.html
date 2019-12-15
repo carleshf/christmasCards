@@ -56,7 +56,6 @@
       }
 
       setCheckOptions(answer) {
-        console.log(this.current)
         this.is_answer_correct = answer ? 'correct' : 'wrong'
       }
 
@@ -508,6 +507,84 @@
       }
     }
 
+    /* ----------------------------------------------------------------- */
+
+    class Starring {
+      constructor() {
+        this.menu = new Menu(158, 500, [new MenuOption('Start')])
+        this.menu.setBoxSize(475, 25, 8, 4)
+        this.menu.hideTitle()
+      }
+
+      draw(ctx) {
+        function printText(x, y, col, sty, txt, ctx) {
+          ctx.font = style
+          ctx.fillStyle = col
+          ctx.fillText(txt, x, y)
+        }
+
+        let style = '23px Arial'
+        let col = 'darkred'
+        
+        var txt = 'Who stolen the Christmas presents from North Pole?'
+        printText(130, 45, col, style, txt, ctx)
+        
+        let arr = ['Agent,',
+          '',
+          'The Intelligence North Pole Agency (INPA) contacted with us, Scotland Yard.',
+          'They claim to have prove that someone from the band of the well-known',
+          'Carmen Sanfrancisco has stolen the presents for next Christmas.',
+          '',
+          'The INPA informed that the suspect got London today\'s morning. Follow them',
+          'and arrest them once identified.',
+          '',
+          'Remember, you have to accomplish your mission before the night of 24th.',
+          '',
+          'Good look agent.',
+          '',
+          '> The Director'
+        ]
+
+        var y = 100
+        var x = 160
+        var w = 475
+        var h = 375
+        ctx.fillStyle = 'black'
+        ctx.fillRect(x - 2, y - 2, w, h)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(x - 1, y - 1, w - 2, h - 2)
+
+        style = '13px Arial'
+        col = 'black'
+        
+        for(let ii = 0; ii < arr.length; ii++) {
+          printText(x + 10, y + 25, col, style, arr[ii], ctx)
+          y += 25
+        }
+
+        this.menu.draw(ctx)
+      }
+
+      addPulse(fun) {
+        console.log('added')
+        this.menu.addPulse(0, fun)
+      }
+
+      checkButtons(x, y, ctx) {
+        this.menu.checkButtons(x, y, ctx)
+      }
+    }
+
+    class Edning {
+      constructor() {
+
+      }
+
+      draw() {
+
+      }
+    }
+
 
     /* ----------------------------------------------------------------- */
     function create_map(x = 15, y = 503) {
@@ -689,8 +766,24 @@
       arrest.addPulse(0, check_solution)
       return {'left': input, 'top': arrest}
     }
+
+    function move_stage() {
+      switch(stage) {
+        case 'starring':
+          stage = 'game'
+          break
+        case 'game':
+          stage = 'ending'
+          break
+      }
+    }
     
     /* ----------------------------------------------------------------- */
+    let starring = new Starring()
+    starring.addPulse(move_stage)
+    let ending = new Edning()
+    let stage = 'starring'
+
     let game_map = create_map()
     let input_arrest = create_input_menu()
     game_map.addInputMenu(input_arrest.left, input_arrest.top)
@@ -705,10 +798,20 @@
     /* ----------------------------------------------------------------- */
     function game() {
       context.clearRect(0, 0, width, height);
-      main_menu.draw(context)
-      game_map.draw(context)
-      game_map.drawLandscape(15, 75, context)
-      time_traker.draw(game_map[game_map.current], context)
+      switch(stage) {
+        case "starring":
+          starring.draw(context)
+          break
+        case "game":
+          main_menu.draw(context)
+          game_map.draw(context)
+          game_map.drawLandscape(15, 75, context)
+          time_traker.draw(game_map[game_map.current], context)
+          break;
+        case "ending":
+          ending.draw(context)
+          break
+      }
     }
 
     /* ----------------------------------------------------------------- */ 
@@ -717,8 +820,15 @@
       let mX = event.pageX - canvas.offsetLeft
       let mY = event.pageY - canvas.offsetTop
       console.log('onClick: (', mX, ', ', mY, ')')
-      main_menu.checkButtons(mX, mY, context)
-      game_map.checkButtons(mX, mY, context)
+      switch(stage) {
+        case "starring":
+          starring.checkButtons(mX, mY, context)
+          break
+        case 'game':
+          main_menu.checkButtons(mX, mY, context)
+          game_map.checkButtons(mX, mY, context)
+          break
+      }
     }
 
     /* ----------------------------------------------------------------- */ 
