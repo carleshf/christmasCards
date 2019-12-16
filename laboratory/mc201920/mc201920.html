@@ -44,6 +44,7 @@
         this.draw_search_menu = true
         this.draw_input_menu = true
         this.draw_answer_result = true
+        this.draw_end_menu = false
         this.travel_options = null
         this.search_options = null
         this.input_options = null
@@ -67,9 +68,14 @@
         this[item.id] = item
       }
 
-      addInputMenu(input_menu, arrest_menu) {
+      freeze() {
+        this.draw_end_menu = true
+      }
+
+      addInputMenu(input_menu, arrest_menu, end_menu) {
         this.input_options = input_menu
         this.arrest_options = arrest_menu
+        this.end_menu = end_menu
       }
 
       move(new_id, timeCallback) {
@@ -170,20 +176,28 @@
           this.input_options.draw(ctx, this.is_answer_correct)
           this.arrest_options.draw(ctx)
         }
+
+        if(this.draw_end_menu) {
+          this.end_menu.draw(ctx)
+        }
       }
 
       checkButtons(x, y, ctx) {
-        if(this.draw_travel_menu) {
-          this.travel_options.checkButtons(x, y, ctx)
-        }
+        if(!this.draw_end_menu) {
+          if(this.draw_travel_menu) {
+            this.travel_options.checkButtons(x, y, ctx)
+          }
 
-        if(this.draw_search_menu) {
-          this.search_options.checkButtons(x, y, ctx)
-        }
+          if(this.draw_search_menu) {
+            this.search_options.checkButtons(x, y, ctx)
+          }
 
-        if(this.draw_input_menu) {
-          this.input_options.checkButtons(x, y, ctx)
-          this.arrest_options.checkButtons(x, y, ctx)
+          if(this.draw_input_menu) {
+            this.input_options.checkButtons(x, y, ctx)
+            this.arrest_options.checkButtons(x, y, ctx)
+          }
+        } else {
+          this.end_menu.checkButtons(x, y, ctx)
         }
       }
 
@@ -265,6 +279,10 @@
           iterative_x += this.width + this.offset_x
         }
       }
+
+      getTime() {
+        return this.used_days >= this.allowed_days
+      }
     }
 
     /* ----------------------------------------------------------------- */
@@ -341,7 +359,12 @@
         this.orientation = 'horizontal'
         this.show_title = true
         this.pulse = []
+        this.frozen = false
       }
+
+      freeze() {
+        this.frozen = true
+      } 
 
       setVertical() {
         this.orientation = 'vertical'
@@ -396,10 +419,12 @@
       }
 
       checkButtons(x, y, ctx) {
-        let pos = this.options.map( (it) => it.clicked(x, y, this.width, this.height) )
-        pos = pos.indexOf(1)
-        if(pos != -1) {
-            this.pulse[pos](ctx)
+        if(!this.frozen) {
+          let pos = this.options.map( (it) => it.clicked(x, y, this.width, this.height) )
+          pos = pos.indexOf(1)
+          if(pos != -1) {
+              this.pulse[pos](ctx)
+          }
         }
       }
     }
@@ -486,11 +511,12 @@
         if(answer == 'correct') {
           ctx.font = '13px Arial';
           ctx.fillStyle = 'black'
-          ctx.fillText('> The criminal was arrested and is moved to Scotland Yard', this.x + 395, this.y + 45)
+          ctx.fillText('> The criminal was arrested and was moved to Scotland Yard', this.x + 385, this.y + 55)
+          frozen()
         } else if(answer == 'wrong') {
           ctx.font = '13px Arial';
           ctx.fillStyle = 'black'
-          ctx.fillText('> We did not find the subject you described in this location', this.x + 395, this.y + 45)
+          ctx.fillText('> We did not find the subject you described in this location', this.x + 385, this.y + 55)
         }
       }
 
@@ -526,7 +552,7 @@
         let style = '23px Arial'
         let col = 'darkred'
         
-        var txt = 'Who stolen the Christmas presents from North Pole?'
+        var txt = 'Who stole the Christmas presents from North Pole?'
         printText(130, 45, col, style, txt, ctx)
         
         let arr = ['Agent,',
@@ -566,7 +592,6 @@
       }
 
       addPulse(fun) {
-        console.log('added')
         this.menu.addPulse(0, fun)
       }
 
@@ -577,17 +602,37 @@
 
     class Edning {
       constructor() {
-
+        this.status = 'time off'
       }
 
-      draw() {
+      addStatus(status) {
+        this.status = status
+      }
+
+      draw(ctx) {
+        function printText(x, y, col, sty, txt, ctx) {
+          ctx.font = style
+          ctx.fillStyle = col
+          ctx.fillText(txt, x, y)
+        }
+        switch(this.status) {
+          case 'time off':
+            break
+          case 'identified':
+            break
+        }
 
       }
     }
 
 
     /* ----------------------------------------------------------------- */
-    function create_map(x = 15, y = 503) {
+    function frozen() {
+      game_map.freeze()
+      main_menu.freeze()
+    }
+
+    function create_map(x = 15, y = 450) {
       let europe_small_map = [ 
         {'id': 'es_bcn', 'country': 'Spain', 'city': 'Barcelona',
           'connections': ['fr_par', 'uk_lnd', 'it_mil'],
@@ -718,17 +763,19 @@
       for(let ii = 0; ii < europe_small_map.length; ii++) {
         map.addItem(europe_small_map[ii])
       }
-      map.current = 'uk_lnd'
+      map.current = 'hn_dbv' // 'uk_lnd'
       map.create()
       return map
     }
 
     function create_main_menu(x = 10, y = 20) {
       let options = [{'text': 'Travel'}, {
-        'text': 'Search', 'picture': ['#', 'G', 'G', '#', '#', '#', 'G', 'w', 'w', 'G', '#', '#', 'G', 'w', 'w', 'G', '#', '#', '#', 'G', 'G', 'b', '#', '#', '#', '#', '#', '#', 'b', '#', '#', '#', '#', '#', '#', 'b']}, 
+        'text': 'Search'},  // 'picture': ['#', 'G', 'G', '#', '#', '#', 'G', 'w', 'w', 'G', '#', '#', 'G', 'w', 'w', 'G', '#', '#', '#', 'G', 'G', 'b', '#', '#', '#', '#', '#', '#', 'b', '#', '#', '#', '#', '#', '#', 'b']
         {'text': 'Identify'}]
       options = options.map( (op) => new MenuOption(op.text, op.picture))
-      return new Menu(x, y, options)  
+      let m = new Menu(x, y, options)
+      m.setBoxSize(125, 25, 8, 4)
+      return m
     }
 
     function move_location(new_loc) {
@@ -752,19 +799,24 @@
       game_map.toggleDrawAnswer()
     }
 
-    function create_input_menu(x = 15, y = 438) {
-      input = new InputMenu(x, y)
+    function create_input_menu() {
+      input = new InputMenu(15, 438)
       input.addCollection(new Collection('Hair', ['Amber', 'Blonde', 'Brown', 'Caramel', 'Chocolate', 'Copper', 'Espresso', 'Jet Black', 'Red Hot']))
       input.addCollection(new Collection('Accessory', ['Earrings', 'Necklace', 'Tattoos', 'Regular glasses', 'Sunglasses']))
       input.addCollection(new Collection('Clothing (1)', ['Black shirt', 'Blue shirt', 'Red shirt', 'White shirt', 'Leather jacket', 'Hoodie']))
       input.addCollection(new Collection('Clothing (2)', ['Black Chinos', 'Black Jeans', 'Brown Wool Trousers', 'Purple Joggers', 'Blue Jeans']))
       input.addCollection(new Collection('Footwear', ['Brown Sandals', 'Black Moccasins', 'Gray Boots', 'White Sneakers']))
 
-      let arrest = new Menu(375, y, [new MenuOption('Search for suspect')])
+      let arrest = new Menu(375, 504, [new MenuOption('Search for suspect')])
       arrest.setBoxSize(410, 25, 8, 4)
       arrest.hideTitle()
       arrest.addPulse(0, check_solution)
-      return {'left': input, 'top': arrest}
+
+      let end = new Menu(375, 570, [new MenuOption('End game')])
+      end.setBoxSize(410, 25, 8, 4)
+      end.hideTitle()
+      end.addPulse(0, move_stage)
+      return {'left': input, 'top': arrest, 'bottom': end}
     }
 
     function move_stage() {
@@ -782,13 +834,13 @@
     let starring = new Starring()
     starring.addPulse(move_stage)
     let ending = new Edning()
-    let stage = 'starring'
+    let stage = 'game'
 
     let game_map = create_map()
     let input_arrest = create_input_menu()
-    game_map.addInputMenu(input_arrest.left, input_arrest.top)
+    game_map.addInputMenu(input_arrest.left, input_arrest.top, input_arrest.bottom)
     let time_traker = new TimeTraker(35, 30, 18, 18, 700)
-    let main_menu = create_main_menu(375, 520)
+    let main_menu = create_main_menu(375, 450)
     main_menu.setHorizontal()
     main_menu.showTitle()
     main_menu.addPulse(0, function() { game_map.toggleDrawTravel() })
@@ -809,6 +861,7 @@
           time_traker.draw(game_map[game_map.current], context)
           break;
         case "ending":
+          ending.addStatus(time_traker.getTime())
           ending.draw(context)
           break
       }
