@@ -906,7 +906,7 @@
     let game_map = create_map()
     let input_arrest = create_input_menu()
     game_map.addInputMenu(input_arrest.left, input_arrest.top, input_arrest.bottom)
-    let time_traker = new TimeTraker(35, 30, 18, 18, 700)
+    let time_traker = new TimeTraker(35, 30, 27, 7, 700) // 17 days minimum in 7 slots (translate, day = click, slot = day/block)
     let main_menu = create_main_menu(375, 450)
     main_menu.setHorizontal()
     main_menu.showTitle()
