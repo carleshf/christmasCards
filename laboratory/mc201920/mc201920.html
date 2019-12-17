@@ -281,7 +281,8 @@
       }
 
       getTime() {
-        return this.used_days >= this.allowed_days
+        console.log('used: ', this.used_days, ', allowed: ', this.allowed_days)
+        return this.used_days <= this.allowed_days
       }
     }
 
@@ -602,7 +603,7 @@
 
     class Edning {
       constructor() {
-        this.status = 'time off'
+        this.status = false
       }
 
       addStatus(status) {
@@ -615,13 +616,79 @@
           ctx.fillStyle = col
           ctx.fillText(txt, x, y)
         }
-        switch(this.status) {
-          case 'time off':
-            break
-          case 'identified':
-            break
+
+        let style = '23px Arial'
+        let col = 'darkred'
+        
+        var txt = 'Who stole the Christmas presents from North Pole?'
+        printText(130, 45, col, style, txt, ctx)
+        
+        let arr = []
+        if(this.status) { // in time
+          arr = ['Agent,',
+            '',
+            'Good job of arresting the mate of Carmen Sanfrancisco.',
+            '',
+            'Our second team was able to find the location of the stolen presents.',
+            '',
+            'Thanks to this coordinated work the celebration of Christmas Eve',
+            'is ensured for every child.',
+            '',
+            '> The Director'
+          ]
+        } else { // out of time
+          arr = ['Agent,',
+            '',
+            'Good job of arresting the mate of Carmen Sanfrancisco.',
+            '',
+            'Unfortunately you took to much time to find the thief. Now, ',
+            'our second time can start looking for the stolen presents, and',
+            'there is no way we will find it before Christmas Eve.',
+            '',
+            'You did a good job, but not enough.',
+            '',
+            '> The Director'
+          ]
         }
 
+        var y = 85
+        var x = 160
+        var w = 475
+        var h = 265
+        ctx.fillStyle = 'black'
+        ctx.fillRect(x - 2, y - 2, w, h)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(x - 1, y - 1, w - 2, h - 2)
+
+        style = '13px Arial'
+        col = 'black'
+        
+        for(let ii = 0; ii < arr.length; ii++) {
+          printText(x + 10, y + 25, col, style, arr[ii], ctx)
+          y += 22
+        }
+        
+        var y = 400
+        var h = 180
+        ctx.fillStyle = 'black'
+        ctx.fillRect(x - 2, y - 2, w, h)
+        ctx.fillStyle = 'lightgray'
+        ctx.fillRect(x - 1, y - 1, w - 2, h - 2)
+
+        arr = ['I hope you enjoyed this free and little adaptation of the old',
+          'franchise video games "Where in the World Is Carmen Sandiego?" (1985).',
+          '',
+          'In any circumstances you ended the game I want to wish you',
+          'merry and bright holidays and a happy new year.',
+          '',
+          '~Carles'
+        ]
+
+        col = 'black'
+        for(let ii = 0; ii < arr.length; ii++) {
+          printText(x + 10, y + 25, ii % 2 ? 'darkgreen' : 'darkred', style, arr[ii], ctx)
+          y += 22
+        }
       }
     }
 
@@ -834,7 +901,7 @@
     let starring = new Starring()
     starring.addPulse(move_stage)
     let ending = new Edning()
-    let stage = 'game'
+    let stage = 'starring'
 
     let game_map = create_map()
     let input_arrest = create_input_menu()
@@ -851,16 +918,17 @@
     function game() {
       context.clearRect(0, 0, width, height);
       switch(stage) {
-        case "starring":
+        case 'starring':
           starring.draw(context)
           break
-        case "game":
+        case 'game':
           main_menu.draw(context)
           game_map.draw(context)
           game_map.drawLandscape(15, 75, context)
           time_traker.draw(game_map[game_map.current], context)
           break;
-        case "ending":
+        case 'ending':
+        console.log(time_traker.getTime())
           ending.addStatus(time_traker.getTime())
           ending.draw(context)
           break
@@ -874,7 +942,7 @@
       let mY = event.pageY - canvas.offsetTop
       console.log('onClick: (', mX, ', ', mY, ')')
       switch(stage) {
-        case "starring":
+        case 'starring':
           starring.checkButtons(mX, mY, context)
           break
         case 'game':
