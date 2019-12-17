@@ -252,17 +252,20 @@
         this.offset_x = 8
         this.width = (this.width - this.offset_x * (this.allowed_slots - 2)) / this.allowed_slots
         this.height = 10
+        this.day_to_show = 17
       }
 
       addTime() {
         this.used_days += 1
-        this.used_slots = Math.floor(this.used_days * this.allowed_slots / this.allowed_days )
+        this.used_slots = Math.floor(this.used_days * this.allowed_slots / this.allowed_days)
       }
 
       draw(current, ctx) {
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black'
-        ctx.fillText('Time tracker ' + '.'.repeat(192), this.x, this.y - 3)
+        //ctx.fillText('Time tracker ' + '.'.repeat(192), this.x, this.y - 3)
+        //ctx.fillText((this.day_to_show + this.used_slots) + ' December 2019', this.x + 605, this.y + 25)
+        ctx.fillText('Time tracker ' + '.'.repeat(160) + ' ' + (this.day_to_show + this.used_slots) + ' December 2019', this.x, this.y - 3)
 
 
         let iterative_x = this.x
@@ -601,7 +604,7 @@
       }
     }
 
-    class Edning {
+    class Ending {
       constructor() {
         this.status = false
       }
@@ -642,7 +645,7 @@
             'Good job of arresting the mate of Carmen Sanfrancisco.',
             '',
             'Unfortunately you took to much time to find the thief. Now, ',
-            'our second time can start looking for the stolen presents, and',
+            'our second team can start looking for the stolen presents, but',
             'there is no way we will find it before Christmas Eve.',
             '',
             'You did a good job, but not enough.',
@@ -900,8 +903,8 @@
     /* ----------------------------------------------------------------- */
     let starring = new Starring()
     starring.addPulse(move_stage)
-    let ending = new Edning()
-    let stage = 'starring'
+    let ending = new Ending()
+    let stage = 'game'
 
     let game_map = create_map()
     let input_arrest = create_input_menu()
