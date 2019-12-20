@@ -265,7 +265,9 @@
         ctx.fillStyle = 'black'
         //ctx.fillText('Time tracker ' + '.'.repeat(192), this.x, this.y - 3)
         //ctx.fillText((this.day_to_show + this.used_slots) + ' December 2019', this.x + 605, this.y + 25)
-        ctx.fillText('Time tracker ' + '.'.repeat(160) + ' ' + (this.day_to_show + this.used_slots) + ' December 2019', this.x, this.y - 3)
+        let tmp = (this.day_to_show + this.used_slots)
+        tmp = tmp > 31 ? 31 : tmp
+        ctx.fillText('Time tracker ' + '.'.repeat(160) + ' December ' + tmp + ', 2019', this.x, this.y - 3)
 
 
         let iterative_x = this.x
