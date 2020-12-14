@@ -30,7 +30,7 @@ function preload() {
 
 function setup() {
 	createCanvas(windowWidth, windowHeight)
-	if(navigator.userAgent.indexOf('iPhone') != -1 || navigator.userAgent.indexOf('Android')) {
+	if(navigator.userAgent.indexOf('iPhone') != -1 || navigator.userAgent.indexOf('Android') != -1) {
 		longpress = false
 	}
 }
