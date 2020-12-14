@@ -11,6 +11,8 @@ let fontsizeL = 47
 let fontsizeXL = 79
 let fontsize3XL = 113
 
+let longpress = true
+
 
 function preload() {
 	// https://www.dafont.com/snowy-christmas.font
@@ -28,6 +30,9 @@ function preload() {
 
 function setup() {
 	createCanvas(windowWidth, windowHeight)
+	if(navigator.userAgent.indexOf('iPhone') != -1 || navigator.userAgent.indexOf('Android')) {
+		longpress = false
+	}
 }
 
 function draw() {
@@ -72,8 +77,13 @@ function mouseReleased() {
 }
 
 function mousePressed() {
-	// if mouse pressed start reducing delay
-	flag2 = true
+	if(longpress) {
+		// if mouse pressed start reducing delay
+		flag2 = true
+	} else {
+		// n mobile, if screen pressed show present
+		flag3 = true && flag1
+	}
 }
 
 class TextType {
