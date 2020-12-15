@@ -30,6 +30,7 @@ function preload() {
 
 function setup() {
 	createCanvas(windowWidth, windowHeight)
+	print(navigator.userAgent)
 	if(navigator.userAgent.indexOf('iPhone') != -1 || navigator.userAgent.indexOf('Android') != -1) {
 		longpress = false
 	}
@@ -56,17 +57,22 @@ function draw() {
 	if(flag1 && flag2) {
 		cnt += 1
 	}
-  
-  	// if delay ended, select present
+
+	// if delay ended, select present
 	if(cnt >= 100 && !flag3 && flag1) {
 		flag3 = true
 		selected = random(options)
 	}
 
-	// if delay ended show present and merry message
+	// if delay ended, show present and merry message
 	if(flag3) {
 		font1.draw(windowWidth / 2, windowHeight * 3 / 4, 'Merry Yuletide!')
 		font3.draw(windowWidth / 2, windowHeight / 2, selected)
+		if(longpress) {
+			font2.draw(windowWidth / 2 + 200, windowHeight * 3 / 4 + 100, '(Carles)')
+		} else {
+			font2.draw(windowWidth / 2, windowHeight * 3 / 4 + 100, '(Carles)')
+		}
 	}
 }
 
@@ -81,8 +87,10 @@ function mousePressed() {
 		// if mouse pressed start reducing delay
 		flag2 = true
 	} else {
-		// n mobile, if screen pressed show present
-		flag3 = true && flag1
+		// in mobile, if screen pressed show present
+		if(flag1) {
+			cnt = 100
+		}
 	}
 }
 
@@ -92,7 +100,7 @@ class TextType {
 		this._size = size
 		this._color = color
 	}
-  
+
 	draw(x, y, content) {
 		textFont(this._font)
 		textSize(this._size)
@@ -110,7 +118,7 @@ class Snowflake {
 		this._sz = random(2, 5)
 		this._r = sqrt(random(pow(width / 2, 2)))
 	}
-  
+
 	update(time) {
 		let w = 0.6; // angular speed
 		let angle = w * time + this._angle
