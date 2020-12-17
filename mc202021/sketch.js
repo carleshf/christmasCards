@@ -4,7 +4,7 @@ let selected = ''
 let flag1 = false
 let flag2 = false
 let flag3 = false
-let cnt = 0
+
 let font1, font2, font3
 let fontsizeXS = 11
 let fontsizeL = 47
@@ -12,6 +12,7 @@ let fontsizeXL = 79
 let fontsize3XL = 113
 
 let longpress = true
+let radius = 0
 
 
 function preload() {
@@ -54,12 +55,15 @@ function draw() {
 	}
 
 	// if screen is touched, reduce de delay
-	if(flag1 && flag2) {
-		cnt += 1
+	if(flag1 && flag2 && !flag3) {
+		radius += 10
+		noStroke()
+		fill('#FFFFFF50')
+		circle(windowWidth / 2, windowHeight / 2, radius)
 	}
 
 	// if delay ended, select present
-	if(cnt >= 100 && !flag3 && flag1) {
+	if(radius >= 1000 && !flag3 && flag1) {
 		flag3 = true
 		selected = random(options)
 	}
@@ -79,23 +83,23 @@ function draw() {
 function mouseReleased() {
 	// if mouse released reset delay
 	flag2 = false
-	cnt = 0
+	radius = 0
 }
 
 function mousePressed() {
-	if(longpress) {
+	//if(longpress) {
 		// if mouse pressed start reducing delay
 		flag2 = true
-	} else {
+	/*} else {
 		// in mobile, if screen pressed show present
 		if(flag1) {
-			cnt = 100
+			radius = 100
 		}
-	}
+	}*/
 }
 
 class TextType {
-	constructor(font, size, color = '#FFFFFF') {
+	constructor(font, size, color = '#FFFFFFFF') {
 		this._font = font
 		this._size = size
 		this._color = color
