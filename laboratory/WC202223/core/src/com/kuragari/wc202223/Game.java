@@ -14,57 +14,55 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import com.badlogic.gdx.math.Rectangle;
-public class Game extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+import com.kuragari.wc202223.components.Character;
+import com.kuragari.wc202223.components.ComponentManager;
+import com.kuragari.wc202223.components.Floor;
 
+import java.security.Key;
+
+public class Game extends ApplicationAdapter {
 	ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
+	private ComponentManager cm;
 
-	int x = 100;
-	int y = 100;
-	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
+
+		cm = new ComponentManager();
+		cm.addElement( new Character(10, 10 ) );
+		cm.addElement( new Floor(10, 10, 60, 5, "#FFFFFF"));
+		cm.addElement( new Floor(100, 200, 60, 5, "#001199"));
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
-		//batch.begin();
-		//batch.draw(img, 0, 0);
-		//batch.end();
 
-		shapeRenderer.setColor(Color.BLACK);
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.circle(x, y, 32);
-		shapeRenderer.end();
-
-
-		if(Gdx.input.isKeyPressed(Keys.UP)) {
-			y += 200 * Gdx.graphics.getDeltaTime();
+		String event = "none";
+		if( Gdx.input.isKeyPressed( Keys.UP ) || Gdx.input.isKeyPressed( Keys.W ) ) {
+			event = "key-up";
 		}
-		if(Gdx.input.isKeyPressed(Keys.DOWN)){
-			y -= 200 * Gdx.graphics.getDeltaTime();
+		if( Gdx.input.isKeyPressed( Keys.DOWN ) || Gdx.input.isKeyPressed( Keys.S ) ){
+			event = "key-down";
+		}
+		if( Gdx.input.isKeyPressed( Keys.LEFT ) || Gdx.input.isKeyPressed( Keys.A ) ) {
+			event = "key-left";
+		}
+		if( Gdx.input.isKeyPressed( Keys.RIGHT ) || Gdx.input.isKeyPressed( Keys.D ) ) {
+			event = "key-right";
 		}
 
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) {
-			x -= 200 * Gdx.graphics.getDeltaTime();
-		}
-		if(Gdx.input.isKeyPressed(Keys.RIGHT)){
-			x += 200 * Gdx.graphics.getDeltaTime();
+		try {
+			cm.updateElements( event );
+			cm.drawElements( shapeRenderer );
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
 	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+	public void dispose () { }
 }
