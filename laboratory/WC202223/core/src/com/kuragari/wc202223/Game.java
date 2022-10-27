@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.kuragari.wc202223.components.Character;
 import com.kuragari.wc202223.components.ComponentManager;
 import com.kuragari.wc202223.components.Floor;
+import com.kuragari.wc202223.helpers.Collision;
+import com.kuragari.wc202223.helpers.CollisionDirection;
 
 import java.security.Key;
 
@@ -32,31 +34,33 @@ public class Game extends ApplicationAdapter {
 		camera.setToOrtho(false, 800, 480);
 
 		cm = new ComponentManager();
-		cm.addElement( new Character(10, 10 ) );
-		cm.addElement( new Floor(10, 10, 60, 5, "#FFFFFF"));
-		cm.addElement( new Floor(100, 200, 60, 5, "#001199"));
+		cm.setMainCharacter( new Character(300, 150 ) );
+		//cm.addFloor( new Floor(10, 10, 60, 5, "#FFFFFF"));
+		cm.addFloor( new Floor(200, 200, 60, 5, "#001199"));
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
 
-		String event = "none";
+		String event = "None";
+		String target = "";
 		if( Gdx.input.isKeyPressed( Keys.UP ) || Gdx.input.isKeyPressed( Keys.W ) ) {
-			event = "key-up";
+			event = "KeyUp";
 		}
 		if( Gdx.input.isKeyPressed( Keys.DOWN ) || Gdx.input.isKeyPressed( Keys.S ) ){
-			event = "key-down";
+			event = "KeyDown";
 		}
 		if( Gdx.input.isKeyPressed( Keys.LEFT ) || Gdx.input.isKeyPressed( Keys.A ) ) {
-			event = "key-left";
+			event = "KeyLeft";
 		}
 		if( Gdx.input.isKeyPressed( Keys.RIGHT ) || Gdx.input.isKeyPressed( Keys.D ) ) {
-			event = "key-right";
+			event = "KeyRight";
 		}
 
 		try {
-			cm.updateElements( event );
+			Collision impact = cm.checkCollision();
+			cm.updateElements( event, impact );
 			cm.drawElements( shapeRenderer );
 		} catch (Exception e) {
 			throw new RuntimeException(e);
