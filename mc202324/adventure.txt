@@ -1,0 +1,53 @@
+WC 2023-24 // SCRIPT
+
+[X] [me]: I should check on Mr Santa
+
+[X] [Mr Santa]: Can you grab me a donut while I finish my rehearsal?
+
+[X] [me]: I should bring the donut to Mr Santa
+
+[X] [Mr Santa]: Can you check on Rudolf? She was feeling a bit blue, and I need her to be at her best shortly. She should be on MN4.
+
+[x] [Ms Rudolf]: I'm feeling exhausted lately, could you ask Ms Santa for something to wake me up?
+
+[X] [Ms Santa]: Oh dear, yes. Can you help me bring the boxes from the main floor here? I'm sure I have something for her.
+
+[X] [me]: Let's move up this box first.
+
+[X] [Ms Santa]: Thanks. There was a second one, right?
+
+[X] [me]: Let's bring the second box to Ms Santa.
+
+[X] [Ms Santa]: Thanks! I think this might help her. Bring it to her.
+
+[x] [Ms Rudolf]: Oh! Thank you! Let's see if it works. Meanwhile, could you go get the reports from Triton?
+
+[X] [Mr Triton]: Oh! I'm not done! I need the geographical information from Gen. If you bring it to me, I'll finish in a minute.
+
+[X] [Mr Gen]: I just finished listing the locations of all the good and bad kids worldwide. Bring it to Triton ASAP, thanks!
+
+[X] [Mr Triton]: Here is the report for Ms Rudolf. I hope her team is up to the task, this year there are a lot of kids.
+
+[X] [Ms Rudolf]: Thanks a lot. I'll share this with my team. I think Santa needs something if you can help.
+
+[X] [Mr Santa]: I just finished my rehearsal. It's not good. Can you help me load the sled with the presents? The sled is on the top floor.
+
+[X] [me]: Here is one of the packs!
+
+[X] [me]: I remember Ms Gen said there are five packs of presents this year. So four more.
+
+[X] [me]: Just three more!
+
+[X] [me]: I should bring the second one to the sled.
+
+[X] [me]: And here is the last one!
+
+[X] [me]: Better to report to Mr Santa
+
+[X] [Mr Santa]: Thank you a lot! I'm stating my last rehearsal, and just remembered I didn't put the start to the tree. It's in my office, could you?
+
+[X] [me]: The mighty start! Let's place on the top of the tree!
+
+[X] [me]: It\'s done! I think all is ready for tonight. Let\'s see if Mr Santa is ready.
+
+[X] [Santa]: Thanks a lot! All is ready! Let's do it!
