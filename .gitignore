@@ -1,5 +1,7 @@
 .DS_Store
 
+Export/
+
 # Node.js
 node_modules/
 

@@ -891,7 +891,7 @@ ApplicationMain.main = function() {
 };
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
-	app.meta.h["build"] = "151";
+	app.meta.h["build"] = "152";
 	app.meta.h["company"] = "Company Name";
 	app.meta.h["file"] = "Mc202526";
 	app.meta.h["name"] = "Mc202526";
@@ -24772,7 +24772,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 318102;
+	this.version = 255663;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -26989,55 +26989,77 @@ lime_utils_UInt8ClampedArray._clamp = function(_in) {
 };
 var map_BattleMap = function() {
 	openfl_display_Sprite.call(this);
-	this.drawBackground();
-	this.spawnObstacles();
 };
 $hxClasses["map.BattleMap"] = map_BattleMap;
 map_BattleMap.__name__ = "map.BattleMap";
 map_BattleMap.__super__ = openfl_display_Sprite;
 map_BattleMap.prototype = $extend(openfl_display_Sprite.prototype,{
 	drawBackground: function() {
-		this.get_graphics().beginFill(13434879);
-		this.get_graphics().drawRect(0,0,640,480);
-		this.get_graphics().endFill();
 	}
 	,spawnObstacles: function() {
-		var obstacle = new map_Obstacle();
-		obstacle.set_x(Math.random() * 600 + 20);
-		obstacle.set_y(Math.random() * 400 + 20);
-		this.addChild(obstacle);
-		var obstacle = new map_Obstacle();
-		obstacle.set_x(Math.random() * 600 + 20);
-		obstacle.set_y(Math.random() * 400 + 20);
-		this.addChild(obstacle);
-		var obstacle = new map_Obstacle();
-		obstacle.set_x(Math.random() * 600 + 20);
-		obstacle.set_y(Math.random() * 400 + 20);
-		this.addChild(obstacle);
-		var obstacle = new map_Obstacle();
-		obstacle.set_x(Math.random() * 600 + 20);
-		obstacle.set_y(Math.random() * 400 + 20);
-		this.addChild(obstacle);
-		var obstacle = new map_Obstacle();
-		obstacle.set_x(Math.random() * 600 + 20);
-		obstacle.set_y(Math.random() * 400 + 20);
-		this.addChild(obstacle);
 	}
 	,__class__: map_BattleMap
 });
-var map_Obstacle = function() {
+var map_Obstacle = function(type,sz,x,y,box) {
 	openfl_display_Sprite.call(this);
-	var type = Math.random();
-	var emoji = type < 0.5 ? "🎄" : "🪨";
-	var label = new openfl_text_TextField();
-	label.set_defaultTextFormat(new openfl_text_TextFormat("_sans",30,0));
-	label.set_text(emoji);
-	label.set_width(40);
-	label.set_height(40);
-	label.set_selectable(false);
-	label.set_x(-label.get_width() / 2);
-	label.set_y(-label.get_height() / 2);
-	this.addChild(label);
+	switch(type) {
+	case "1":
+		this.emoji = "🟦";
+		break;
+	case "2":
+		this.emoji = "🟫";
+		break;
+	case "3":
+		this.emoji = "⬛";
+		break;
+	case "4":
+		this.emoji = "⬜";
+		break;
+	case "a":
+		this.emoji = "🌲";
+		break;
+	case "b":
+		this.emoji = "🏡";
+		break;
+	case "h":
+		this.emoji = "🏠";
+		break;
+	case "i":
+		this.emoji = "🧊";
+		break;
+	case "k":
+		this.emoji = "⛷️";
+		break;
+	case "p":
+		this.emoji = "🥌";
+		break;
+	case "r":
+		this.emoji = "🪨";
+		break;
+	case "s":
+		this.emoji = "🛷";
+		break;
+	case "t":
+		this.emoji = "🎄";
+		break;
+	case "w":
+		this.emoji = "🏂";
+		break;
+	default:
+		this.emoji = "🟥";
+	}
+	this.sz = sz;
+	this.txtField = new openfl_text_TextField();
+	this.txtField.set_defaultTextFormat(new openfl_text_TextFormat("_sans",30,0));
+	this.txtField.set_text(this.emoji);
+	this.txtField.set_width(this.sz);
+	this.txtField.set_height(this.sz);
+	this.txtField.set_selectable(false);
+	this.txtField.set_x(-this.txtField.get_width() / 2);
+	this.txtField.set_y(-this.txtField.get_height() / 2);
+	this.addChild(this.txtField);
+	this.set_x(x);
+	this.set_y(y);
 };
 $hxClasses["map.Obstacle"] = map_Obstacle;
 map_Obstacle.__name__ = "map.Obstacle";
@@ -77891,7 +77913,7 @@ scenes_BattleScene.__name__ = "scenes.BattleScene";
 scenes_BattleScene.__super__ = openfl_display_Sprite;
 scenes_BattleScene.prototype = $extend(openfl_display_Sprite.prototype,{
 	onEnterFrame: function(event) {
-		var delta = 0.016666666666666666;
+		var delta = 0.0166666666666666664;
 		this.player1.update(delta);
 		this.player2.update(delta);
 	}
@@ -77944,7 +77966,7 @@ lime_math_RGBA.__alpha16 = new Uint32Array(256);
 var _g = 0;
 while(_g < 256) {
 	var i = _g++;
-	lime_math_RGBA.__alpha16[i] = Math.ceil(i * 257.00392156862745);
+	lime_math_RGBA.__alpha16[i] = Math.ceil(i * 257.003921568627447);
 }
 var array = null;
 var vector = null;

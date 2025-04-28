@@ -5,19 +5,61 @@ import openfl.text.TextField;
 import openfl.text.TextFormat;
 
 class Obstacle extends Sprite {
-    public function new() {
-        super();
-        var type = Math.random();
-        var emoji = (type < 0.5) ? "🎄" : "🪨";
+    private var emoji:String;
+    private var sz:Int;
+    private var drawBox:Bool;
+    private var txtField:TextField;
 
-        var label = new TextField();
-        label.defaultTextFormat = new TextFormat("_sans", 30, 0x000000);
-        label.text = emoji;
-        label.width = 40;
-        label.height = 40;
-        label.selectable = false;
-        label.x = -label.width / 2;
-        label.y = -label.height / 2;
-        addChild(label);
+    public function new(type:String, sz:Int, x:Float, y:Float, box:Bool) {
+        super();
+        switch (type) {
+            case "t":
+                this.emoji = "🎄";
+            case "r":
+                this.emoji = "🪨";
+            case "i":
+                this.emoji = "🧊";
+            case "w":
+                this.emoji = "🏂";
+            case "k":
+                this.emoji = "⛷️";
+            case "s":
+                this.emoji = "🛷";
+            case "p":
+                this.emoji = "🥌";
+            case "a":
+                this.emoji = "🌲";
+            case "b":
+                this.emoji = "🏡";
+            case "h":
+                this.emoji = "🏠";
+            case "1":
+                this.emoji = "🟦";
+            case "2":
+                this.emoji = "🟫";
+            case "3":
+                this.emoji = "⬛";
+            case "4":
+                this.emoji = "⬜";
+            default:
+                this.emoji = "🟥";
+        }
+        this.sz = sz;
+        this.txtField = new TextField();
+        this.txtField.defaultTextFormat = new TextFormat("_sans", 30, 0x000000);
+        this.txtField.text = emoji;
+        this.txtField.width = this.sz;
+        this.txtField.height = this.sz;
+        this.txtField.selectable = false;
+        this.txtField.x = -this.txtField.width / 2;
+        this.txtField.y = -this.txtField.height / 2;
+
+        addChild(this.txtField);
+
+        this.x = x;
+        this.y = y;
+
+        "☃️⛄";
+        "🎁🍫";
     }
 }
